@@ -1,33 +1,47 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+import { Resend } from "resend";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+const resend = new Resend(process.env.RESEND_API_KEY!);
 
 export async function POST(req: Request) {
   try {
-    const contentType = req.headers.get("content-type") || "";
+    const { name, email } = await req.json();
 
-    let email = "";
-
-    // Accept JSON
-    if (contentType.includes("application/json")) {
-      const body = await req.json();
-      email = String(body?.email || "").trim().toLowerCase();
+    if (!email) {
+      return NextResponse.json({ error: "Email required" }, { status: 400 });
     }
 
-    // Accept form-encoded
-    if (!email && contentType.includes("application/x-www-form-urlencoded")) {
-      const form = await req.formData();
-      email = String(form.get("email") || "").trim().toLowerCase();
+    // Insert into Supabase
+    const { error } = await supabase.from("leads").insert({
+      name,
+      email,
+    });
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    if (!email || !email.includes("@")) {
-      return NextResponse.json({ error: "Invalid email" }, { status: 400 });
-    }
+    // Send confirmation email
+    await resend.emails.send({
+      from: "GetJobQuotes <hello@getjobquotes.uk>",
+      to: email,
+      subject: "You're on the waiting list",
+      html: `
+        <h2>Hi ${name || "there"},</h2>
+        <p>Thanks for joining the GetJobQuotes waiting list.</p>
+        <p>We’ll notify you when we launch.</p>
+      `,
+    });
 
-    // For now: just log (next step we store to DB + send email)
-    console.log("[lead]", { email, at: new Date().toISOString() });
+    return NextResponse.json({ success: true });
 
-    return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("Lead API error:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
