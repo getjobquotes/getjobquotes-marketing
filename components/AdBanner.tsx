@@ -1,34 +1,36 @@
 "use client";
-
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface AdBannerProps {
-  slot: string;
-  format?: "auto" | "rectangle" | "vertical";
+  slot?: string;
+  format?: "auto" | "horizontal" | "rectangle";
   className?: string;
 }
 
-export default function AdBanner({ slot, format = "auto", className = "" }: AdBannerProps) {
-  const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_ID || "";
+export default function AdBanner({ slot = "auto", format = "auto", className = "" }: AdBannerProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const pushed = useRef(false);
 
   useEffect(() => {
+    if (pushed.current || !ref.current) return;
+    // Only show ads if user consented (or no preference yet = consent not declined)
+    const consent = localStorage.getItem("gjq_cookie_consent");
+    if (consent === "essential") return; // User opted out of analytics
+    pushed.current = true;
     try {
-      if (typeof window !== "undefined") {
-        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-      }
-    } catch (err) {
-      console.error("AdSense error:", err);
-    }
+      const adsbygoogle = (window as any).adsbygoogle || [];
+      adsbygoogle.push({});
+    } catch {}
   }, []);
 
-  if (!adsenseId) return null;
+  if (!process.env.NEXT_PUBLIC_ADSENSE_ID) return null;
 
   return (
-    <div className={`overflow-hidden rounded-xl ${className}`}>
+    <div ref={ref} className={`w-full overflow-hidden ${className}`}>
       <ins
         className="adsbygoogle"
         style={{ display: "block" }}
-        data-ad-client={adsenseId}
+        data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_ID}
         data-ad-slot={slot}
         data-ad-format={format}
         data-full-width-responsive="true"

@@ -1,18 +1,13 @@
-const attempts = new Map<string, { count: number; resetAt: number }>();
+const requests = new Map<string, { count: number; reset: number }>();
 
-export function rateLimit(ip: string, maxAttempts = 5, windowMs = 60000): boolean {
+export function rateLimit(key: string, limit = 10, windowMs = 60000): boolean {
   const now = Date.now();
-  const record = attempts.get(ip);
-
-  if (!record || now > record.resetAt) {
-    attempts.set(ip, { count: 1, resetAt: now + windowMs });
+  const entry = requests.get(key);
+  if (!entry || now > entry.reset) {
+    requests.set(key, { count: 1, reset: now + windowMs });
     return true;
   }
-
-  if (record.count >= maxAttempts) {
-    return false;
-  }
-
-  record.count++;
+  if (entry.count >= limit) return false;
+  entry.count++;
   return true;
 }
