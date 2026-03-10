@@ -259,7 +259,7 @@ function QuoteForm() {
               <label className="text-xs text-zinc-500 mb-1 block">Select Saved Customer</label>
               <select onChange={(e) => {
                 const c = customers.find((c) => c.id === e.target.value);
-                if (c) set("clientName", c.name) || set("clientEmail", c.email || "");
+                if (c) { set("clientName", c.name); set("clientEmail", c.email || ""); }
               }} className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-white text-sm outline-none focus:border-green-500 transition">
                 <option value="">— Pick a customer —</option>
                 {customers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
