@@ -1,20 +1,45 @@
-import { createClient } from "@/lib/supabase/server";
-import { NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+import { NextResponse, type NextRequest } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/dashboard";
-
-  // Always use the configured app URL — never use request.url origin
-  // This fixes the supabase.co redirect issue with Google OAuth
   const appUrl = process.env.NEXT_PUBLIC_APP_URL!.replace(/\/$/, "");
 
   if (!code) {
     return NextResponse.redirect(`${appUrl}/auth?error=no_code`);
   }
 
-  const supabase = await createClient();
+  const cookieStore = await cookies();
+
+  // Build a response we can attach cookies to
+  const response = NextResponse.redirect(`${appUrl}${next}`);
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            response.cookies.set(name, value, {
+              ...options,
+              sameSite: "lax",
+              secure: process.env.NODE_ENV === "production",
+              httpOnly: true,
+              path: "/",
+            });
+          });
+        },
+      },
+    }
+  );
+
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error || !data.user) {
@@ -24,40 +49,34 @@ export async function GET(request: Request) {
 
   const user = data.user;
 
-  // ── First-time user detection ───────────────────────────────
-  // Check if a profile row already exists. If not, this is their
-  // very first login — regardless of whether they used Google,
-  // magic link, or password + email verification.
-  // This is reliable because profile is created on first dashboard
-  // visit (or we create it here), so it only fires once.
+  // First-time user detection via profile existence
   const { data: existingProfile } = await supabase
     .from("profiles")
     .select("id")
     .eq("user_id", user.id)
     .single();
 
-  const isFirstLogin = !existingProfile;
-
-  if (isFirstLogin) {
-    // Create the profile row immediately so future logins don't re-trigger
+  if (!existingProfile) {
+    // Create profile row so this only fires once
     await supabase.from("profiles").upsert({
       user_id: user.id,
       business_email: user.email,
       created_at: new Date().toISOString(),
     }, { onConflict: "user_id" });
 
-    // Fire welcome email (non-blocking — don't delay the redirect)
-    const name = user.user_metadata?.full_name
-      || user.user_metadata?.name
-      || user.email?.split("@")[0]?.replace(/[._]/g, " ")
-      || "";
+    // Fire welcome email (non-blocking)
+    const name =
+      user.user_metadata?.full_name ||
+      user.user_metadata?.name ||
+      user.email?.split("@")[0]?.replace(/[._-]/g, " ") ||
+      "";
 
     fetch(`${appUrl}/api/email/welcome`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: user.email, name }),
-    }).catch((e) => console.error("Welcome email failed (non-fatal):", e));
+    }).catch((e) => console.error("Welcome email (non-fatal):", e));
   }
 
-  return NextResponse.redirect(`${appUrl}${next}`);
+  return response;
 }
