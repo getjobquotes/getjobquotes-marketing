@@ -25,6 +25,8 @@ function QuoteForm() {
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState("");
   const [saved, setSaved] = useState(false);
+  const [draftSaved, setDraftSaved] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [template, setTemplate] = useState<Template>("modern");
   const [showSig, setShowSig] = useState(false);
   const [sigData, setSigData] = useState<string>("");
@@ -76,6 +78,44 @@ function QuoteForm() {
     };
     init();
   }, []);
+
+  // Auto-save draft to localStorage every 30 seconds
+  useEffect(() => {
+    if (!user) return;
+    const interval = setInterval(() => {
+      const draft = { form, lineItems, template, sigData, savedAt: new Date().toISOString() };
+      localStorage.setItem("gjq_draft_quote", JSON.stringify(draft));
+      setLastSaved(new Date());
+      setDraftSaved(true);
+      setTimeout(() => setDraftSaved(false), 2000);
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [user, form, lineItems, template, sigData]);
+
+  // Load draft on mount if no editId
+  useEffect(() => {
+    if (editId) return;
+    const raw = localStorage.getItem("gjq_draft_quote");
+    if (!raw) return;
+    try {
+      const draft = JSON.parse(raw);
+      const savedAt = new Date(draft.savedAt);
+      const ageHours = (Date.now() - savedAt.getTime()) / 1000 / 60 / 60;
+      if (ageHours < 24 && draft.form?.clientName) {
+        const restore = window.confirm(
+          `You have an unfinished quote for "${draft.form.clientName}" from ${savedAt.toLocaleTimeString("en-GB")}. Restore it?`
+        );
+        if (restore) {
+          setForm(draft.form);
+          setLineItems(draft.lineItems || [{ description: "", quantity: 1, unitPrice: 0 }]);
+          if (draft.template) setTemplate(draft.template);
+          if (draft.sigData) { setSigData(draft.sigData); setHasSig(true); }
+        } else {
+          localStorage.removeItem("gjq_draft_quote");
+        }
+      }
+    } catch {}
+  }, [user]);
 
   const set = (k: string, v: any) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -200,6 +240,7 @@ function QuoteForm() {
       setSaveMsg(`Error: ${error.message}`);
     } else {
       setSaved(true);
+      localStorage.removeItem("gjq_draft_quote");
       setTimeout(() => router.push("/dashboard"), 1500);
     }
   };
@@ -588,6 +629,16 @@ function QuoteForm() {
               </button>
             ))}
           </div>
+        </div>
+
+        {/* Draft indicator */}
+        <div className="flex items-center justify-between text-xs text-zinc-600">
+          <span>
+            {lastSaved
+              ? `Draft auto-saved at ${lastSaved.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}`
+              : "Changes auto-save every 30 seconds"}
+          </span>
+          {draftSaved && <span className="text-green-500">✓ Draft saved</span>}
         </div>
 
         {/* Actions */}
