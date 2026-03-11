@@ -42,8 +42,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // CRITICAL: auth/callback excluded — middleware getUser() would
-  // consume the OAuth state cookie before route handler can use it
   matcher: [
     "/((?!_next/static|_next/image|favicon\\.ico|ads\\.txt|robots\\.txt|manifest\\.json|icon|api/|auth/callback|demo|status|q/|sitemap).*)",
   ],

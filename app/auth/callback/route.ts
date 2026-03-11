@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/dashboard";
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL!.replace(/\/$/, "");
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://getjobquotes.uk").replace(/\/$/, "");
 
   if (!code) return NextResponse.redirect(`${appUrl}/auth?error=no_code`);
 
@@ -36,22 +36,22 @@ export async function GET(request: NextRequest) {
 
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
   if (error || !data.user) {
-    console.error("Auth callback error:", error?.message);
     return NextResponse.redirect(`${appUrl}/auth?error=callback`);
   }
 
   const user = data.user;
-  const { data: existingProfile } = await supabase
+  const { data: existing } = await supabase
     .from("profiles").select("id").eq("user_id", user.id).single();
 
-  if (!existingProfile) {
+  if (!existing) {
     await supabase.from("profiles").upsert({
       user_id: user.id,
       business_email: user.email,
       created_at: new Date().toISOString(),
     }, { onConflict: "user_id" });
 
-    const name = user.user_metadata?.full_name || user.user_metadata?.name ||
+    const name = user.user_metadata?.full_name ||
+      user.user_metadata?.name ||
       user.email?.split("@")[0]?.replace(/[._-]/g, " ") || "";
 
     fetch(`${appUrl}/api/email/welcome`, {
