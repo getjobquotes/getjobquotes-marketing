@@ -2,6 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -11,10 +12,13 @@ export async function middleware(request: NextRequest) {
       cookies: {
         getAll() { return request.cookies.getAll(); },
         setAll(cookiesToSet) {
+
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
+
           response = NextResponse.next({ request });
+
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options)
           );
@@ -23,19 +27,17 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Refresh session
   const { data: { user } } = await supabase.auth.getUser();
   const { pathname } = request.nextUrl;
 
-  // Protect these routes
   const PROTECTED = ["/dashboard", "/tool", "/profile", "/customers"];
+
   if (PROTECTED.some(r => pathname.startsWith(r)) && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/auth";
     return NextResponse.redirect(url);
   }
 
-  // If logged in and hitting /auth, go to dashboard
   if (pathname === "/auth" && user) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
@@ -47,6 +49,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon\\.ico|ads\\.txt|robots\\.txt|manifest\\.json|icon|api/|auth/callback|demo|status|q/|sitemap).*)",
+    "/((?!_next/static|_next/image|favicon.ico|ads.txt|robots.txt|manifest.json|icon|api/|auth/callback|demo|status|q/|sitemap).*)",
   ],
 };
