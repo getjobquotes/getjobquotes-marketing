@@ -8,9 +8,7 @@ export async function GET(request: NextRequest) {
   const next = searchParams.get("next") ?? "/dashboard";
   const appUrl = process.env.NEXT_PUBLIC_APP_URL!.replace(/\/$/, "");
 
-  if (!code) {
-    return NextResponse.redirect(`${appUrl}/auth?error=no_code`);
-  }
+  if (!code) return NextResponse.redirect(`${appUrl}/auth?error=no_code`);
 
   const cookieStore = await cookies();
   const response = NextResponse.redirect(`${appUrl}${next}`);
@@ -20,39 +18,31 @@ export async function GET(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
+        getAll() { return cookieStore.getAll(); },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
+          cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, {
               ...options,
               sameSite: "lax",
               secure: process.env.NODE_ENV === "production",
               httpOnly: true,
               path: "/",
-            });
-          });
+            })
+          );
         },
       },
     }
   );
 
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-
   if (error || !data.user) {
     console.error("Auth callback error:", error?.message);
     return NextResponse.redirect(`${appUrl}/auth?error=callback`);
   }
 
   const user = data.user;
-
-  // First-time user check via profile existence
   const { data: existingProfile } = await supabase
-    .from("profiles")
-    .select("id")
-    .eq("user_id", user.id)
-    .single();
+    .from("profiles").select("id").eq("user_id", user.id).single();
 
   if (!existingProfile) {
     await supabase.from("profiles").upsert({
@@ -61,16 +51,14 @@ export async function GET(request: NextRequest) {
       created_at: new Date().toISOString(),
     }, { onConflict: "user_id" });
 
-    const name =
-      user.user_metadata?.full_name ||
-      user.user_metadata?.name ||
+    const name = user.user_metadata?.full_name || user.user_metadata?.name ||
       user.email?.split("@")[0]?.replace(/[._-]/g, " ") || "";
 
     fetch(`${appUrl}/api/email/welcome`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: user.email, name }),
-    }).catch((e) => console.error("Welcome email (non-fatal):", e));
+    }).catch(() => {});
   }
 
   return response;

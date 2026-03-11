@@ -9,13 +9,9 @@ export async function middleware(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
+        getAll() { return request.cookies.getAll(); },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
           supabaseResponse = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
@@ -46,10 +42,9 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
+  // CRITICAL: auth/callback excluded — middleware getUser() would
+  // consume the OAuth state cookie before route handler can use it
   matcher: [
-    // CRITICAL: auth/callback must be excluded — middleware calling
-    // getUser() consumes the OAuth state cookie before the route
-    // handler can exchange it, causing bad_oauth_state error
     "/((?!_next/static|_next/image|favicon\\.ico|ads\\.txt|robots\\.txt|manifest\\.json|icon|api/|auth/callback|demo|status|q/|sitemap).*)",
   ],
 };

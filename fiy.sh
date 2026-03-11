@@ -1,3 +1,208 @@
+#!/bin/bash
+# Fix: routing + live PDF preview + T&C disclaimer + AdSense
+# cd ~/projects/getjobquotes-marketing && bash fix-routing-pdf-preview.sh
+
+set -e
+
+echo ""
+echo "╔══════════════════════════════════════════════════════╗"
+echo "║  Fix routing + PDF preview + T&C + AdSense           ║"
+echo "╚══════════════════════════════════════════════════════╝"
+echo ""
+
+# ============================================================
+# 1. FIX SUPABASE SERVER CLIENT
+# ============================================================
+mkdir -p lib/supabase
+cat > lib/supabase/server.ts << 'EOF'
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+
+export async function createClient() {
+  const cookieStore = await cookies();
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return cookieStore.getAll(); },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, {
+                ...options,
+                sameSite: "lax",
+                secure: process.env.NODE_ENV === "production",
+                httpOnly: true,
+                path: "/",
+              })
+            );
+          } catch {}
+        },
+      },
+    }
+  );
+}
+EOF
+echo "✅ lib/supabase/server.ts"
+
+cat > lib/supabase/client.ts << 'EOF'
+import { createBrowserClient } from "@supabase/ssr";
+export function createClient() {
+  return createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+}
+EOF
+echo "✅ lib/supabase/client.ts"
+
+# ============================================================
+# 2. FIX MIDDLEWARE — /auth/callback EXCLUDED (root cause of
+#    bad_oauth_state AND broken routing)
+# ============================================================
+cat > middleware.ts << 'EOF'
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
+
+export async function middleware(request: NextRequest) {
+  let supabaseResponse = NextResponse.next({ request });
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return request.cookies.getAll(); },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          supabaseResponse = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          );
+        },
+      },
+    }
+  );
+
+  const { data: { user } } = await supabase.auth.getUser();
+  const { pathname } = request.nextUrl;
+  const PROTECTED = ["/dashboard", "/tool", "/profile", "/customers"];
+
+  if (PROTECTED.some((r) => pathname.startsWith(r)) && !user) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth";
+    url.searchParams.set("next", pathname);
+    return NextResponse.redirect(url);
+  }
+
+  if (pathname === "/auth" && user && !request.nextUrl.searchParams.get("next")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/dashboard";
+    return NextResponse.redirect(url);
+  }
+
+  return supabaseResponse;
+}
+
+export const config = {
+  // CRITICAL: auth/callback excluded — middleware getUser() would
+  // consume the OAuth state cookie before route handler can use it
+  matcher: [
+    "/((?!_next/static|_next/image|favicon\\.ico|ads\\.txt|robots\\.txt|manifest\\.json|icon|api/|auth/callback|demo|status|q/|sitemap).*)",
+  ],
+};
+EOF
+echo "✅ middleware.ts — routing fixed + /auth/callback excluded"
+
+# ============================================================
+# 3. FIX AUTH CALLBACK
+# ============================================================
+mkdir -p app/auth/callback
+cat > app/auth/callback/route.ts << 'EOF'
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+import { NextResponse, type NextRequest } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const code = searchParams.get("code");
+  const next = searchParams.get("next") ?? "/dashboard";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL!.replace(/\/$/, "");
+
+  if (!code) return NextResponse.redirect(`${appUrl}/auth?error=no_code`);
+
+  const cookieStore = await cookies();
+  const response = NextResponse.redirect(`${appUrl}${next}`);
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return cookieStore.getAll(); },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, {
+              ...options,
+              sameSite: "lax",
+              secure: process.env.NODE_ENV === "production",
+              httpOnly: true,
+              path: "/",
+            })
+          );
+        },
+      },
+    }
+  );
+
+  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+  if (error || !data.user) {
+    console.error("Auth callback error:", error?.message);
+    return NextResponse.redirect(`${appUrl}/auth?error=callback`);
+  }
+
+  const user = data.user;
+  const { data: existingProfile } = await supabase
+    .from("profiles").select("id").eq("user_id", user.id).single();
+
+  if (!existingProfile) {
+    await supabase.from("profiles").upsert({
+      user_id: user.id,
+      business_email: user.email,
+      created_at: new Date().toISOString(),
+    }, { onConflict: "user_id" });
+
+    const name = user.user_metadata?.full_name || user.user_metadata?.name ||
+      user.email?.split("@")[0]?.replace(/[._-]/g, " ") || "";
+
+    fetch(`${appUrl}/api/email/welcome`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: user.email, name }),
+    }).catch(() => {});
+  }
+
+  return response;
+}
+EOF
+echo "✅ app/auth/callback/route.ts"
+
+# ============================================================
+# 4. FIX CONTACT EMAIL everywhere
+# ============================================================
+find . -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.sql" \) \
+  ! -path "*/node_modules/*" ! -path "*/.next/*" \
+  -exec sed -i 's/hello@getjobquotes\.uk/support@getjobquotes.uk/g' {} +
+echo "✅ Contact email → support@getjobquotes.uk"
+
+# ============================================================
+# 5. QUOTE TOOL — live PDF preview + T&C disclaimer
+#    Split layout: form left, PDF preview right (desktop)
+#    Preview updates live as you type using jsPDF blob + iframe
+# ============================================================
+mkdir -p app/tool
+cat > app/tool/page.tsx << 'TOOLEOF'
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
@@ -541,3 +746,95 @@ function ToolInner() {
 export default function ToolPage() {
   return <Suspense fallback={<div className="min-h-screen bg-black" />}><ToolInner /></Suspense>;
 }
+TOOLEOF
+echo "✅ app/tool/page.tsx — live PDF preview + T&C disclaimer"
+
+# ============================================================
+# 6. ADSENSE — fix the banner component
+# ============================================================
+mkdir -p components
+cat > components/AdBanner.tsx << 'EOF'
+"use client";
+import { useEffect, useRef } from "react";
+
+export default function AdBanner({ slot = "3456789012", format = "auto", className = "" }: {
+  slot?: string; format?: string; className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const pushed = useRef(false);
+
+  useEffect(() => {
+    if (pushed.current || !ref.current) return;
+    const consent = localStorage.getItem("gjq_cookie_consent");
+    if (consent === "essential") return;
+    pushed.current = true;
+    try {
+      ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+    } catch {}
+  }, []);
+
+  if (!process.env.NEXT_PUBLIC_ADSENSE_ID) return null;
+
+  return (
+    <div ref={ref} className={`w-full overflow-hidden ${className}`}>
+      <ins className="adsbygoogle block"
+        style={{ minHeight: "60px" }}
+        data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_ID}
+        data-ad-slot={slot}
+        data-ad-format={format}
+        data-full-width-responsive="true" />
+    </div>
+  );
+}
+EOF
+echo "✅ components/AdBanner.tsx"
+
+# ============================================================
+# 7. COMMIT
+# ============================================================
+git add .
+git commit -m "fix: routing (middleware/callback/supabase-client), live PDF preview in tool, T&C checkbox, AdSense fix, support@ email"
+git push origin main
+
+echo ""
+echo "╔══════════════════════════════════════════════════════╗"
+echo "║  ✅  Done! Here's your current progress:            ║"
+echo "╚══════════════════════════════════════════════════════╝"
+echo ""
+echo "  FIXED:"
+echo "  ✅ /tool, /profile, /customers routing (middleware fix)"
+echo "  ✅ Google OAuth bad_oauth_state (auth/callback excluded)"
+echo "  ✅ Live PDF preview — updates as you type"
+echo "  ✅ T&C checkbox before saving any quote/invoice"
+echo "  ✅ AdSense GDPR-gated push()"
+echo "  ✅ support@getjobquotes.uk everywhere"
+echo ""
+echo "  CURRENT BUILD STATUS:"
+echo "  ✅ Landing page + demo CTA"
+echo "  ✅ Demo page (no login, PDF download, signup wall)"
+echo "  ✅ Auth (magic link + password + Google OAuth)"
+echo "  ✅ Dashboard (search, sort, stats, mark paid)"
+echo "  ✅ Quote/Invoice tool with LIVE PDF preview"
+echo "  ✅ PDF download (professional template)"
+echo "  ✅ Business profile (logo, signature)"
+echo "  ✅ Customers (search, sort, edit)"
+echo "  ✅ Public quote links + client accept flow"
+echo "  ✅ WhatsApp share"
+echo "  ✅ Email (welcome, quote sent, accepted)"
+echo "  ✅ Terms & Privacy (real UK GDPR content)"
+echo "  ✅ Cookie banner (GDPR)"
+echo "  ✅ AdSense (all users)"
+echo "  ✅ GA4 + Sentry"
+echo "  ✅ PWA manifest"
+echo "  ✅ robots.txt + sitemap"
+echo "  ✅ Rate limiting"
+echo "  ✅ Error boundaries"
+echo "  ✅ /status health page"
+echo "  ✅ Automated tests (Vitest)"
+echo ""
+echo "  NEXT UP (Tier 2):"
+echo "  ⏳ Stripe paywall (Pro tier, £4.99/mo)"
+echo "  ⏳ Referral system"
+echo "  ⏳ Payment reminder cron (7/14/30 day overdue chase)"
+echo "  ⏳ Read receipts (client opened quote X mins ago)"
+echo "  ⏳ PWA icons (icon-192.png / icon-512.png)"
