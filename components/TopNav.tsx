@@ -40,7 +40,7 @@ export default function TopNav() {
     return () => document.removeEventListener("mousedown", h);
   }, []);
 
-  // âœ… Logout goes to HOME page
+  // ✅ Logout goes to HOME page
   const logout = async () => {
     await supabase.auth.signOut();
     router.push("/");
@@ -88,7 +88,7 @@ export default function TopNav() {
                 <p className="text-sm font-semibold text-white truncate">{displayName || "Your account"}</p>
                 <p className="text-xs text-zinc-500 truncate">{email}</p>
               </div>
-              {/* All links â€” visible on mobile too */}
+              {/* All links — visible on mobile too */}
               <div className="py-1 border-b border-zinc-800">
                 {navLinks.map(l => (
                   <Link key={l.href} href={l.href} onClick={() => setOpen(false)}
