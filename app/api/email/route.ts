@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   if (!to || !subject || !html) return NextResponse.json({ error: "Missing fields" }, { status: 400 });
 
   const { error } = await resend.emails.send({
-    from: "GetJobQuotes <hello@getjobquotes.uk>",
+    from: "GetJobQuotes <support@getjobquotes.uk>",
     to, subject, html,
   });
 

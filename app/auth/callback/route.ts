@@ -13,8 +13,6 @@ export async function GET(request: NextRequest) {
   }
 
   const cookieStore = await cookies();
-
-  // Build a response we can attach cookies to
   const response = NextResponse.redirect(`${appUrl}${next}`);
 
   const supabase = createServerClient(
@@ -49,7 +47,7 @@ export async function GET(request: NextRequest) {
 
   const user = data.user;
 
-  // First-time user detection via profile existence
+  // First-time user check via profile existence
   const { data: existingProfile } = await supabase
     .from("profiles")
     .select("id")
@@ -57,19 +55,16 @@ export async function GET(request: NextRequest) {
     .single();
 
   if (!existingProfile) {
-    // Create profile row so this only fires once
     await supabase.from("profiles").upsert({
       user_id: user.id,
       business_email: user.email,
       created_at: new Date().toISOString(),
     }, { onConflict: "user_id" });
 
-    // Fire welcome email (non-blocking)
     const name =
       user.user_metadata?.full_name ||
       user.user_metadata?.name ||
-      user.email?.split("@")[0]?.replace(/[._-]/g, " ") ||
-      "";
+      user.email?.split("@")[0]?.replace(/[._-]/g, " ") || "";
 
     fetch(`${appUrl}/api/email/welcome`, {
       method: "POST",

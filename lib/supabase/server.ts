@@ -17,7 +17,6 @@ export async function createClient() {
             cookiesToSet.forEach(({ name, value, options }) => {
               cookieStore.set(name, value, {
                 ...options,
-                // These are critical for OAuth state cookie to survive
                 sameSite: "lax",
                 secure: process.env.NODE_ENV === "production",
                 httpOnly: true,
@@ -25,8 +24,7 @@ export async function createClient() {
               });
             });
           } catch {
-            // setAll called from a Server Component — safe to ignore
-            // cookies will be set by the middleware instead
+            // Called from Server Component — middleware handles it
           }
         },
       },

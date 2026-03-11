@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 const LAST_UPDATED = "10 March 2026";
-const CONTACT_EMAIL = "hello@getjobquotes.uk";
+const CONTACT_EMAIL = "support@getjobquotes.uk";
 
 export default function PrivacyPage() {
   return (
@@ -216,7 +216,7 @@ export default function PrivacyPage() {
             </div>
             <p className="mt-4">
               To exercise any of these rights, email us at{" "}
-              <a href="mailto:hello@getjobquotes.uk" className="text-green-400 hover:underline">hello@getjobquotes.uk</a>.
+              <a href="mailto:support@getjobquotes.uk" className="text-green-400 hover:underline">support@getjobquotes.uk</a>.
               We will respond within 30 days. We may need to verify your identity before processing your request.
             </p>
           </Section>
@@ -256,7 +256,7 @@ export default function PrivacyPage() {
           <Section title="9. Complaints">
             <p>
               If you are unhappy with how we handle your data, please contact us first at{" "}
-              <a href="mailto:hello@getjobquotes.uk" className="text-green-400 hover:underline">hello@getjobquotes.uk</a>.
+              <a href="mailto:support@getjobquotes.uk" className="text-green-400 hover:underline">support@getjobquotes.uk</a>.
             </p>
             <p className="mt-3">
               You also have the right to lodge a complaint with the UK Information Commissioner's Office (ICO):
@@ -343,7 +343,7 @@ function Footer() {
       <Link href="/" className="hover:text-zinc-400 transition">Home</Link>
       <Link href="/terms" className="hover:text-zinc-400 transition">Terms & Conditions</Link>
       <Link href="/status" className="hover:text-zinc-400 transition">Status</Link>
-      <a href="mailto:hello@getjobquotes.uk" className="hover:text-zinc-400 transition">Contact</a>
+      <a href="mailto:support@getjobquotes.uk" className="hover:text-zinc-400 transition">Contact</a>
     </footer>
   );
 }

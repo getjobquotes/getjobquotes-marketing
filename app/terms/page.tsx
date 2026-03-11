@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 const LAST_UPDATED = "10 March 2026";
-const CONTACT_EMAIL = "hello@getjobquotes.uk";
+const CONTACT_EMAIL = "support@getjobquotes.uk";
 const APP_URL = "https://getjobquotes.uk";
 
 export default function TermsPage() {
@@ -247,7 +247,7 @@ function Footer() {
       <Link href="/" className="hover:text-zinc-400 transition">Home</Link>
       <Link href="/privacy" className="hover:text-zinc-400 transition">Privacy Policy</Link>
       <Link href="/status" className="hover:text-zinc-400 transition">Status</Link>
-      <a href="mailto:hello@getjobquotes.uk" className="hover:text-zinc-400 transition">Contact</a>
+      <a href="mailto:support@getjobquotes.uk" className="hover:text-zinc-400 transition">Contact</a>
     </footer>
   );
 }
