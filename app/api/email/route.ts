@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createClient } from "@/lib/supabase/server";
-import { rateLimit } from "@/lib/rateLimit";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
   const ip = request.headers.get("x-forwarded-for") || "unknown";
-  if (!rateLimit(`email:${ip}`, 5, 60000)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
