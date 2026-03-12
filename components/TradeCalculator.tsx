@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-type Tab = "markup" | "vat" | "dayrate" | "materials";
+type Tab = "calc" | "markup" | "vat" | "dayrate" | "materials";
 
 type HistoryEntry = {
   id: string;
@@ -46,6 +46,35 @@ export default function TradeCalculator({ onClose }: { onClose?: () => void }) {
   const [tab, setTab] = useState<Tab>("markup");
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+
+  // Standard calculator
+  const [display, setDisplay] = useState("0");
+  const [prev, setPrev] = useState<string | null>(null);
+  const [op, setOp] = useState<string | null>(null);
+  const [waitNext, setWaitNext] = useState(false);
+
+  const calcInput = (val: string) => {
+    if (waitNext) { setDisplay(val); setWaitNext(false); return; }
+    setDisplay(display === "0" ? val : display + val);
+  };
+  const calcOp = (o: string) => {
+    setPrev(display); setOp(o); setWaitNext(true);
+  };
+  const calcEquals = () => {
+    if (!prev || !op) return;
+    const a = parseFloat(prev), b = parseFloat(display);
+    let r = 0;
+    if (op === "+") r = a + b;
+    else if (op === "-") r = a - b;
+    else if (op === "×") r = a * b;
+    else if (op === "÷") r = b !== 0 ? a / b : 0;
+    const res = parseFloat(r.toFixed(10)).toString();
+    setDisplay(res); setPrev(null); setOp(null); setWaitNext(true);
+  };
+  const calcClear = () => { setDisplay("0"); setPrev(null); setOp(null); setWaitNext(false); };
+  const calcPercent = () => setDisplay((parseFloat(display) / 100).toString());
+  const calcToggle = () => setDisplay((parseFloat(display) * -1).toString());
+  const calcDot = () => { if (!display.includes(".")) setDisplay(display + "."); };
 
   // Markup
   const [cost, setCost] = useState("");
@@ -123,6 +152,7 @@ export default function TradeCalculator({ onClose }: { onClose?: () => void }) {
   const rowCls = "flex justify-between items-center py-2 border-b border-zinc-800 last:border-0";
 
   const tabs: { id: Tab; emoji: string; label: string }[] = [
+    { id: "calc", emoji: "🔢", label: "Calc" },
     { id: "markup", emoji: "📈", label: "Markup" },
     { id: "vat", emoji: "🧾", label: "VAT" },
     { id: "dayrate", emoji: "📅", label: "Day Rate" },
@@ -189,6 +219,75 @@ export default function TradeCalculator({ onClose }: { onClose?: () => void }) {
 
       {/* Calculator content */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+
+        {/* STANDARD CALCULATOR */}
+        {tab === "calc" && (
+          <div className="flex flex-col gap-2">
+            {/* Display */}
+            <div className="rounded-2xl bg-zinc-900 border border-zinc-800 px-4 py-4 text-right">
+              {op && prev && (
+                <p className="text-xs text-zinc-600 mb-1">{prev} {op}</p>
+              )}
+              <p className="text-3xl font-bold text-white truncate">{display}</p>
+            </div>
+            {/* Buttons */}
+            {[
+              [
+                { label: "AC", action: calcClear, style: "bg-zinc-700 hover:bg-zinc-600 text-white" },
+                { label: "+/-", action: calcToggle, style: "bg-zinc-700 hover:bg-zinc-600 text-white" },
+                { label: "%", action: calcPercent, style: "bg-zinc-700 hover:bg-zinc-600 text-white" },
+                { label: "÷", action: () => calcOp("÷"), style: "bg-green-600 hover:bg-green-500 text-white" },
+              ],
+              [
+                { label: "7", action: () => calcInput("7"), style: "bg-zinc-800 hover:bg-zinc-700 text-white" },
+                { label: "8", action: () => calcInput("8"), style: "bg-zinc-800 hover:bg-zinc-700 text-white" },
+                { label: "9", action: () => calcInput("9"), style: "bg-zinc-800 hover:bg-zinc-700 text-white" },
+                { label: "×", action: () => calcOp("×"), style: "bg-green-600 hover:bg-green-500 text-white" },
+              ],
+              [
+                { label: "4", action: () => calcInput("4"), style: "bg-zinc-800 hover:bg-zinc-700 text-white" },
+                { label: "5", action: () => calcInput("5"), style: "bg-zinc-800 hover:bg-zinc-700 text-white" },
+                { label: "6", action: () => calcInput("6"), style: "bg-zinc-800 hover:bg-zinc-700 text-white" },
+                { label: "-", action: () => calcOp("-"), style: "bg-green-600 hover:bg-green-500 text-white" },
+              ],
+              [
+                { label: "1", action: () => calcInput("1"), style: "bg-zinc-800 hover:bg-zinc-700 text-white" },
+                { label: "2", action: () => calcInput("2"), style: "bg-zinc-800 hover:bg-zinc-700 text-white" },
+                { label: "3", action: () => calcInput("3"), style: "bg-zinc-800 hover:bg-zinc-700 text-white" },
+                { label: "+", action: () => calcOp("+"), style: "bg-green-600 hover:bg-green-500 text-white" },
+              ],
+              [
+                { label: "0", action: () => calcInput("0"), style: "bg-zinc-800 hover:bg-zinc-700 text-white col-span-2" },
+                { label: ".", action: calcDot, style: "bg-zinc-800 hover:bg-zinc-700 text-white" },
+                { label: "=", action: calcEquals, style: "bg-green-600 hover:bg-green-500 text-white" },
+              ],
+            ].map((row, ri) => (
+              <div key={ri} className="grid grid-cols-4 gap-2">
+                {row.map((btn, bi) => (
+                  <button
+                    key={bi}
+                    onClick={btn.action}
+                    className={`${btn.style} ${(btn.style as string).includes("col-span-2") ? "col-span-2" : ""} rounded-2xl py-4 text-lg font-semibold transition active:scale-95`}>
+                    {btn.label}
+                  </button>
+                ))}
+              </div>
+            ))}
+            {/* Use result in trade calcs */}
+            {display !== "0" && (
+              <div className="flex gap-2 pt-1">
+                <button onClick={() => { setCost(display); setTab("markup"); }}
+                  className="flex-1 py-2 rounded-xl border border-zinc-700 text-xs text-zinc-400 hover:text-white hover:border-zinc-500 transition">
+                  Use in Markup →
+                </button>
+                <button onClick={() => { setVatAmount(display); setTab("vat"); }}
+                  className="flex-1 py-2 rounded-xl border border-zinc-700 text-xs text-zinc-400 hover:text-white hover:border-zinc-500 transition">
+                  Use in VAT →
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* MARKUP */}
         {tab === "markup" && <>
