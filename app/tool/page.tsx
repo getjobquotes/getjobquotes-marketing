@@ -446,7 +446,7 @@ function ToolInner() {
 
         {/* Mobile preview FAB */}
         <button onClick={() => setShowPreview(v => !v)}
-          className="hidden" hover:bg-green-500 shadow-2xl flex items-center justify-center text-2xl transition">
+          className="w-14 h-14 rounded-full bg-green-600 hover:bg-green-500 shadow-2xl flex items-center justify-center text-2xl transition">
           📄
         </button>
       </div>
