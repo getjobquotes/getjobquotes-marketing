@@ -468,6 +468,13 @@ function ToolInner() {
           📄
         </button>
       </div>
+      {/* Mobile calculator drawer */}
+      {showCalc && (
+        <div className="lg:hidden fixed inset-0 z-50 bg-zinc-950 flex flex-col">
+          <TradeCalculator onClose={() => setShowCalc(false)} />
+        </div>
+      )}
+
       {/* Mobile preview modal */}
       {showPreview && (
         <div className="lg:hidden fixed inset-0 z-50 bg-black/95 flex flex-col">
