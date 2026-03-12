@@ -410,9 +410,6 @@ function ToolInner() {
               <div className={`w-2 h-2 rounded-full ${previewLoading ? "bg-yellow-400 animate-pulse" : "bg-green-400"}`} />
               <span className="text-xs text-zinc-500">{previewLoading ? "Updating..." : "Live preview"}</span>
             </div>
-            <button onClick={() => setShowCalc(v => !v)} className="text-xs px-3 py-1.5 rounded-lg border border-zinc-700 hover:border-zinc-500 text-zinc-400 hover:text-white transition mr-2">
-              🧮 Calculator
-            </button>
             <button onClick={() => setShowPreview(v => !v)} className="text-xs text-zinc-600 hover:text-zinc-400 transition">
               {showPreview ? "Hide" : "Show preview"}
             </button>
