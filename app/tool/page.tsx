@@ -4,7 +4,6 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useRef, useCallback, Suspense } from "react";
 import TopNav from "@/components/TopNav";
-import TradeCalculator from "@/components/TradeCalculator";
 import jsPDF from "jspdf";
 
 type LineItem = { description: string; quantity: number; unitPrice: number };
@@ -132,7 +131,6 @@ function ToolInner() {
   const [showTermsError, setShowTermsError] = useState(false);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const [showCalc, setShowCalc] = useState(false);
 
   const [form, setForm] = useState({
     clientName: "", clientEmail: "", clientPhone: "", description: "",
@@ -405,13 +403,6 @@ function ToolInner() {
             </div>
           </div>
         </div>
-
-        {/* Desktop Calculator Panel */}
-        {showCalc && (
-          <div className="hidden lg:flex flex-col w-80 shrink-0 border-l border-zinc-800">
-            <TradeCalculator onClose={() => setShowCalc(false)} />
-          </div>
-        )}
         {/* Desktop PDF Preview */}
         <div className="hidden lg:flex flex-col flex-1 bg-zinc-950">
           <div className="border-b border-zinc-900 px-5 py-3 flex items-center justify-between">
@@ -450,31 +441,6 @@ function ToolInner() {
           📄
         </button>
       </div>
-
-      {/* Calculator drawer */}
-      {showCalc && (
-        <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-96 shadow-2xl border-l border-zinc-800 flex flex-col">
-          <TradeCalculator onClose={() => setShowCalc(false)} />
-        </div>
-      )}
-      {/* Mobile FABs */}
-      <div className="lg:hidden fixed bottom-6 right-6 z-40 flex flex-col gap-3 items-center">
-        <button onClick={() => setShowCalc(v => !v)}
-          className="w-12 h-12 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 shadow-xl flex items-center justify-center text-xl transition">
-          🧮
-        </button>
-        <button onClick={() => setShowPreview(v => !v)}
-          className="w-14 h-14 rounded-full bg-green-600 hover:bg-green-500 shadow-2xl flex items-center justify-center text-2xl transition">
-          📄
-        </button>
-      </div>
-      {/* Mobile calculator drawer */}
-      {showCalc && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-zinc-950 flex flex-col">
-          <TradeCalculator onClose={() => setShowCalc(false)} />
-        </div>
-      )}
-
       {/* Mobile preview modal */}
       {showPreview && (
         <div className="lg:hidden fixed inset-0 z-50 bg-black/95 flex flex-col">

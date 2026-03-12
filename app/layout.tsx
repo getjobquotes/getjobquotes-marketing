@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
+import GlobalCalculator from "@/components/GlobalCalculator";
 import CookieBanner from "@/components/CookieBanner";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -56,7 +57,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${inter.className} bg-black text-white antialiased`}>
         <ThemeProvider>
           {children}
-          <CookieBanner />
+          <GlobalCalculator />
+        <CookieBanner />
         </ThemeProvider>
       </body>
     </html>
