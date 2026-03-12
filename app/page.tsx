@@ -60,6 +60,7 @@ export default function LandingPage() {
             { icon: "✍️", title: "Online Acceptance", desc: "Clients accept quotes with a click. You get notified instantly." },
             { icon: "👥", title: "Saved Customers", desc: "Save client details and fill quotes in seconds on repeat jobs." },
             { icon: "📊", title: "Track Everything", desc: "See all quotes and invoices. Mark as paid. Know what's outstanding." },
+            { icon: "🧮", title: "Trade Calculator", desc: "Markup, VAT, day rates and material costs — built right into your quote tool." },
           ].map((f) => (
             <div key={f.title} className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5 hover:border-green-600/30 transition group">
               <div className="text-2xl mb-3">{f.icon}</div>
