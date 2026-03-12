@@ -1,4 +1,5 @@
 "use client";
+import { useAuthGuard } from "@/lib/useAuthGuard";
 
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";

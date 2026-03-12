@@ -13,8 +13,12 @@ type Doc = {
   notes: string; paid_at: string | null; client_email: string;
 };
 
-const fmt = (n: number) =>
-  `£${(n || 0).toLocaleString("en-GB", { minimumFractionDigits: 2 })}`;
+const fmt = (n: number) => {
+  const v = n || 0;
+  if (v >= 1_000_000) return `£${(v / 1_000_000).toFixed(1)}m`;
+  if (v >= 1_000) return `£${(v / 1_000).toFixed(1)}k`;
+  return `£${v.toLocaleString("en-GB", { minimumFractionDigits: 2 })}`;
+};
 const greet = (name: string | null) => {
   const h = new Date().getHours();
   const n = name ? `, ${name.split(" ")[0]}` : "";
