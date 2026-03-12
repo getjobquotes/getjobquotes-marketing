@@ -24,13 +24,13 @@ export default function AdBanner({ slot = "3456789012", className = "" }: {
     try { ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({}); } catch {}
   }, [allowed]);
 
-  if (!process.env.NEXT_PUBLIC_ADSENSE_ID || !allowed) return null;
+  if (!(process.env.NEXT_PUBLIC_ADSENSE_ID || "ca-pub-8942505835940142") || !allowed) return null;
 
   return (
     <div ref={ref} className={`w-full overflow-hidden ${className}`}>
       <ins className="adsbygoogle block"
         style={{ minHeight: "60px" }}
-        data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_ID}
+        data-ad-client={(process.env.NEXT_PUBLIC_ADSENSE_ID || "ca-pub-8942505835940142")}
         data-ad-slot={slot}
         data-ad-format="auto"
         data-full-width-responsive="true" />
