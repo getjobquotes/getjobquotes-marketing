@@ -5,10 +5,10 @@ import { NextResponse, type NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const type = searchParams.get("type"); // "recovery" for password reset
+  const type = searchParams.get("type");
   const appUrl = (process.env.NEXT_PUBLIC_APP_URL || origin).replace(/\/$/, "");
 
-  // Password reset — redirect to /auth/reset where client handles the hash
+  // Password reset — go to dedicated reset page
   if (type === "recovery") {
     return NextResponse.redirect(`${appUrl}/auth/reset`);
   }
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${appUrl}/auth?error=callback_failed`);
   }
 
-  // Create profile for new users
+  // Create profile + send welcome email for new users
   const user = data.user;
   const { data: existing } = await supabase
     .from("profiles").select("id").eq("user_id", user.id).maybeSingle();
