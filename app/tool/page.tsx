@@ -117,8 +117,7 @@ function ToolInner() {
   const isDrawing = useRef(false);
   const lastPos = useRef<{ x: number; y: number } | null>(null);
   const previewRef = useRef<HTMLIFrameElement>(null);
-  const blobUrl = useRef<string | null>(null);
-  const debounce = useRef<NodeJS.Timeout | null>(null);
+    const debounce = useRef<NodeJS.Timeout | null>(null);
 
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
@@ -207,253 +206,19 @@ function ToolInner() {
     buildQuotePDF({ form, lineItems, subtotal, vatAmount, total, sigData, profile, editId }),
     [form, lineItems, subtotal, vatAmount, total, sigData, profile, editId]);
 
-  // Live preview — uses data URL (works in all browsers)
+  // Live preview — data URI, works in all browsers
   useEffect(() => {
     if (!showPreview) return;
-    if (debounce.current) clearTimeout(debounce.current);
-    debounce.current = setTimeout(() => {
-      setPreviewLoading(true);
+    const timer = setTimeout(() => {
       try {
-        const dataUrl = buildPDF().output("datauristring");
+        const uri = buildPDF().output("datauristring");
         if (previewRef.current) {
-          previewRef.current.src = dataUrl;
+          previewRef.current.src = uri;
         }
       } catch (e) {
-        console.error("Preview error:", e);
+        console.error("PDF preview error:", e);
       }
-      setPreviewLoading(false);
-    }, 800);
-    return () => { if (debounce.current) clearTimeout(debounce.current); };
-  }, [form, lineItems, sigData, showPreview, buildPDF]);
+    }, 700);
+    return () => clearTimeout(timer);
+  }, [form, lineItems, sigData, showPreview]);
 
-  const handleSave = async () => {
-    if (!termsAccepted) { setShowTermsError(true); return; }
-    if (!user || !form.clientName) return;
-    setSaving(true);
-    const payload = {
-      user_id: user.id, type: form.type,
-      number: editId ? undefined : (form.type === "invoice" ? "INV" : "QUO") + "-" + Date.now().toString().slice(-6),
-      client_name: form.clientName, client_email: form.clientEmail,
-      description: form.description, vat: form.vat, total, status: "pending",
-      line_items: lineItems, notes: form.notes, signature_data: sigData || null,
-      expires_at: form.expiryDays !== "none" ? new Date(Date.now() + parseInt(form.expiryDays) * 86400000).toISOString() : null,
-    };
-    if (editId) await supabase.from("documents").update(payload).eq("id", editId);
-    else await supabase.from("documents").insert(payload);
-    localStorage.removeItem("gjq_draft_quote");
-    setSaved(true); setSaving(false);
-    setTimeout(() => router.push("/dashboard"), 1200);
-  };
-
-  const setF = (k: string, v: any) => setForm(p => ({ ...p, [k]: v }));
-  const updateItem = (i: number, k: keyof LineItem, v: any) =>
-    setLineItems(p => p.map((item, idx) => idx === i ? { ...item, [k]: v } : item));
-
-  return (
-    <div className="min-h-screen bg-black text-white">
-      <TopNav />
-      {/* Split layout */}
-      <div className="flex h-[calc(100vh-56px)]">
-        {/* Form */}
-        <div className="w-full lg:w-[480px] xl:w-[520px] shrink-0 overflow-y-auto border-r border-zinc-900">
-          <div className="px-5 py-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <h1 className="text-xl font-bold">{editId ? "Edit" : "New"} {form.type === "invoice" ? "Invoice" : "Quote"}</h1>
-              <div className="flex gap-1 p-1 bg-zinc-900 border border-zinc-800 rounded-full text-xs">
-                {(["quote", "invoice"] as const).map(t => (
-                  <button key={t} onClick={() => setF("type", t)}
-                    className={`px-3 py-1.5 rounded-full font-medium capitalize transition ${form.type === t ? "bg-green-600 text-white" : "text-zinc-400 hover:text-white"}`}>
-                    {t}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {customers.length > 0 && (
-              <select onChange={e => {
-                const c = customers.find(c => c.id === e.target.value);
-                if (c) setForm(p => ({ ...p, clientName: c.name, clientEmail: c.email || "", clientPhone: c.phone || "" }));
-              }} className="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-white text-sm outline-none focus:border-green-500 transition">
-                <option value="">— Fill from saved customer —</option>
-                {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
-            )}
-
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 space-y-3">
-              <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Client</p>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { k: "clientName", label: "Name *", ph: "John Smith", full: true },
-                  { k: "clientEmail", label: "Email", ph: "john@email.com" },
-                  { k: "clientPhone", label: "Phone", ph: "07700 900000" },
-                ].map(f => (
-                  <div key={f.k} className={f.full ? "col-span-2" : ""}>
-                    <label className="text-xs text-zinc-600 mb-1 block">{f.label}</label>
-                    <input value={(form as any)[f.k]} onChange={e => setF(f.k, e.target.value)} placeholder={f.ph}
-                      className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition" />
-                  </div>
-                ))}
-              </div>
-              <div>
-                <label className="text-xs text-zinc-600 mb-1 block">Job Description</label>
-                <textarea value={form.description} onChange={e => setF("description", e.target.value)}
-                  placeholder="e.g. New boiler installation..." rows={2}
-                  className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition resize-none" />
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 space-y-2">
-              <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Line Items</p>
-              <div className="grid grid-cols-12 gap-1 text-xs text-zinc-600 px-1">
-                <span className="col-span-6">Description</span>
-                <span className="col-span-2 text-center">Qty</span>
-                <span className="col-span-4 text-right">Unit £</span>
-              </div>
-              {lineItems.map((item, i) => (
-                <div key={i} className="grid grid-cols-12 gap-1 items-center">
-                  <input value={item.description} onChange={e => updateItem(i, "description", e.target.value)} placeholder="Labour / parts"
-                    className="col-span-6 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-2 text-white text-xs placeholder:text-zinc-600 outline-none focus:border-green-500 transition" />
-                  <input value={item.quantity} onChange={e => updateItem(i, "quantity", e.target.value)} type="number" min="0"
-                    className="col-span-2 rounded-lg border border-zinc-700 bg-zinc-950 px-1 py-2 text-white text-xs outline-none focus:border-green-500 transition text-center" />
-                  <input value={item.unitPrice} onChange={e => updateItem(i, "unitPrice", e.target.value)} type="number" min="0" step="0.01"
-                    className="col-span-3 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-2 text-white text-xs outline-none focus:border-green-500 transition text-right" />
-                  {lineItems.length > 1 && (
-                    <button onClick={() => setLineItems(p => p.filter((_, idx) => idx !== i))}
-                      className="col-span-1 text-zinc-700 hover:text-red-400 text-lg transition text-center">×</button>
-                  )}
-                </div>
-              ))}
-              <button onClick={() => setLineItems(p => [...p, { description: "", quantity: 1, unitPrice: 0 }])}
-                className="text-xs text-green-400 hover:text-green-300 transition">+ Add item</button>
-              <label className="flex items-center gap-2 cursor-pointer pt-1">
-                <div onClick={() => setF("vat", !form.vat)}
-                  className={`w-9 h-5 rounded-full relative transition-colors shrink-0 ${form.vat ? "bg-green-600" : "bg-zinc-700"}`}>
-                  <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${form.vat ? "left-4" : "left-0.5"}`} />
-                </div>
-                <span className="text-xs text-zinc-400">Include VAT (20%)</span>
-              </label>
-            </div>
-
-            <div className="rounded-xl border border-green-600/20 bg-green-600/5 px-4 py-3">
-              {form.vat && <div className="flex justify-between text-xs text-zinc-500 mb-1"><span>Subtotal</span><span>{fmt(subtotal)}</span></div>}
-              {form.vat && <div className="flex justify-between text-xs text-zinc-500 mb-2"><span>VAT (20%)</span><span>{fmt(vatAmount)}</span></div>}
-              <div className="flex justify-between text-base font-bold"><span>Total</span><span className="text-green-400">{fmt(total)}</span></div>
-            </div>
-
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 space-y-3">
-              <div>
-                <label className="text-xs text-zinc-500 mb-1 block">Quote valid for</label>
-                <select value={form.expiryDays} onChange={e => setF("expiryDays", e.target.value)}
-                  className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-white text-sm outline-none focus:border-green-500 transition">
-                  {[["7","7 days"],["14","14 days"],["30","30 days"],["60","60 days"],["none","No expiry"]].map(([v,l]) => (
-                    <option key={v} value={v}>{l}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="text-xs text-zinc-500 mb-1 block">Notes / payment terms</label>
-                <textarea value={form.notes} onChange={e => setF("notes", e.target.value)}
-                  placeholder="Payment due within 30 days..." rows={2}
-                  className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition resize-none" />
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Signature</p>
-                {hasSig && <button onClick={() => { sigRef.current?.getContext("2d")?.clearRect(0,0,600,100); setSigData(""); setHasSig(false); }} className="text-xs text-zinc-600 hover:text-red-400 transition">Clear</button>}
-              </div>
-              {profile?.signature_data && !hasSig && (
-                <div className="flex items-center gap-3 mb-2">
-                  <img src={profile.signature_data} className="h-10 rounded border border-zinc-700 bg-zinc-900 p-1" alt="sig" />
-                  <button onClick={() => { setSigData(profile.signature_data); setHasSig(true); }} className="text-xs text-green-400 hover:text-green-300 transition">Use saved signature</button>
-                </div>
-              )}
-              <canvas ref={sigRef} width={600} height={100}
-                className="w-full rounded-xl bg-zinc-950 border border-zinc-700 cursor-crosshair touch-none"
-                style={{ touchAction: "none" }}
-                onMouseDown={startDraw} onMouseMove={drawSig} onMouseUp={endDraw} onMouseLeave={endDraw}
-                onTouchStart={startDraw} onTouchMove={drawSig} onTouchEnd={endDraw} />
-            </div>
-
-            {/* T&C Disclaimer */}
-            <div className={`rounded-2xl border p-4 transition ${showTermsError ? "border-red-500/50 bg-red-500/5" : "border-zinc-800 bg-zinc-900/50"}`}>
-              <label className="flex items-start gap-3 cursor-pointer">
-                <div onClick={() => { setTermsAccepted(v => !v); setShowTermsError(false); }}
-                  className={`mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition ${termsAccepted ? "bg-green-600 border-green-600" : "border-zinc-600 hover:border-green-500"}`}>
-                  {termsAccepted && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
-                </div>
-                <span className="text-xs text-zinc-400 leading-relaxed">
-                  I confirm this {form.type} is accurate and I accept the{" "}
-                  <a href="/terms" target="_blank" className="text-green-400 hover:underline">Terms & Conditions</a>.
-                  I understand this document may be legally binding once accepted by the client.
-                </span>
-              </label>
-              {showTermsError && <p className="text-red-400 text-xs mt-2 pl-8">Please accept the terms before saving.</p>}
-            </div>
-
-            {/* Actions */}
-            <div className="grid grid-cols-2 gap-3 pb-6">
-              <button onClick={() => buildPDF().save(`${form.type}-${form.clientName || "quote"}.pdf`)}
-                className="py-3 rounded-xl border border-zinc-700 hover:border-zinc-500 text-sm font-semibold text-zinc-300 hover:text-white transition">
-                ↓ Download PDF
-              </button>
-              <button onClick={handleSave} disabled={saving || saved || !form.clientName}
-                className="py-3 rounded-xl bg-green-600 hover:bg-green-500 text-sm font-bold text-white transition disabled:opacity-50">
-                {saved ? "✓ Saved!" : saving ? "Saving..." : `Save ${form.type === "invoice" ? "Invoice" : "Quote"}`}
-              </button>
-            </div>
-          </div>
-        </div>
-        {/* Desktop PDF Preview */}
-        <div className="hidden lg:flex flex-col flex-1 bg-zinc-950">
-          <div className="border-b border-zinc-900 px-5 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${previewLoading ? "bg-yellow-400 animate-pulse" : "bg-green-400"}`} />
-              <span className="text-xs text-zinc-500">{previewLoading ? "Updating..." : "Live preview"}</span>
-            </div>
-            <button onClick={() => setShowPreview(v => !v)} className="text-xs text-zinc-600 hover:text-zinc-400 transition">
-              {showPreview ? "Hide" : "Show preview"}
-            </button>
-          </div>
-          {showPreview ? (
-            <div className="flex-1 relative">
-              <iframe ref={previewRef} className="w-full h-full border-0" title="PDF Preview" />
-              {previewLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/60">
-                  <span className="text-zinc-500 text-sm">Generating...</span>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-zinc-700 gap-3">
-              <span className="text-4xl">📄</span>
-              <p className="text-sm">Click "Show preview" to see your PDF live</p>
-              <button onClick={() => setShowPreview(true)} className="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-sm transition">Show Preview</button>
-            </div>
-          )}
-        </div>
-
-        {/* Mobile preview FAB */}
-        <button onClick={() => setShowPreview(v => !v)}
-          className="w-14 h-14 rounded-full bg-green-600 hover:bg-green-500 shadow-2xl flex items-center justify-center text-2xl transition">
-          📄
-        </button>
-      </div>
-      {/* Mobile preview modal */}
-      {showPreview && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-black/95 flex flex-col">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-900">
-            <span className="text-sm font-semibold">PDF Preview</span>
-            <button onClick={() => setShowPreview(false)} className="text-zinc-400 hover:text-white text-2xl leading-none">×</button>
-          </div>
-          <iframe ref={previewRef} className="flex-1 w-full border-0" title="PDF Preview Mobile" />
-        </div>
-      )}
-    </div>
-  );
-}
-
-export default function ToolPage() {
-  return <Suspense fallback={<div className="min-h-screen bg-black" />}><ToolInner /></Suspense>;
-}

@@ -2,48 +2,32 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
 type Theme = "dark" | "light";
-const ThemeContext = createContext<{ theme: Theme; toggle: () => void }>({
-  theme: "dark", toggle: () => {},
-});
+
+const ThemeContext = createContext<{
+  theme: Theme;
+  toggle: () => void;
+}>({ theme: "dark", toggle: () => {} });
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>("dark");
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("gjq_theme") as Theme | null;
-    const t = stored || "dark";
-    setTheme(t);
-    apply(t);
-    setMounted(true);
+    const stored = (localStorage.getItem("gjq_theme") as Theme) || "dark";
+    setTheme(stored);
+    document.documentElement.classList.toggle("dark", stored === "dark");
   }, []);
 
-  const apply = (t: Theme) => {
-    if (t === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  };
-
   const toggle = () => {
-    const next: Theme = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    localStorage.setItem("gjq_theme", next);
-    apply(next);
+    setTheme(prev => {
+      const next: Theme = prev === "dark" ? "light" : "dark";
+      localStorage.setItem("gjq_theme", next);
+      document.documentElement.classList.toggle("dark", next === "dark");
+      return next;
+    });
   };
 
   return (
     <ThemeContext.Provider value={{ theme, toggle }}>
-      {!mounted && (
-        <script dangerouslySetInnerHTML={{ __html: `
-          (function(){
-            var t=localStorage.getItem('gjq_theme')||'dark';
-            if(t==='dark'){document.documentElement.classList.add('dark');}
-            else{document.documentElement.classList.remove('dark');}
-          })();
-        `}} />
-      )}
       {children}
     </ThemeContext.Provider>
   );
