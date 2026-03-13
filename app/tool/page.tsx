@@ -224,3 +224,11 @@ function ToolInner() {
 
 
 }
+
+export default function ToolPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+      <ToolInner />
+    </Suspense>
+  );
+}
