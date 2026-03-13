@@ -12,6 +12,8 @@ const REASON_MSGS: Record<string, string> = {
   unknown: "You were signed out. Please log in again.",
 };
 
+const APP_URL = (process.env.NEXT_PUBLIC_APP_URL || "").replace(/\/$/, "");
+
 function AuthInner() {
   const supabase = createClient();
   const router = useRouter();
@@ -26,8 +28,8 @@ function AuthInner() {
   const [error, setError] = useState("");
   const [sentMsg, setSentMsg] = useState("");
 
-  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "").replace(/\/$/, "");
-  const callbackUrl = `${appUrl || (typeof window !== "undefined" ? window.location.origin : "")}/auth/callback`;
+  const APP_URL = (process.env.NEXT_PUBLIC_APP_URL || "").replace(/\/$/, "");
+  const callbackUrl = `${APP_URL || (typeof window !== 'undefined' ? window.location.origin : '')}/auth/callback`;
 
   useEffect(() => {
     const m = params.get("mode");
@@ -132,7 +134,7 @@ function AuthInner() {
 
     const { error: err } = await supabase.auth.resetPasswordForEmail(
       email.trim(),
-      { redirectTo: `${appUrl || (typeof window !== "undefined" ? window.location.origin : "")}/auth/reset` }
+      { redirectTo: `${APP_URL || (typeof window !== 'undefined' ? window.location.origin : '')}/auth/reset` }
     );
     setLoading(false);
 
