@@ -51,6 +51,7 @@ export default function TopNav() {
     { href: "/tool", label: "New Quote" },
     { href: "/customers", label: "Customers" },
     { href: "/profile", label: "Profile" },
+    { href: "/settings", label: "Settings" },
   ];
 
   return (

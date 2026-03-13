@@ -130,7 +130,7 @@ function ToolInner() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showTermsError, setShowTermsError] = useState(false);
   const [previewLoading, setPreviewLoading] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
+  const [showPreview, setShowPreview] = useState(true);
 
   const [form, setForm] = useState({
     clientName: "", clientEmail: "", clientPhone: "", description: "",
@@ -207,20 +207,22 @@ function ToolInner() {
     buildQuotePDF({ form, lineItems, subtotal, vatAmount, total, sigData, profile, editId }),
     [form, lineItems, subtotal, vatAmount, total, sigData, profile, editId]);
 
-  // Live preview
+  // Live preview — uses data URL (works in all browsers)
   useEffect(() => {
     if (!showPreview) return;
     if (debounce.current) clearTimeout(debounce.current);
     debounce.current = setTimeout(() => {
       setPreviewLoading(true);
       try {
-        const blob = buildPDF().output("blob");
-        if (blobUrl.current) URL.revokeObjectURL(blobUrl.current);
-        blobUrl.current = URL.createObjectURL(blob);
-        if (previewRef.current) previewRef.current.src = blobUrl.current;
-      } catch {}
+        const dataUrl = buildPDF().output("datauristring");
+        if (previewRef.current) {
+          previewRef.current.src = dataUrl;
+        }
+      } catch (e) {
+        console.error("Preview error:", e);
+      }
       setPreviewLoading(false);
-    }, 600);
+    }, 800);
     return () => { if (debounce.current) clearTimeout(debounce.current); };
   }, [form, lineItems, sigData, showPreview, buildPDF]);
 
