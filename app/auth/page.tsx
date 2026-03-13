@@ -12,16 +12,6 @@ const REASON_MSGS: Record<string, string> = {
   unknown: "You were signed out. Please log in again.",
 };
 
-const APP_URL = (process.env.NEXT_PUBLIC_APP_URL || "").replace(/\/$/, "");
-
-async function sendAuthEmail(type: string, email: string, link?: string) {
-  await fetch("/api/auth-email", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ type, email, link }),
-  }).catch(() => {});
-}
-
 function AuthInner() {
   const supabase = createClient();
   const router = useRouter();
@@ -36,148 +26,153 @@ function AuthInner() {
   const [error, setError] = useState("");
   const [sentMsg, setSentMsg] = useState("");
 
-  // Set initial mode from URL
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "").replace(/\/$/, "");
+  const callbackUrl = `${appUrl || (typeof window !== "undefined" ? window.location.origin : "")}/auth/callback`;
+
   useEffect(() => {
     const m = params.get("mode");
     if (m === "signup") setMode("signup");
-  }, []);
 
-  // Auth state changes handled in /auth/reset page
+    // Handle password recovery event from Supabase hash
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") setMode("reset");
+      if (event === "SIGNED_IN") {
+        // Only auto-redirect on login, not during password reset flow
+        if (mode !== "reset" && mode !== "forgot") {
+          router.replace("/dashboard");
+        }
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   const clear = () => { setError(""); setSentMsg(""); };
 
-  // ── MAGIC LINK LOGIN ────────────────────────────────────
-  const handleMagicLink = async () => {
-    if (!email) { setError("Please enter your email address."); return; }
-    setLoading(true); clear();
-    const callbackUrl = `${APP_URL || window.location.origin}/auth/callback`;
-    const { error: err } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: callbackUrl, shouldCreateUser: false },
-    });
-    setLoading(false);
-    if (err && err.message.includes("not found")) {
-      setError("No account found with that email. Please sign up first.");
-      return;
-    }
-    if (err) { setError(err.message); return; }
-    setSentMsg(`Magic link sent to ${email}. Check your inbox.`);
-    setMode("sent");
-  };
-
-  // ── PASSWORD LOGIN ────────────────────────────────────
-  const handlePasswordLogin = async () => {
-    if (!email || !password) { setError("Please enter your email and password."); return; }
-    setLoading(true); clear();
-    const { error: err } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (err) {
-      setError(
-        err.message.includes("Invalid login") ? "Incorrect email or password." :
-        err.message.includes("Email not confirmed") ? "Please confirm your email first. Check your inbox." :
-        err.message
-      );
-      return;
-    }
-    router.replace("/dashboard");
-  };
-
-  // ── SIGNUP ────────────────────────────────────────────
+  // ── SIGNUP ─────────────────────────────────────────────────
   const handleSignup = async () => {
-    if (!email || !password) { setError("Please enter your email and password."); return; }
+    if (!email.trim()) { setError("Please enter your email address."); return; }
+    if (!password) { setError("Please enter a password."); return; }
     if (password.length < 8) { setError("Password must be at least 8 characters."); return; }
     setLoading(true); clear();
-    const callbackUrl = `${APP_URL || window.location.origin}/auth/callback`;
+
     const { data, error: err } = await supabase.auth.signUp({
-      email,
+      email: email.trim(),
       password,
       options: { emailRedirectTo: callbackUrl },
     });
+
     setLoading(false);
-    if (err) { setError(err.message); return; }
 
-    // If user already exists but unconfirmed, resend
-    if (data.user && !data.session) {
-      // Send branded confirmation email via Resend
-      if (data.user.confirmation_sent_at || data.user.email) {
-        // Supabase sends the email but we also send our branded one
-        // The Supabase one has the actual link — our job is just UI feedback
-        setSentMsg(`Confirmation email sent to ${email}. Click the link to activate your account.`);
-      } else {
-        setSentMsg(`Check your email at ${email} to confirm your account.`);
-      }
-      setMode("sent");
-
-      // Send welcome-style confirmation via Resend (branded)
-      await sendAuthEmail("signup", email, callbackUrl);
+    if (err) {
+      setError(
+        err.message.includes("already registered")
+          ? "An account with this email already exists. Try logging in instead."
+          : err.message
+      );
       return;
     }
 
-    // If email confirmations are disabled (instant sign in)
+    // Session returned = email confirmations are OFF → go straight to dashboard
     if (data.session) {
       router.replace("/dashboard");
       return;
     }
 
-    setSentMsg(`Confirmation email sent to ${email}.`);
+    // No session = email confirmation required → show check email state
+    setSentMsg(`We've sent a confirmation link to ${email.trim()}. Click it to activate your account.`);
     setMode("sent");
   };
 
-  // ── FORGOT PASSWORD ───────────────────────────────────
-  const handleForgotPassword = async () => {
-    if (!email) { setError("Please enter your email address."); return; }
+  // ── PASSWORD LOGIN ──────────────────────────────────────────
+  const handlePasswordLogin = async () => {
+    if (!email.trim()) { setError("Please enter your email address."); return; }
+    if (!password) { setError("Please enter your password."); return; }
     setLoading(true); clear();
-    const callbackUrl = `${APP_URL || window.location.origin}/auth/callback`;
-    const { error: err } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${appUrl}/auth/callback?type=recovery`,
+
+    const { error: err } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
     });
     setLoading(false);
+
+    if (err) {
+      setError(
+        err.message.includes("Invalid login")
+          ? "Incorrect email or password."
+          : err.message.includes("Email not confirmed")
+          ? "Please confirm your email first — check your inbox."
+          : err.message
+      );
+      return;
+    }
+
+    router.replace("/dashboard");
+  };
+
+  // ── MAGIC LINK ──────────────────────────────────────────────
+  const handleMagicLink = async () => {
+    if (!email.trim()) { setError("Please enter your email address first."); return; }
+    setLoading(true); clear();
+
+    const { error: err } = await supabase.auth.signInWithOtp({
+      email: email.trim(),
+      options: { emailRedirectTo: callbackUrl },
+    });
+    setLoading(false);
+
     if (err) { setError(err.message); return; }
-
-    // Send branded reset email via Resend
-    await sendAuthEmail("reset_password", email, callbackUrl);
-
-    setSentMsg(`Password reset link sent to ${email}. Check your inbox.`);
+    setSentMsg(`Magic link sent to ${email.trim()}. Check your inbox.`);
     setMode("sent");
   };
 
-  // ── SET NEW PASSWORD ──────────────────────────────────
+  // ── FORGOT PASSWORD ─────────────────────────────────────────
+  const handleForgotPassword = async () => {
+    if (!email.trim()) { setError("Please enter your email address."); return; }
+    setLoading(true); clear();
+
+    const { error: err } = await supabase.auth.resetPasswordForEmail(
+      email.trim(),
+      { redirectTo: `${appUrl || (typeof window !== "undefined" ? window.location.origin : "")}/auth/reset` }
+    );
+    setLoading(false);
+
+    if (err) { setError(err.message); return; }
+    setSentMsg(`Password reset link sent to ${email.trim()}. Check your inbox.`);
+    setMode("sent");
+  };
+
+  // ── SET NEW PASSWORD ────────────────────────────────────────
   const handleSetPassword = async () => {
     if (!newPassword) { setError("Please enter a new password."); return; }
     if (newPassword.length < 8) { setError("Password must be at least 8 characters."); return; }
     if (newPassword !== confirmPassword) { setError("Passwords do not match."); return; }
     setLoading(true); clear();
-    const { data, error: err } = await supabase.auth.updateUser({ password: newPassword });
+
+    const { error: err } = await supabase.auth.updateUser({ password: newPassword });
     setLoading(false);
+
     if (err) { setError(err.message); return; }
-
-    // Send password changed notification
-    if (data.user?.email) {
-      await sendAuthEmail("password_changed", data.user.email);
-    }
-
-    setSentMsg("Password updated successfully! Redirecting...");
+    setSentMsg("Password updated! Taking you to your dashboard...");
     setTimeout(() => router.replace("/dashboard"), 1500);
   };
 
-  // ── GOOGLE OAUTH ──────────────────────────────────────
+  // ── GOOGLE ──────────────────────────────────────────────────
   const handleGoogle = async () => {
-    const callbackUrl = `${APP_URL || window.location.origin}/auth/callback`;
-    const { error: err } = await supabase.auth.signInWithOAuth({
+    await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: callbackUrl },
     });
-    if (err) setError(err.message);
   };
-
-  const inp = "w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition";
-  const btn = "w-full py-3 rounded-xl font-semibold text-sm transition disabled:opacity-50";
 
   const reason = params.get("reason");
   const errorParam = params.get("error");
+  const inp = "w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition";
+  const primaryBtn = "w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition disabled:opacity-50";
+  const secondaryBtn = "w-full py-3 rounded-xl border border-zinc-700 hover:border-zinc-500 text-zinc-300 hover:text-white text-sm font-medium transition disabled:opacity-50";
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4 py-12">
+
       <Link href="/" className="text-xl font-bold mb-8">
         <span className="text-green-400">Get</span>JobQuotes
       </Link>
@@ -196,14 +191,14 @@ function AuthInner() {
           </div>
         )}
 
-        {/* EMAIL SENT */}
+        {/* ── EMAIL SENT STATE ──────────────────────────────── */}
         {mode === "sent" && (
           <div className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-8 text-center">
             <div className="text-5xl mb-4">📧</div>
-            <h1 className="text-xl font-bold mb-2">Check your email</h1>
+            <h1 className="text-xl font-bold mb-3">Check your email</h1>
             <p className="text-zinc-400 text-sm leading-relaxed mb-2">{sentMsg}</p>
             <p className="text-zinc-600 text-xs mb-6">
-              Can't find it? Check your spam folder.
+              Can't find it? Check your spam / junk folder.
             </p>
             <button onClick={() => { setMode("login"); clear(); }}
               className="text-sm text-green-400 hover:text-green-300 transition">
@@ -212,7 +207,7 @@ function AuthInner() {
           </div>
         )}
 
-        {/* SET NEW PASSWORD */}
+        {/* ── RESET PASSWORD STATE ──────────────────────────── */}
         {mode === "reset" && (
           <div className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-8">
             <h1 className="text-xl font-bold mb-1 text-center">Set new password</h1>
@@ -228,20 +223,19 @@ function AuthInner() {
                 <label className="text-xs text-zinc-500 mb-1 block">Confirm password</label>
                 <input type="password" value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}
-                  placeholder="Repeat password" className={inp}
+                  placeholder="Repeat your password" className={inp}
                   onKeyDown={e => e.key === "Enter" && handleSetPassword()} />
               </div>
               {error && <p className="text-red-400 text-xs">{error}</p>}
               {sentMsg && <p className="text-green-400 text-xs text-center">{sentMsg}</p>}
-              <button onClick={handleSetPassword} disabled={loading}
-                className={`${btn} bg-green-600 hover:bg-green-500 text-white`}>
-                {loading ? "Updating..." : "Set new password"}
+              <button onClick={handleSetPassword} disabled={loading} className={primaryBtn}>
+                {loading ? "Updating..." : "Set New Password"}
               </button>
             </div>
           </div>
         )}
 
-        {/* FORGOT PASSWORD */}
+        {/* ── FORGOT PASSWORD ───────────────────────────────── */}
         {mode === "forgot" && (
           <div className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-8">
             <h1 className="text-xl font-bold mb-1 text-center">Reset password</h1>
@@ -256,26 +250,25 @@ function AuthInner() {
                   onKeyDown={e => e.key === "Enter" && handleForgotPassword()} />
               </div>
               {error && <p className="text-red-400 text-xs">{error}</p>}
-              <button onClick={handleForgotPassword} disabled={loading}
-                className={`${btn} bg-green-600 hover:bg-green-500 text-white`}>
-                {loading ? "Sending..." : "Send reset link"}
+              <button onClick={handleForgotPassword} disabled={loading} className={primaryBtn}>
+                {loading ? "Sending..." : "Send Reset Link"}
               </button>
-              <button onClick={() => { setMode("login"); clear(); }}
-                className="w-full text-center text-sm text-zinc-500 hover:text-zinc-300 transition">
+              <button onClick={() => { setMode("login"); clear(); }} className={secondaryBtn}>
                 ← Back to login
               </button>
             </div>
           </div>
         )}
 
-        {/* LOGIN / SIGNUP */}
+        {/* ── LOGIN / SIGNUP ────────────────────────────────── */}
         {(mode === "login" || mode === "signup") && (
           <div className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-8">
-            {/* Tabs */}
+
+            {/* Tab toggle */}
             <div className="flex gap-1 p-1 bg-zinc-900 border border-zinc-800 rounded-full mb-6">
               {(["login", "signup"] as const).map(m => (
                 <button key={m} onClick={() => { setMode(m); clear(); }}
-                  className={`flex-1 py-2 rounded-full text-sm font-semibold transition ${
+                  className={`flex-1 py-2 rounded-full text-sm font-semibold capitalize transition ${
                     mode === m ? "bg-green-600 text-white" : "text-zinc-400 hover:text-white"
                   }`}>
                   {m === "login" ? "Log In" : "Sign Up"}
@@ -284,6 +277,7 @@ function AuthInner() {
             </div>
 
             <div className="space-y-3">
+
               {/* Google */}
               <button onClick={handleGoogle}
                 className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-zinc-700 hover:border-zinc-500 text-sm font-medium text-zinc-300 hover:text-white transition">
@@ -302,27 +296,36 @@ function AuthInner() {
                 <div className="flex-1 h-px bg-zinc-800" />
               </div>
 
+              {/* Email */}
               <div>
                 <label className="text-xs text-zinc-500 mb-1 block">Email address</label>
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)}
                   placeholder="you@example.com" className={inp} />
               </div>
 
+              {/* Password */}
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label className="text-xs text-zinc-500">Password</label>
-                  {mode === "login" ? (
-                    <button onClick={() => { setMode("forgot"); clear(); }}
-                      className="text-xs text-zinc-600 hover:text-green-400 transition">
+                  {mode === "login" && (
+                    <button
+                      type="button"
+                      onClick={() => { setMode("forgot"); clear(); }}
+                      className="text-xs text-green-500 hover:text-green-400 transition font-medium">
                       Forgot password?
                     </button>
-                  ) : (
+                  )}
+                  {mode === "signup" && (
                     <span className="text-xs text-zinc-600">Min. 8 characters</span>
                   )}
                 </div>
                 <input type="password" value={password} onChange={e => setPassword(e.target.value)}
                   placeholder="Your password" className={inp}
-                  onKeyDown={e => e.key === "Enter" && (mode === "login" ? handlePasswordLogin() : handleSignup())} />
+                  onKeyDown={e => {
+                    if (e.key === "Enter") {
+                      mode === "login" ? handlePasswordLogin() : handleSignup();
+                    }
+                  }} />
               </div>
 
               {error && (
@@ -331,11 +334,14 @@ function AuthInner() {
                 </div>
               )}
 
-              <button onClick={mode === "login" ? handlePasswordLogin : handleSignup}
+              {/* Primary action */}
+              <button
+                onClick={mode === "login" ? handlePasswordLogin : handleSignup}
                 disabled={loading}
-                className={`${btn} bg-green-600 hover:bg-green-500 text-white`}>
-                {loading ? (mode === "login" ? "Signing in..." : "Creating account...") :
-                  mode === "login" ? "Log In" : "Create Account"}
+                className={primaryBtn}>
+                {loading
+                  ? (mode === "login" ? "Signing in..." : "Creating account...")
+                  : (mode === "login" ? "Log In" : "Create Account")}
               </button>
 
               <div className="flex items-center gap-3 text-zinc-700 text-xs">
@@ -344,16 +350,17 @@ function AuthInner() {
                 <div className="flex-1 h-px bg-zinc-800" />
               </div>
 
-              <button onClick={handleMagicLink} disabled={loading}
-                className={`${btn} border border-zinc-700 hover:border-zinc-500 text-zinc-400 hover:text-white`}>
-                ✉️ Send magic link
+              {/* Magic link */}
+              <button onClick={handleMagicLink} disabled={loading} className={secondaryBtn}>
+                ✉️ {mode === "login" ? "Send magic link instead" : "Send verification link"}
               </button>
+
             </div>
 
             <p className="text-center text-xs text-zinc-600 mt-5">
               {mode === "login" ? "No account? " : "Already have one? "}
               <button onClick={() => { setMode(mode === "login" ? "signup" : "login"); clear(); }}
-                className="text-green-400 hover:text-green-300 transition">
+                className="text-green-400 hover:text-green-300 transition font-medium">
                 {mode === "login" ? "Sign up free" : "Log in"}
               </button>
             </p>
@@ -366,6 +373,7 @@ function AuthInner() {
           {" & "}
           <Link href="/privacy" className="hover:text-zinc-500">Privacy Policy</Link>
         </p>
+
       </div>
     </div>
   );
