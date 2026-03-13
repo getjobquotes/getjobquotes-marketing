@@ -74,8 +74,17 @@ function AuthInner() {
       return;
     }
 
-    // Session returned = email confirmations are OFF → go straight to dashboard
+    // Session returned = email confirmations are OFF → send welcome + go to dashboard
     if (data.session) {
+      // Send welcome email directly since callback won't fire
+      const name = data.user?.user_metadata?.full_name ||
+        data.user?.user_metadata?.name ||
+        email.split("@")[0] || "";
+      fetch("/api/email/welcome", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), name }),
+      }).catch(() => {});
       router.replace("/dashboard");
       return;
     }
