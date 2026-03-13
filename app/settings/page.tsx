@@ -93,7 +93,15 @@ export default function SettingsPage() {
           <h2 className="text-xs font-semibold text-red-400 uppercase tracking-widest mb-3">Sign Out</h2>
           <div className="flex items-center justify-between">
             <p className="text-xs text-zinc-500">Sign out of this device.</p>
-            <button onClick={async () => { await supabase.auth.signOut(); window.location.href = "/"; }}
+            <button onClick={async () => {
+              try { await supabase.auth.signOut({ scope: "local" }); } catch {}
+              try {
+                Object.keys(localStorage)
+                  .filter(k => k.startsWith("sb-") || k.includes("supabase"))
+                  .forEach(k => localStorage.removeItem(k));
+              } catch {}
+              window.location.href = "/";
+            }}
               className="px-4 py-2.5 rounded-xl border border-red-800/50 hover:bg-red-600 text-sm text-red-400 hover:text-white transition">
               Sign Out
             </button>

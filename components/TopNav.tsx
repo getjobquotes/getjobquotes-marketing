@@ -39,7 +39,17 @@ export default function TopNav() {
     return () => document.removeEventListener("mousedown", h);
   }, []);
 
-  const logout = async () => { await supabase.auth.signOut(); router.push("/"); };
+  const logout = async () => {
+    // Hard logout — clear everything, no further session checks
+    try { await supabase.auth.signOut({ scope: "local" }); } catch {}
+    try {
+      Object.keys(localStorage)
+        .filter(k => k.startsWith("sb-") || k.includes("supabase"))
+        .forEach(k => localStorage.removeItem(k));
+    } catch {}
+    // Hard redirect — bypasses Next.js router so no auth checks fire
+    window.location.href = "/";
+  };
 
   const navLinks = [
     { href: "/dashboard", label: "Dashboard" },
