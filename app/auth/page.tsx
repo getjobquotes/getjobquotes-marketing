@@ -42,20 +42,7 @@ function AuthInner() {
     if (m === "signup") setMode("signup");
   }, []);
 
-  // Handle password recovery from email link
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === "PASSWORD_RECOVERY") {
-          setMode("reset");
-        }
-        if (event === "SIGNED_IN" && session && mode !== "reset") {
-          router.replace("/dashboard");
-        }
-      }
-    );
-    return () => subscription.unsubscribe();
-  }, [mode]);
+  // Auth state changes handled in /auth/reset page
 
   const clear = () => { setError(""); setSentMsg(""); };
 
@@ -142,7 +129,7 @@ function AuthInner() {
     setLoading(true); clear();
     const callbackUrl = `${APP_URL || window.location.origin}/auth/callback`;
     const { error: err } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: callbackUrl,
+      redirectTo: `${appUrl}/auth/callback?type=recovery`,
     });
     setLoading(false);
     if (err) { setError(err.message); return; }
