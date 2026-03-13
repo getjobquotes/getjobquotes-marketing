@@ -3,8 +3,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 
 type Theme = "dark" | "light";
 const ThemeContext = createContext<{ theme: Theme; toggle: () => void }>({
-  theme: "dark",
-  toggle: () => {},
+  theme: "dark", toggle: () => {},
 });
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
@@ -12,29 +11,40 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     const stored = localStorage.getItem("gjq_theme") as Theme | null;
-    const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    const t = stored || preferred;
+    const t = stored || "dark";
     setTheme(t);
-    document.documentElement.classList.toggle("dark", t === "dark");
-    document.documentElement.setAttribute("data-theme", t);
+    apply(t);
+    setMounted(true);
   }, []);
 
-  const toggle = () => {
-    const next = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    localStorage.setItem("gjq_theme", next);
-    document.documentElement.classList.toggle("dark", next === "dark");
-    document.documentElement.setAttribute("data-theme", next);
+  const apply = (t: Theme) => {
+    if (t === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   };
 
-  if (!mounted) return <div style={{ visibility: "hidden" }}>{children}</div>;
+  const toggle = () => {
+    const next: Theme = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    localStorage.setItem("gjq_theme", next);
+    apply(next);
+  };
+
   return (
     <ThemeContext.Provider value={{ theme, toggle }}>
-      <div data-theme={theme} className={theme}>
-        {children}
-      </div>
+      {!mounted && (
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function(){
+            var t=localStorage.getItem('gjq_theme')||'dark';
+            if(t==='dark'){document.documentElement.classList.add('dark');}
+            else{document.documentElement.classList.remove('dark');}
+          })();
+        `}} />
+      )}
+      {children}
     </ThemeContext.Provider>
   );
 }
