@@ -68,7 +68,9 @@ export function usePlan(userId: string | null): PlanState {
       });
     };
 
-    load();
+    load().catch(() => {
+      setState(p => ({ ...p, loading: false }));
+    });
   }, [userId]);
 
   return state;

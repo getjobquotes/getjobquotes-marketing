@@ -107,15 +107,9 @@ export default function PricingPage() {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col items-center gap-3">
-          <div className="flex items-center gap-2 flex-wrap justify-center">
-            {/* Stripe badge */}
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900">
-              <svg className="w-8 h-5" viewBox="0 0 60 25" fill="none">
-                <path d="M27.5 9.8c0-1.6 1.3-2.2 3.4-2.2 3 0 6.9.9 9.9 2.5V4c-3.3-1.3-6.6-1.8-9.9-1.8C25 2.2 21 5 21 10c0 7.8 10.7 6.5 10.7 9.9 0 1.9-1.6 2.5-3.9 2.5-3.4 0-7.7-1.4-11.1-3.3v6.2c3.8 1.6 7.6 2.3 11.1 2.3 6.4 0 10.8-3.2 10.8-8.2 0-8.4-10.7-6.9-10.7-9.6h.6z" fill="#635BFF"/>
-              </svg>
-              <span className="text-xs text-zinc-400">Stripe</span>
-            </div>
+        <p className="text-center text-xs text-zinc-600 mt-8">
+          Secure payment via Stripe · Cancel anytime · No hidden fees
+        </p>
             {/* Apple Pay */}
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900">
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="white">

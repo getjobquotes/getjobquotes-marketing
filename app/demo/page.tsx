@@ -11,6 +11,7 @@ export default function DemoPage() {
   const [downloaded, setDownloaded] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
+  const [pdfError, setPdfError] = useState("");
   const [previewLoading, setPreviewLoading] = useState(false);
   const sigRef = useRef<HTMLCanvasElement>(null);
   const previewRef = useRef<HTMLIFrameElement>(null);
@@ -137,14 +138,31 @@ export default function DemoPage() {
   }, [form, lineItems, hasSig, showPreview, buildPDF]);
 
   const handleDownload = () => {
+    try {
+      // Validate before showing signup wall
+      if (!form.clientName && lineItems.every(i => !i.description && !i.unitPrice)) {
+        setPdfError("Please add a client name or at least one line item first.");
+        return;
+      }
+      setPdfError("");
+    } catch {}
     setShowSignup(true); // Show signup wall BEFORE download
   };
 
   const doDownload = () => {
-    buildPDF().save(`demo-quote-${form.clientName || "quote"}.pdf`);
-    setDownloaded(true); setShowSignup(false);
+    try {
+      buildPDF().save(`demo-quote-${form.clientName || "quote"}.pdf`);
+    } catch (e) {
+      console.error("PDF download error:", e);
+      setPdfError("PDF generation failed. Please try again.");
+      return;
+    }
+    setDownloaded(true);
+    setShowSignup(false);
     // Save to localStorage for import after signup
-    localStorage.setItem("gjq_demo_import", JSON.stringify({ form, lineItems, total }));
+    try {
+      localStorage.setItem("gjq_demo_import", JSON.stringify({ form, lineItems, total }));
+    } catch {}));
   };
 
   return (
@@ -243,6 +261,11 @@ export default function DemoPage() {
                 className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition resize-none" />
             </div>
 
+            {pdfError && (
+              <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2.5 text-xs text-red-400">
+                {pdfError}
+              </div>
+            )}
             <button onClick={handleDownload}
               className="w-full py-4 rounded-xl bg-green-600 hover:bg-green-500 text-base font-bold text-white transition">
               ↓ Download PDF Quote
