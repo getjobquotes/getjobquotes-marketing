@@ -28,7 +28,7 @@ export default function UpgradePrompt({ quotesUsed = 5, onDismiss }: {
         <div className="space-y-2.5">
           <button onClick={handleUpgrade} disabled={loading}
             className="w-full py-3.5 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-bold text-sm transition disabled:opacity-50">
-            {loading ? "Redirecting..." : "Upgrade to Pro — £4.99/mo"}
+            {loading ? "Redirecting..." : "Upgrade to Pro — £5.99/mo"}
           </button>
           <Link href="/pricing"
             className="block w-full py-3 rounded-2xl border border-zinc-700 text-zinc-400 hover:text-white text-sm text-center transition">

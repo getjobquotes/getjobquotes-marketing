@@ -83,7 +83,7 @@ export default function PricingPage() {
                 <span className="text-xs px-2.5 py-1 rounded-full bg-green-600/20 text-green-400 border border-green-600/30 font-medium">Current plan</span>
               )}
             </div>
-            <p className="text-3xl font-bold mb-1">£4.99</p>
+            <p className="text-3xl font-bold mb-1">£5.99</p>
             <p className="text-zinc-500 text-sm mb-6">per month</p>
             <div className="space-y-2.5 mb-8">
               {["Unlimited quotes","Unlimited invoices","PDF generation","Customer management","Trade calculator","WhatsApp sharing","No ads","Priority support"].map(f => (
@@ -101,7 +101,7 @@ export default function PricingPage() {
             ) : (
               <button onClick={handleUpgrade} disabled={loading || plan.loading}
                 className="w-full py-3 rounded-2xl bg-green-600 hover:bg-green-500 text-white text-sm font-bold transition disabled:opacity-50">
-                {loading ? "Redirecting..." : "Upgrade to Pro — £4.99/mo"}
+                {loading ? "Redirecting..." : "Upgrade to Pro — £5.99/mo"}
               </button>
             )}
           </div>
