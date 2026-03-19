@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 
@@ -117,4 +119,3 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ received: true });
 }
 
-export const config = { api: { bodyParser: false } };
