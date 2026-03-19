@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import TopNav from "@/components/TopNav";
+import { usePlan } from "@/lib/usePlan";
+import UpgradePrompt from "@/components/UpgradePrompt";
 import AdBanner from "@/components/AdBanner";
 
 type Doc = {
@@ -29,10 +31,13 @@ const greet = (name: string | null) => {
 
 export default function DashboardPage() {
   const supabase = createClient();
-  const auth = useAuthGuard(); // ← handles all session validation
+  const auth = useAuthGuard();
+  const plan = usePlan(auth.status === "authenticated" ? auth.user.id : null); // ← handles all session validation
 
   const [docs, setDocs] = useState<Doc[]>([]);
   const [docsLoading, setDocsLoading] = useState(true);
+  const [showUpgradedBanner, setShowUpgradedBanner] = useState(false);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<"quotes" | "invoices">("quotes");
   const [search, setSearch] = useState("");
