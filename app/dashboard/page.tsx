@@ -36,7 +36,9 @@ export default function DashboardPage() {
 
   const [docs, setDocs] = useState<Doc[]>([]);
   const [docsLoading, setDocsLoading] = useState(true);
-  const [showUpgradedBanner, setShowUpgradedBanner] = useState(false);
+  const [showUpgradedBanner, setShowUpgradedBanner] = useState(() =>
+    typeof window !== "undefined" && new URLSearchParams(window.location.search).get("upgraded") === "true"
+  );
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<"quotes" | "invoices">("quotes");

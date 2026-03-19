@@ -4,6 +4,8 @@ import { useAuthGuard } from "@/lib/useAuthGuard";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useRef, useCallback, Suspense } from "react";
 import TopNav from "@/components/TopNav";
+import { usePlan } from "@/lib/usePlan";
+import UpgradePrompt from "@/components/UpgradePrompt";
 import jsPDF from "jspdf";
 
 type LineItem = { description: string; quantity: number; unitPrice: number };
@@ -167,6 +169,7 @@ function buildPDF(opts: {
 function ToolInner() {
   const supabase = createClient();
   const auth = useAuthGuard();
+  const plan = usePlan(auth.status === "authenticated" ? auth.user.id : null);
   const router = useRouter();
   const params = useSearchParams();
   const editId = params.get("id");
@@ -331,6 +334,7 @@ function ToolInner() {
   const handleSave = async () => {
     if (!termsAccepted) { setShowTermsError(true); return; }
     if (auth.status !== "authenticated" || !form.clientName) return;
+    if (!editId && plan.limitReached) return;
     setSaving(true);
     const payload = {
       user_id: auth.user.id,
@@ -529,7 +533,27 @@ function ToolInner() {
                 onTouchStart={startDraw} onTouchMove={drawSig} onTouchEnd={endDraw} />
             </div>
 
-            {/* T&C */}
+                        {/* Quota bar */}
+            {!plan.loading && !plan.isPro && !editId && (
+              <div className={`rounded-xl border px-4 py-3 ${plan.limitReached ? "border-red-500/30 bg-red-500/10" : "border-zinc-800 bg-zinc-900/50"}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs text-zinc-500">Free quotes this month</span>
+                  <span className={`text-xs font-semibold ${plan.limitReached ? "text-red-400" : "text-zinc-300"}`}>
+                    {plan.quotesThisMonth} / 5
+                  </span>
+                </div>
+                <div className="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                  <div className={`h-full rounded-full transition-all ${plan.limitReached ? "bg-red-500" : plan.quotesThisMonth >= 4 ? "bg-yellow-500" : "bg-green-500"}`}
+                    style={{ width: `${Math.min(100, (plan.quotesThisMonth / 5) * 100)}%` }} />
+                </div>
+                {plan.limitReached
+                  ? <p className="text-xs text-red-400 mt-1.5">Limit reached — <a href="/pricing" className="underline">upgrade to Pro</a></p>
+                  : <p className="text-xs text-zinc-600 mt-1.5">{plan.quotesRemaining} quote{plan.quotesRemaining !== 1 ? "s" : ""} remaining</p>
+                }
+              </div>
+            )}
+
+{/* T&C */}
             <div className={`rounded-2xl border p-4 transition ${showTermsError ? "border-red-500/50 bg-red-500/5" : "border-zinc-800 bg-zinc-900/50"}`}>
               <label className="flex items-start gap-3 cursor-pointer">
                 <div onClick={() => { setTermsAccepted(v => !v); setShowTermsError(false); }}
@@ -596,7 +620,12 @@ function ToolInner() {
           📄
         </button>
 
-        {/* Mobile preview modal */}
+              {/* Upgrade prompt */}
+      {!editId && plan.limitReached && (
+        <UpgradePrompt quotesUsed={plan.quotesThisMonth} />
+      )}
+
+{/* Mobile preview modal */}
         {showPreview && (
           <div className="lg:hidden fixed inset-0 z-50 bg-black/95 flex flex-col">
             <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-900">
