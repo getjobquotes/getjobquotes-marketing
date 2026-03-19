@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "@/lib/rateLimit";
 import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
 
@@ -15,6 +16,12 @@ export async function POST(req: NextRequest) {
 
     if (authErr || !user) {
       return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
+    }
+
+    // Rate limit: 5 checkout attempts per user per minute
+    const { success } = rateLimit(user.id, "stripe-checkout");
+    if (!success) {
+      return NextResponse.json({ error: "Too many requests. Please wait a moment." }, { status: 429 });
     }
 
     // Get or create Stripe customer

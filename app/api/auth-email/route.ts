@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "@/lib/rateLimit";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -91,6 +92,12 @@ const templates: Record<string, (data: any) => { subject: string; html: string }
 export async function POST(req: NextRequest) {
   try {
     const { type, email, link } = await req.json();
+
+    // Rate limit: 3 auth emails per address per minute
+    const { success } = rateLimit(email || "unknown", "auth-email");
+    if (!success) {
+      return NextResponse.json({ error: "Too many requests. Please wait before requesting another email." }, { status: 429 });
+    }
     if (!type || !email) return NextResponse.json({ error: "Missing fields" }, { status: 400 });
 
     const template = templates[type];

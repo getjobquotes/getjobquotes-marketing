@@ -178,8 +178,6 @@ function ToolInner() {
   const sigRef = useRef<HTMLCanvasElement>(null);
   const isDrawing = useRef(false);
   const lastPos = useRef<{ x: number; y: number } | null>(null);
-  const previewRef = useRef<HTMLIFrameElement>(null);
-  const previewTimer = useRef<NodeJS.Timeout | null>(null);
 
   const [profile, setProfile] = useState<any>(null);
   const [customers, setCustomers] = useState<any[]>([]);
@@ -189,8 +187,6 @@ function ToolInner() {
   const [hasSig, setHasSig] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showTermsError, setShowTermsError] = useState(false);
-  const [showPreview, setShowPreview] = useState(true);
-  const [previewLoading, setPreviewLoading] = useState(false);
 
   const [form, setForm] = useState({
     clientName: "", clientEmail: "", clientPhone: "",
@@ -336,13 +332,16 @@ function ToolInner() {
     if (auth.status !== "authenticated" || !form.clientName) return;
     if (!editId && plan.limitReached) return;
     setSaving(true);
+    // Sanitise inputs before saving
+    const sanitize = (s: string) => s.trim().slice(0, 500);
+
     const payload = {
       user_id: auth.user.id,
       type: form.type,
       number: editId ? undefined : `${form.type === "invoice" ? "INV" : "QUO"}-${Date.now().toString().slice(-6)}`,
-      client_name: form.clientName,
-      client_email: form.clientEmail,
-      description: form.description,
+      client_name: sanitize(form.clientName),
+      client_email: sanitize(form.clientEmail).toLowerCase(),
+      description: sanitize(form.description),
       vat: form.vat,
       total,
       status: "pending",
@@ -381,7 +380,7 @@ function ToolInner() {
       <div className="flex flex-1 overflow-hidden">
 
         {/* Form panel */}
-        <div className="w-full lg:w-[480px] shrink-0 overflow-y-auto border-r border-zinc-900">
+        <div className="w-full max-w-2xl mx-auto overflow-y-auto">
           <div className="px-5 py-5 space-y-4">
 
             {/* Header */}
@@ -588,39 +587,7 @@ function ToolInner() {
           </div>
         </div>
 
-        {/* Desktop PDF Preview */}
-        <div className="hidden lg:flex flex-col flex-1 bg-zinc-950">
-          <div className="border-b border-zinc-900 px-5 py-3 flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${previewLoading ? "bg-yellow-400 animate-pulse" : "bg-green-400"}`} />
-              <span className="text-xs text-zinc-500">{previewLoading ? "Updating..." : "Live preview"}</span>
-            </div>
-            <button onClick={() => setShowPreview(v => !v)}
-              className="text-xs text-zinc-600 hover:text-zinc-400 transition">
-              {showPreview ? "Hide" : "Show preview"}
-            </button>
-          </div>
-          {showPreview ? (
-            <iframe ref={previewRef} className="flex-1 w-full border-0" title="PDF Preview" />
-          ) : (
-            <div className="flex-1 flex flex-col items-center justify-center gap-3 text-zinc-700">
-              <span className="text-4xl">📄</span>
-              <p className="text-sm">Click "Show preview" to see live PDF</p>
-              <button onClick={() => setShowPreview(true)}
-                className="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-sm transition">
-                Show Preview
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Mobile PDF FAB */}
-        <button onClick={() => setShowPreview(v => !v)}
-          className="lg:hidden fixed bottom-24 right-6 z-40 w-14 h-14 rounded-full bg-green-600 hover:bg-green-500 shadow-2xl flex items-center justify-center text-2xl transition">
-          📄
-        </button>
-
-              {/* Upgrade prompt */}
+        {/* Upgrade prompt */}
       {!editId && plan.limitReached && (
         <UpgradePrompt quotesUsed={plan.quotesThisMonth} />
       )}
@@ -630,8 +597,7 @@ function ToolInner() {
           <div className="lg:hidden fixed inset-0 z-50 bg-black/95 flex flex-col">
             <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-900">
               <span className="text-sm font-semibold">PDF Preview</span>
-              <button onClick={() => setShowPreview(false)} className="text-zinc-400 hover:text-white text-2xl">×</button>
-            </div>
+              </div>
             <iframe ref={previewRef} className="flex-1 w-full border-0" title="PDF Preview Mobile" />
           </div>
         )}

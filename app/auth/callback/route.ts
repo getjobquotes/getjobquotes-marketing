@@ -2,11 +2,15 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 
+const ALLOWED_REDIRECTS = ["/dashboard", "/tool", "/pricing", "/profile", "/customers", "/settings"];
+
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const type = searchParams.get("type");
   const appUrl = (process.env.NEXT_PUBLIC_APP_URL || origin).replace(/\/$/, "");
+  const nextParam = searchParams.get("next") || "/dashboard";
+  const safeNext = ALLOWED_REDIRECTS.includes(nextParam) ? nextParam : "/dashboard";
 
   // Password reset — go to dedicated reset page
   if (type === "recovery") {
