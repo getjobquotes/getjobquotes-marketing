@@ -15,28 +15,31 @@ export function useAuthGuard(): AuthState {
   useEffect(() => {
     const supabase = createClient();
 
-    // Timeout failsafe — if session check hangs, redirect after 5s
+    // Failsafe: if session check hangs, redirect after 5s
     const timeout = setTimeout(() => {
       router.replace("/auth");
     }, 5000);
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      clearTimeout(timeout);
-      if (!session) {
-        // No session — clear any stale keys and redirect once
-        try {
-          Object.keys(localStorage)
-            .filter(k => k.startsWith("sb-"))
-            .forEach(k => localStorage.removeItem(k));
-        } catch {}
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        clearTimeout(timeout);
+        if (!session) {
+          try {
+            Object.keys(localStorage)
+              .filter(k => k.startsWith("sb-"))
+              .forEach(k => localStorage.removeItem(k));
+          } catch {}
+          router.replace("/auth");
+        } else {
+          setState({ status: "authenticated", user: session.user });
+        }
+      })
+      .catch(() => {
+        clearTimeout(timeout);
         router.replace("/auth");
-      } else {
-        setState({ status: "authenticated", user: session.user });
-      }
-    }).catch(() => {
-      clearTimeout(timeout);
-      router.replace("/auth");
-    });
+      });
+
+    return () => clearTimeout(timeout);
   }, []);
 
   return state;

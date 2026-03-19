@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { rateLimit } from "@/lib/rateLimit";
 import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
+import { rateLimit } from "@/lib/rateLimit";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-02-25.clover",
@@ -18,13 +18,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
     }
 
-    // Rate limit: 5 checkout attempts per user per minute
+    // Rate limit: 5 attempts per user per minute
     const { success } = rateLimit(user.id, "stripe-checkout");
     if (!success) {
-      return NextResponse.json({ error: "Too many requests. Please wait a moment." }, { status: 429 });
+      return NextResponse.json(
+        { error: "Too many requests. Please wait a moment." },
+        { status: 429 }
+      );
     }
 
-    // Get or create Stripe customer
     const { data: profile } = await supabase
       .from("profiles")
       .select("stripe_customer_id, business_name")
@@ -40,30 +42,21 @@ export async function POST(req: NextRequest) {
         metadata: { supabase_user_id: user.id },
       });
       customerId = customer.id;
-
       await supabase
         .from("profiles")
         .update({ stripe_customer_id: customerId })
         .eq("user_id", user.id);
     }
 
-    // Create checkout session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       mode: "subscription",
       payment_method_types: ["card"],
-      line_items: [
-        {
-          price: process.env.STRIPE_PRICE_ID!,
-          quantity: 1,
-        },
-      ],
+      line_items: [{ price: process.env.STRIPE_PRICE_ID!, quantity: 1 }],
       success_url: `${APP_URL}/dashboard?upgraded=true`,
       cancel_url: `${APP_URL}/pricing`,
       metadata: { supabase_user_id: user.id },
-      subscription_data: {
-        metadata: { supabase_user_id: user.id },
-      },
+      subscription_data: { metadata: { supabase_user_id: user.id } },
     });
 
     return NextResponse.json({ url: session.url });
