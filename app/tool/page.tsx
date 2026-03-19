@@ -271,22 +271,14 @@ function ToolInner() {
     return () => clearInterval(t);
   }, [auth.status, form, lineItems, sigData, editId]);
 
-  // PDF preview
   useEffect(() => {
-    if (!showPreview) return;
-    if (previewTimer.current) clearTimeout(previewTimer.current);
-    previewTimer.current = setTimeout(() => {
       setPreviewLoading(true);
       try {
-        const uri = buildPDF({ form, lineItems, subtotal, vatAmount, total, sigData, profile, docId: editId }).output("datauristring");
-        if (previewRef.current) previewRef.current.src = uri;
       } catch (e) {
         console.error("Preview error:", e);
       }
       setPreviewLoading(false);
     }, 700);
-    return () => { if (previewTimer.current) clearTimeout(previewTimer.current); };
-  }, [form, lineItems, sigData, showPreview, profile]);
 
   // Signature drawing
   const getPos = (e: any, c: HTMLCanvasElement) => {
@@ -377,7 +369,7 @@ function ToolInner() {
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
       <TopNav />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden">
 
         {/* Form panel */}
         <div className="w-full max-w-2xl mx-auto overflow-y-auto">
@@ -592,8 +584,6 @@ function ToolInner() {
         <UpgradePrompt quotesUsed={plan.quotesThisMonth} />
       )}
 
-{/* Mobile preview modal */}
-        {showPreview && (
           <div className="lg:hidden fixed inset-0 z-50 bg-black/95 flex flex-col">
             <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-900">
               <span className="text-sm font-semibold">PDF Preview</span>

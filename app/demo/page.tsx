@@ -159,10 +159,9 @@ export default function DemoPage() {
     }
     setDownloaded(true);
     setShowSignup(false);
-    // Save to localStorage for import after signup
     try {
       localStorage.setItem("gjq_demo_import", JSON.stringify({ form, lineItems, total }));
-    } catch {}));
+    } catch {}
   };
 
   return (
