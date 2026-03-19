@@ -107,9 +107,36 @@ export default function PricingPage() {
           </div>
         </div>
 
-        <p className="text-center text-xs text-zinc-600 mt-8">
-          Secure payment via Stripe · Cancel anytime · No hidden fees
-        </p>
+        <div className="mt-8 flex flex-col items-center gap-3">
+          <div className="flex items-center gap-2 flex-wrap justify-center">
+            {/* Stripe badge */}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900">
+              <svg className="w-8 h-5" viewBox="0 0 60 25" fill="none">
+                <path d="M27.5 9.8c0-1.6 1.3-2.2 3.4-2.2 3 0 6.9.9 9.9 2.5V4c-3.3-1.3-6.6-1.8-9.9-1.8C25 2.2 21 5 21 10c0 7.8 10.7 6.5 10.7 9.9 0 1.9-1.6 2.5-3.9 2.5-3.4 0-7.7-1.4-11.1-3.3v6.2c3.8 1.6 7.6 2.3 11.1 2.3 6.4 0 10.8-3.2 10.8-8.2 0-8.4-10.7-6.9-10.7-9.6h.6z" fill="#635BFF"/>
+              </svg>
+              <span className="text-xs text-zinc-400">Stripe</span>
+            </div>
+            {/* Apple Pay */}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900">
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="white">
+                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.39.07 2.35.77 3.17.8 1.21-.24 2.37-.97 3.67-.84 1.57.17 2.75.8 3.53 2.02-3.25 1.95-2.71 6.3.63 7.5-.73 1.93-1.67 3.83-3 4.4zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+              </svg>
+              <span className="text-xs text-zinc-400">Apple Pay</span>
+            </div>
+            {/* Google Pay */}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900">
+              <svg className="w-12 h-5" viewBox="0 0 48 20" fill="none">
+                <path d="M22.6 10.2c0 3.4-2.6 5.8-5.8 5.8s-5.8-2.4-5.8-5.8 2.6-5.8 5.8-5.8 5.8 2.4 5.8 5.8z" fill="#4285F4"/>
+                <path d="M22.6 10.2c0 3.4-2.6 5.8-5.8 5.8V4.4c3.2 0 5.8 2.4 5.8 5.8z" fill="#356AC3"/>
+                <path d="M11 10.2c0-3.4 2.6-5.8 5.8-5.8v11.6c-3.2 0-5.8-2.4-5.8-5.8z" fill="#34A853"/>
+                <text x="25" y="15" fill="white" fontSize="11" fontFamily="Arial">Pay</text>
+              </svg>
+            </div>
+          </div>
+          <p className="text-xs text-zinc-600">
+            Secure payment · Cancel anytime · No hidden fees
+          </p>
+        </div>
         <div className="mt-6 text-center">
           <Link href="/dashboard" className="text-xs text-zinc-600 hover:text-zinc-400 transition">← Back to Dashboard</Link>
         </div>
