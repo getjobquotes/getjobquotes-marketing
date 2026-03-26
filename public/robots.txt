@@ -1,9 +1,18 @@
 User-agent: *
 Allow: /
+Allow: /guides
+Allow: /demo
+Allow: /pricing
+Allow: /contact
+Allow: /privacy
+Allow: /terms
+
 Disallow: /dashboard
 Disallow: /tool
 Disallow: /profile
 Disallow: /customers
+Disallow: /settings
 Disallow: /api/
+Disallow: /auth/callback
 
 Sitemap: https://getjobquotes.uk/sitemap.xml

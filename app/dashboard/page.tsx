@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import TopNav from "@/components/TopNav";
+import OnboardingTour from "@/components/OnboardingTour";
 import { usePlan } from "@/lib/usePlan";
 import UpgradePrompt from "@/components/UpgradePrompt";
 import AdBanner from "@/components/AdBanner";
@@ -127,6 +128,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-black text-white">
       <TopNav />
+      {auth.status === "authenticated" && <OnboardingTour userId={auth.user.id} />}
       <AdBanner className="border-b border-zinc-900" />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
 

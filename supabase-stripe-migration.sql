@@ -10,3 +10,7 @@ SELECT column_name, data_type, column_default
 FROM information_schema.columns
 WHERE table_name = 'profiles'
   AND column_name IN ('plan', 'stripe_customer_id', 'subscription_status');
+
+-- Add onboarding_complete column
+ALTER TABLE profiles
+  ADD COLUMN IF NOT EXISTS onboarding_complete boolean DEFAULT false;

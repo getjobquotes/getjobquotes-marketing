@@ -7,5 +7,5 @@ module.exports = {
     "./context/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: { extend: {} },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 };
