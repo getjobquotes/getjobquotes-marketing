@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "next/dist/shared/lib/utils";
+import type { ReactNode } from "react";
 
 interface GuideLayoutProps {
   title: string;
