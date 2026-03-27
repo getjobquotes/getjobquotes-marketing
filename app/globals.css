@@ -24,3 +24,51 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Guide content styles — dark theme */
+.guide-content h1 {
+  @apply text-3xl sm:text-4xl font-bold text-white mb-4 leading-tight;
+}
+.guide-content h2 {
+  @apply text-xl font-bold text-white mt-10 mb-4 pb-2 border-b border-zinc-800;
+}
+.guide-content h3 {
+  @apply text-base font-bold text-zinc-200 mt-6 mb-2;
+}
+.guide-content p {
+  @apply text-zinc-400 leading-relaxed mb-4 text-sm sm:text-base;
+}
+.guide-content p.lead {
+  @apply text-zinc-300 text-base sm:text-lg leading-relaxed mb-6;
+}
+.guide-content ul {
+  @apply space-y-2 mb-4 pl-1;
+}
+.guide-content ul li {
+  @apply text-zinc-400 text-sm sm:text-base flex gap-2 leading-relaxed;
+}
+.guide-content ul li::before {
+  content: "—";
+  @apply text-green-500 shrink-0;
+}
+.guide-content ol {
+  @apply space-y-2 mb-4;
+  counter-reset: list;
+}
+.guide-content ol li {
+  @apply text-zinc-400 text-sm sm:text-base flex gap-3 leading-relaxed;
+  counter-increment: list;
+}
+.guide-content ol li::before {
+  content: counter(list) ".";
+  @apply text-green-500 font-bold shrink-0 min-w-[1.2rem];
+}
+.guide-content strong {
+  @apply text-white font-semibold;
+}
+.guide-content a {
+  @apply text-green-400 hover:text-green-300 transition underline underline-offset-2;
+}
+.guide-content .not-prose {
+  all: revert;
+}

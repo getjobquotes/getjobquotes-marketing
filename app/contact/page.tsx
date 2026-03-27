@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-white text-zinc-900">
-      <nav className="border-b border-zinc-200 px-5 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+    <div className="min-h-screen bg-black text-white">
+      <nav className="sticky top-0 z-50 border-b border-zinc-900 bg-black/95 backdrop-blur-sm px-5">
+        <div className="max-w-4xl mx-auto h-14 flex items-center justify-between">
           <Link href="/" className="text-base font-bold">
             <span className="text-green-600">Get</span>JobQuotes
           </Link>
@@ -23,28 +23,28 @@ export default function ContactPage() {
       </nav>
 
       <div className="max-w-2xl mx-auto px-5 py-14">
-        <h1 className="text-3xl font-bold mb-3">Contact Us</h1>
-        <p className="text-zinc-500 mb-10">Got a question or need help? We would love to hear from you.</p>
+        <h1 className="text-3xl font-bold mb-3 text-white">Contact Us</h1>
+        <p className="text-zinc-400 mb-10">Got a question or need help? We would love to hear from you.</p>
 
         <div className="grid sm:grid-cols-2 gap-4 mb-10">
-          <div className="rounded-2xl border border-zinc-200 p-6">
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6">
             <div className="text-2xl mb-3">📧</div>
-            <h2 className="text-sm font-bold mb-1">General Enquiries</h2>
+            <h2 className="text-sm font-bold mb-1 text-white">General Enquiries</h2>
             <a href="mailto:hello@getjobquotes.uk" className="text-sm text-green-600 hover:underline">
               hello@getjobquotes.uk
             </a>
           </div>
-          <div className="rounded-2xl border border-zinc-200 p-6">
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6">
             <div className="text-2xl mb-3">🛠️</div>
-            <h2 className="text-sm font-bold mb-1">Technical Support</h2>
+            <h2 className="text-sm font-bold mb-1 text-white">Technical Support</h2>
             <a href="mailto:support@getjobquotes.uk" className="text-sm text-green-600 hover:underline">
               support@getjobquotes.uk
             </a>
           </div>
         </div>
 
-        <div className="rounded-2xl bg-zinc-50 border border-zinc-200 p-6 mb-8">
-          <h2 className="text-base font-bold mb-3">Frequently Asked Questions</h2>
+        <div className="rounded-2xl bg-zinc-900/50 border border-zinc-800 p-6 mb-8">
+          <h2 className="text-base font-bold mb-3 text-white">Frequently Asked Questions</h2>
           <div className="space-y-4 text-sm">
             {[
               ["Is GetJobQuotes free?", "Yes. The free plan lets you create up to 5 quotes per month. Pro is £5.99/month for unlimited quotes."],
@@ -53,8 +53,8 @@ export default function ContactPage() {
               ["How do I cancel my Pro subscription?", "You can cancel anytime from your Settings page. No questions asked."],
             ].map(([q,a]) => (
               <div key={q}>
-                <p className="font-semibold text-zinc-800">{q}</p>
-                <p className="text-zinc-500 mt-0.5">{a}</p>
+                <p className="font-semibold text-white">{q}</p>
+                <p className="text-zinc-400 mt-0.5">{a}</p>
               </div>
             ))}
           </div>
