@@ -93,13 +93,54 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-900 px-6 py-6 flex flex-wrap items-center justify-between gap-4 text-xs text-zinc-700">
-        <span><span className="text-green-400">Get</span>JobQuotes.uk</span>
-        <div className="flex flex-wrap gap-4">
-          <Link href="/demo" className="hover:text-zinc-400 transition">Try Demo</Link>
-          <Link href="/terms" className="hover:text-zinc-400 transition">Terms</Link>
-          <Link href="/privacy" className="hover:text-zinc-400 transition">Privacy</Link>
-          <Link href="/status" className="hover:text-zinc-400 transition">Status</Link>
+      <footer className="border-t border-zinc-900 px-5 py-12">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-10">
+            <div>
+              <p className="text-sm font-bold mb-3">
+                <span className="text-green-400">Get</span>JobQuotes
+              </p>
+              <p className="text-xs text-zinc-500 leading-relaxed">
+                Professional quotes and invoices for UK tradespeople. Free to start.
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-3">Guides</p>
+              <div className="space-y-2">
+                <Link href="/guides/how-to-write-a-quote-uk" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">How to Write a Quote</Link>
+                <Link href="/guides/how-to-write-an-invoice-uk" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">How to Write an Invoice</Link>
+                <Link href="/guides/quote-template-uk" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">Quote Template UK</Link>
+                <Link href="/guides/invoice-template-uk" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">Invoice Template UK</Link>
+                <Link href="/guides/how-to-price-a-job" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">How to Price a Job</Link>
+                <Link href="/guides/vat-calculator-uk" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">VAT Calculator</Link>
+                <Link href="/guides/labour-rate-calculator-uk" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">Labour Rate Calculator</Link>
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-3">Product</p>
+              <div className="space-y-2">
+                <Link href="/demo" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">Demo</Link>
+                <Link href="/pricing" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">Pricing</Link>
+                <Link href="/auth?mode=signup" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">Sign Up Free</Link>
+                <Link href="/auth" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">Log In</Link>
+                <Link href="/guides" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">Guides</Link>
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-3">Company</p>
+              <div className="space-y-2">
+                <Link href="/contact" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">Contact</Link>
+                <Link href="/privacy" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">Privacy Policy</Link>
+                <Link href="/terms" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">Terms & Conditions</Link>
+                <Link href="/status" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">Status</Link>
+                <a href="mailto:hello@getjobquotes.uk" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">hello@getjobquotes.uk</a>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-zinc-900 pt-6 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p className="text-xs text-zinc-700">© {new Date().getFullYear()} GetJobQuotes. Built for UK tradespeople.</p>
+            <p className="text-xs text-zinc-700">Free quoting and invoicing for UK trades</p>
+          </div>
         </div>
       </footer>
     </main>
