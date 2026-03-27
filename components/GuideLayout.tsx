@@ -44,6 +44,9 @@ export default function GuideLayout({ title, description, breadcrumb, children }
           {children}
         </div>
 
+        {/* Ad banner */}
+        <div className="w-full my-8 overflow-hidden rounded-xl"><ins className="adsbygoogle block" style={{display:"block",minHeight:"90px"}} data-ad-client="ca-pub-8942505835940142" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true" /></div>
+
         {/* CTA */}
         <div className="mt-14 rounded-2xl border border-green-600/20 bg-green-600/5 p-8 text-center">
           <h3 className="text-xl font-bold mb-2">Ready to create professional quotes?</h3>
