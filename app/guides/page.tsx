@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { PublicFooter } from "@/components/GuideLayout";
+import GuideAdBanner from "@/components/GuideAdBanner";
 
 export const metadata: Metadata = {
   title: "Free Guides for UK Tradespeople | GetJobQuotes",
@@ -96,6 +97,8 @@ export default function GuidesPage() {
             </Link>
           ))}
         </div>
+
+        <GuideAdBanner className="rounded-xl overflow-hidden" />
 
         <div className="mt-14 rounded-2xl bg-green-50 border border-green-200 p-8 text-center">
           <h2 className="text-xl font-bold mb-2">Create professional quotes in under 2 minutes</h2>

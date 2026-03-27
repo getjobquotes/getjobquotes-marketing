@@ -1,4 +1,5 @@
 import Link from "next/link";
+import GuideAdBanner from "./GuideAdBanner";
 import type { ReactNode } from "react";
 
 interface GuideLayoutProps {
@@ -38,9 +39,15 @@ export default function GuideLayout({ title, description, breadcrumb, children }
           <span className="text-zinc-600">{breadcrumb}</span>
         </nav>
 
+        {/* Ad banner — top of article */}
+        <GuideAdBanner className="rounded-xl overflow-hidden" />
+
         <article className="prose prose-zinc max-w-none">
           {children}
         </article>
+
+        {/* Ad banner — mid page */}
+        <GuideAdBanner className="rounded-xl overflow-hidden" />
 
         {/* CTA */}
         <div className="mt-12 rounded-2xl bg-green-50 border border-green-200 p-8 text-center">
