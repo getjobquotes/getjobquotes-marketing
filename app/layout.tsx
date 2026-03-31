@@ -8,29 +8,28 @@ import CookieBanner from "@/components/CookieBanner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: { default: "GetJobQuotes — Quotes & Invoices for UK Trades", template: "%s | GetJobQuotes" },
-  description: "Create professional quotes and invoices in under 2 minutes. Built for UK plumbers, electricians, builders and all tradespeople. Free to use.",
-  keywords: ["quotes", "invoices", "tradespeople", "UK trades", "plumber", "electrician", "builder", "self employed", "quote generator"],
-  authors: [{ name: "GetJobQuotes" }],
-  creator: "GetJobQuotes",
-  publisher: "GetJobQuotes",
-  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
-  manifest: "/manifest.json",
-  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "GetJobQuotes" },
+  metadataBase: new URL("https://getjobquotes.uk"),
+  title: {
+    default: "GetJobQuotes.uk – Quotes and Invoices for Tradespeople",
+    template: "%s | GetJobQuotes.uk",
+  },
+  description: "Create professional quotes and invoices in under 2 minutes. Free for UK tradespeople. PDF generation, online acceptance, customer management.",
+  keywords: ["quotes for tradespeople", "invoice app uk", "quoting software uk", "plumber invoice", "electrician quote"],
   openGraph: {
-    type: "website",
-    locale: "en_GB",
+    title: "GetJobQuotes.uk – Quotes and Invoices for Tradespeople",
+    description: "Create professional quotes and invoices in under 2 minutes. Free for UK tradespeople.",
     url: "https://getjobquotes.uk",
     siteName: "GetJobQuotes",
-    title: "GetJobQuotes — Professional Quotes & Invoices for UK Trades",
-    description: "Create professional quotes and invoices in under 2 minutes. Free for UK tradespeople.",
-    images: [{ url: "https://getjobquotes.uk/og-image.png", width: 1200, height: 630, alt: "GetJobQuotes" }],
+    locale: "en_GB",
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GetJobQuotes — Quotes & Invoices for UK Trades",
-    description: "Professional quotes & invoices in under 2 minutes. Free for UK tradespeople.",
+    title: "GetJobQuotes.uk – Quotes and Invoices for Tradespeople",
+    description: "Create professional quotes and invoices in under 2 minutes. Free for UK tradespeople.",
   },
+  robots: { index: true, follow: true },
+  alternates: { canonical: "https://getjobquotes.uk" },
 };
 
 export const viewport: Viewport = {
