@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PublicFooter } from "@/components/GuideLayout";
+import PublicFooter from "@/components/PublicFooter";
 
 export const metadata: Metadata = {
   title: "Contact GetJobQuotes | Support for UK Tradespeople",

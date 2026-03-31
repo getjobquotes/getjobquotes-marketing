@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { PublicFooter } from "@/components/GuideLayout";
+import PublicFooter from "@/components/PublicFooter";
 import GuideAdBanner from "@/components/GuideAdBanner";
 
 export const metadata: Metadata = {
