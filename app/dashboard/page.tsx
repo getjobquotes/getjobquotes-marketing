@@ -4,8 +4,10 @@ import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import TopNav from "@/components/TopNav";
+import OnboardingChecklist from "@/components/onboarding/OnboardingChecklist";
 import AppFooter from "@/components/AppFooter";
 import { usePlan } from "@/lib/usePlan";
+import { useOnboarding } from "@/lib/useOnboarding";
 import UpgradePrompt from "@/components/UpgradePrompt";
 import OnboardingTour from "@/components/OnboardingTour";
 
@@ -33,6 +35,7 @@ export default function DashboardPage() {
   const supabase = createClient();
   const auth = useAuthGuard();
   const plan = usePlan(auth.status === "authenticated" ? auth.user.id : null);
+  const { markComplete } = useOnboarding(auth.status === "authenticated" ? auth.user.id : null);
 
   const [docs, setDocs] = useState<Doc[]>([]);
   const [docsLoading, setDocsLoading] = useState(true);
@@ -101,7 +104,7 @@ export default function DashboardPage() {
       status: "pending", line_items: doc.line_items || [],
       notes: doc.notes || "", linked_quote_id: doc.id,
     }).select().single();
-    if (nd) { setDocs(p => [nd, ...p]); setTab("invoices"); }
+    if (nd) { setDocs(p => [nd, ...p]); setTab("invoices"); markComplete("completed_first_invoice"); }
   };
 
   const toggleSelect = (id: string) => {

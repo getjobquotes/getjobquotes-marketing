@@ -1,4 +1,5 @@
 "use client";
+import { useOnboarding } from "@/lib/useOnboarding";
 import { useAuthGuard } from "@/lib/useAuthGuard";
 
 import { createClient } from "@/lib/supabase/client";

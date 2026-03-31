@@ -1,4 +1,5 @@
 "use client";
+import { useOnboarding } from "@/lib/useOnboarding";
 import { createClient } from "@/lib/supabase/client";
 import { useAuthGuard } from "@/lib/useAuthGuard";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -151,6 +152,7 @@ function buildPDF(opts: {
 function ToolInner() {
   const supabase = createClient();
   const auth = useAuthGuard();
+  const { markComplete } = useOnboarding(auth.status === "authenticated" ? auth.user.id : null);
   const router = useRouter();
   const params = useSearchParams();
   const editId = params.get("id");
@@ -228,7 +230,8 @@ function ToolInner() {
             if (d.lineItems?.length) setLineItems(d.lineItems);
             if (d.sigData) { setSigData(d.sigData); setHasSig(true); }
           } else {
-            localStorage.removeItem("gjq_draft_quote");
+            if (!editId) markComplete("completed_first_quote");
+    localStorage.removeItem("gjq_draft_quote");
           }
         }
       } catch {}

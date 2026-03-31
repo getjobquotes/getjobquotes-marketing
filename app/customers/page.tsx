@@ -1,4 +1,5 @@
 "use client";
+import { useOnboarding } from "@/lib/useOnboarding";
 import { useAuthGuard } from "@/lib/useAuthGuard";
 import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
@@ -13,6 +14,7 @@ type Customer = {
 export default function CustomersPage() {
   const supabase = createClient();
   const auth = useAuthGuard();
+  const { markComplete } = useOnboarding(auth.status === "authenticated" ? auth.user.id : null);
 
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,6 +56,7 @@ export default function CustomersPage() {
     } else {
       const { data } = await supabase.from("customers")
         .insert({ user_id: auth.user.id, ...form }).select().single();
+      markComplete("completed_first_customer");
       if (data) setCustomers(p => [...p, data].sort((a, b) => a.name.localeCompare(b.name)));
     }
     setSaving(false);
