@@ -5,6 +5,7 @@ import { useAuthGuard } from "@/lib/useAuthGuard";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useRef, Suspense } from "react";
 import TopNav from "@/components/TopNav";
+import AppFooter from "@/components/AppFooter";
 import { usePlan } from "@/lib/usePlan";
 import UpgradePrompt from "@/components/UpgradePrompt";
 import jsPDF from "jspdf";

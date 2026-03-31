@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useTheme } from "@/context/ThemeContext";
 import { useState } from "react";
 import TopNav from "@/components/TopNav";
+import AppFooter from "@/components/AppFooter";
 import Link from "next/link";
 
 export default function SettingsPage() {
@@ -110,6 +111,7 @@ export default function SettingsPage() {
 
         <Link href="/dashboard" className="block text-xs text-zinc-600 hover:text-zinc-400 transition">← Back to Dashboard</Link>
       </div>
+      <AppFooter />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import TopNav from "@/components/TopNav";
+import AppFooter from "@/components/AppFooter";
 
 export default function ProfilePage() {
   const supabase = createClient();
@@ -228,6 +229,7 @@ export default function ProfilePage() {
           )}
         </div>
       </div>
+      <AppFooter />
     </div>
   );
 }

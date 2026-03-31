@@ -1,4 +1,5 @@
 import Link from "next/link";
+import EmailCapture from "@/components/EmailCapture";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

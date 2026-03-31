@@ -4,6 +4,7 @@ import { useAuthGuard } from "@/lib/useAuthGuard";
 import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 import TopNav from "@/components/TopNav";
+import AppFooter from "@/components/AppFooter";
 import Link from "next/link";
 
 type Customer = {
@@ -208,6 +209,7 @@ export default function CustomersPage() {
           <Link href="/dashboard" className="hover:text-zinc-400 transition">← Dashboard</Link>
         </div>
       </div>
+      <AppFooter />
     </div>
   );
 }
