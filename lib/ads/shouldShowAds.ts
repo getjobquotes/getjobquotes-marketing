@@ -1,39 +1,42 @@
+
 /**
- * Determines whether ads should be shown on a given pathname.
- * Ads are ONLY allowed on public marketing/content pages.
+ * Ad placement rules — conservative.
+ * AdSense pending approval. Ads only on content-rich public pages.
+ * Not shown on any app, auth, or utility pages.
  */
 
-const AD_ALLOWED_PREFIXES = [
-  "/",           // landing page (exact)
-  "/guides",
-  "/help",
-  "/templates",
-  "/features",
-  "/about",
-  "/demo",
+const AD_ALLOWED: string[] = [
+  "/guides/",
+  "/help/",
+  "/templates/",
 ];
 
-const AD_BLOCKED_PREFIXES = [
+const AD_BLOCKED_PREFIXES: string[] = [
   "/dashboard",
   "/tool",
   "/profile",
   "/customers",
   "/settings",
-  "/pricing",    // no ads on checkout pages
+  "/pricing",
   "/auth",
   "/api",
-  "/q/",         // public quote acceptance
+  "/q/",
+  "/demo",  // utility page, not content
+  "/features",
+  "/about",
+  "/contact",
 ];
 
+// Landing page: only show ads if AdSense approved
+// Currently set to false until approval confirmed
+const ADSENSE_APPROVED = false;
+
 export function shouldShowAds(pathname: string): boolean {
-  // Check blocked first (takes priority)
-  if (AD_BLOCKED_PREFIXES.some(prefix => pathname.startsWith(prefix))) {
-    return false;
-  }
-  // Landing page exact match
+  if (!ADSENSE_APPROVED) return false;
+
+  if (AD_BLOCKED_PREFIXES.some(p => pathname.startsWith(p))) return false;
+
   if (pathname === "/") return true;
-  // Check allowed prefixes
-  return AD_ALLOWED_PREFIXES.some(prefix =>
-    prefix !== "/" && pathname.startsWith(prefix)
-  );
+
+  return AD_ALLOWED.some(p => pathname.startsWith(p));
 }

@@ -8,7 +8,6 @@ import OnboardingChecklist from "@/components/onboarding/OnboardingChecklist";
 import AppFooter from "@/components/AppFooter";
 import { usePlan } from "@/lib/usePlan";
 import { useOnboarding } from "@/lib/useOnboarding";
-import UpgradePrompt from "@/components/UpgradePrompt";
 import OnboardingTour from "@/components/OnboardingTour";
 
 type Doc = {

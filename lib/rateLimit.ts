@@ -4,6 +4,8 @@ const LIMITS: Record<string, { max: number; windowMs: number }> = {
   "stripe-checkout": { max: 5,  windowMs: 60_000 },
   "auth-email":      { max: 3,  windowMs: 60_000 },
   "send-quote":      { max: 10, windowMs: 60_000 },
+  "bug-report":      { max: 5,  windowMs: 60_000 },
+  "contact":         { max: 3,  windowMs: 300_000 },
   "default":         { max: 30, windowMs: 60_000 },
 };
 

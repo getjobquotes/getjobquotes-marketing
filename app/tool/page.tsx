@@ -191,7 +191,7 @@ function ToolInner() {
     const user = auth.user;
 
     Promise.all([
-      supabase.from("profiles").select("*").eq("user_id", user.id).single(),
+      supabase.from("profiles").select("user_id, business_name, business_email, business_phone, logo_url, signature_data").eq("user_id", user.id).single(),
       supabase.from("customers").select("*").eq("user_id", user.id).order("name"),
     ]).then(([{ data: prof }, { data: custs }]) => {
       if (prof) {
@@ -461,26 +461,6 @@ function ToolInner() {
               onTouchStart={startDraw} onTouchMove={drawSig} onTouchEnd={endDraw} />
           </div>
 
-          {/* Quota bar */}
-          {!plan.loading && !plan.isPro && !editId && (
-            <div className={`rounded-xl border px-4 py-3 ${plan.limitReached ? "border-red-500/30 bg-red-500/10" : "border-zinc-800 bg-zinc-900/50"}`}>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-zinc-500">Free quotes this month</span>
-                <span className={`text-xs font-semibold ${plan.limitReached ? "text-red-400" : "text-zinc-300"}`}>
-                  {plan.quotesThisMonth} / 5
-                </span>
-              </div>
-              <div className="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-                <div className={`h-full rounded-full transition-all ${plan.limitReached ? "bg-red-500" : plan.quotesThisMonth >= 4 ? "bg-yellow-500" : "bg-green-500"}`}
-                  style={{ width: `${Math.min(100, (plan.quotesThisMonth / 5) * 100)}%` }} />
-              </div>
-              {plan.limitReached
-                ? <p className="text-xs text-red-400 mt-1.5">Limit reached — <a href="/pricing" className="underline hover:text-red-300">upgrade to Pro</a></p>
-                : <p className="text-xs text-zinc-600 mt-1.5">{plan.quotesRemaining} quote{plan.quotesRemaining !== 1 ? "s" : ""} remaining</p>
-              }
-            </div>
-          )}
-
           {/* T&C */}
           <div className={`rounded-2xl border p-4 transition ${showTermsError ? "border-red-500/50 bg-red-500/5" : "border-zinc-800 bg-zinc-900/50"}`}>
             <label className="flex items-start gap-3 cursor-pointer">
@@ -516,11 +496,6 @@ function ToolInner() {
             </button>
           </div>
         </div>
-
-        {/* Upgrade prompt */}
-        {!editId && plan.limitReached && (
-          <UpgradePrompt quotesUsed={plan.quotesThisMonth} />
-        )}
       </div>
     </div>
   );

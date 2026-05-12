@@ -1,167 +1,107 @@
+
 "use client";
-import { useAuthGuard } from "@/lib/useAuthGuard";
-import { usePlan } from "@/lib/usePlan";
-import { useState } from "react";
 import Link from "next/link";
 import TopNav from "@/components/TopNav";
+import AppFooter from "@/components/AppFooter";
+import PublicFooter from "@/components/PublicFooter";
+import { useAuthGuard } from "@/lib/useAuthGuard";
+
+const included = [
+  "Unlimited quotes",
+  "Unlimited invoices",
+  "PDF downloads",
+  "Customer management",
+  "Trade calculator",
+  "WhatsApp and email sharing",
+  "Online quote acceptance",
+  "UK VAT support",
+  "Mobile and desktop",
+  "No card required",
+];
 
 export default function PricingPage() {
   const auth = useAuthGuard();
-  const plan = usePlan(auth.status === "authenticated" ? auth.user.id : null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const handleUpgrade = async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch("/api/stripe/create-checkout-session", { method: "POST" });
-      const data = await res.json();
-      if (data.url) window.location.href = data.url;
-      else setError(data.error || "Something went wrong. Please try again.");
-    } catch {
-      setError("Network error. Please try again.");
-    }
-    setLoading(false);
-  };
-
-  const handleManage = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/stripe/portal", { method: "POST" });
-      const data = await res.json();
-      if (data.url) window.location.href = data.url;
-      else setError(data.error || "Could not open billing portal.");
-    } catch {
-      setError("Network error. Please try again.");
-    }
-    setLoading(false);
-  };
-
-  if (auth.status === "loading") return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
-      <p className="text-zinc-600 text-sm animate-pulse">Loading...</p>
-    </div>
-  );
-
-  const freeFeatures = [
-    "5 quotes per month",
-    "Unlimited invoices",
-    "PDF generation",
-    "Customer management",
-    "Trade calculator",
-    "WhatsApp sharing",
-  ];
-
-  const proFeatures = [
-    "Unlimited quotes",
-    "Unlimited invoices",
-    "PDF generation",
-    "Customer management",
-    "Trade calculator",
-    "WhatsApp sharing",
-    "No ads",
-    "Priority support",
-  ];
+  const isLoggedIn = auth.status === "authenticated";
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {auth.status === "authenticated" && <TopNav />}
-
-      <div className="max-w-3xl mx-auto px-5 py-16">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-3">Simple pricing</h1>
-          <p className="text-zinc-400 text-base">Start free. Upgrade when you need more.</p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 gap-4">
-
-          {/* FREE */}
-          <div className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold">Free</h2>
-              {plan.plan === "free" && !plan.loading && (
-                <span className="text-xs px-2.5 py-1 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700 font-medium">
-                  Current plan
-                </span>
-              )}
-            </div>
-            <p className="text-3xl font-bold mb-1">£0</p>
-            <p className="text-zinc-500 text-sm mb-6">forever</p>
-            <div className="space-y-2.5 mb-8">
-              {freeFeatures.map(f => (
-                <div key={f} className="flex items-center gap-2.5 text-sm text-zinc-400">
-                  <span className="text-green-400">✓</span>{f}
-                </div>
-              ))}
-              <div className="flex items-center gap-2.5 text-sm text-zinc-600">
-                <span>✗</span>Ads shown
-              </div>
-            </div>
-            <div className="w-full py-3 rounded-2xl border border-zinc-700 text-sm text-zinc-500 text-center">
-              {plan.plan === "free" ? "You're on Free" : "Free plan"}
+      {isLoggedIn ? <TopNav /> : (
+        <nav className="sticky top-0 z-50 border-b border-zinc-900 bg-black/95 backdrop-blur-sm">
+          <div className="max-w-5xl mx-auto px-5 h-14 flex items-center justify-between">
+            <Link href="/" className="text-base font-bold">
+              <span className="text-green-400">Get</span>JobQuotes
+            </Link>
+            <div className="flex items-center gap-3">
+              <Link href="/auth" className="text-sm text-zinc-400 hover:text-white transition">Log In</Link>
+              <Link href="/auth?mode=signup"
+                className="px-4 py-2 text-sm font-semibold bg-green-600 hover:bg-green-500 text-white rounded-xl transition">
+                Try Free
+              </Link>
             </div>
           </div>
+        </nav>
+      )}
 
-          {/* PRO */}
-          <div className="rounded-3xl border border-green-600/30 bg-green-600/5 p-8 relative">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-              <span className="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full">
-                MOST POPULAR
-              </span>
-            </div>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold">Pro</h2>
-              {plan.isPro && !plan.loading && (
-                <span className="text-xs px-2.5 py-1 rounded-full bg-green-600/20 text-green-400 border border-green-600/30 font-medium">
-                  Current plan
-                </span>
-              )}
-            </div>
-            <p className="text-3xl font-bold mb-1">£5.99</p>
-            <p className="text-zinc-500 text-sm mb-6">per month</p>
-            <div className="space-y-2.5 mb-8">
-              {proFeatures.map(f => (
-                <div key={f} className="flex items-center gap-2.5 text-sm text-zinc-300">
-                  <span className="text-green-400">✓</span>{f}
-                </div>
-              ))}
-            </div>
-
-            {error && (
-              <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-400 mb-3">
-                {error}
-              </div>
-            )}
-
-            {plan.isPro ? (
-              <button
-                onClick={handleManage}
-                disabled={loading}
-                className="w-full py-3 rounded-2xl border border-zinc-700 hover:border-zinc-500 text-sm font-medium text-zinc-300 hover:text-white transition disabled:opacity-50">
-                {loading ? "Loading..." : "Manage Subscription"}
-              </button>
-            ) : (
-              <button
-                onClick={handleUpgrade}
-                disabled={loading || plan.loading}
-                className="w-full py-3 rounded-2xl bg-green-600 hover:bg-green-500 text-white text-sm font-bold transition disabled:opacity-50">
-                {loading ? "Redirecting to Stripe..." : "Upgrade to Pro — £5.99/mo"}
-              </button>
-            )}
-          </div>
+      <div className="max-w-2xl mx-auto px-5 py-16">
+        <div className="text-center mb-10">
+          <p className="text-xs text-green-400 font-semibold uppercase tracking-widest mb-3">Pricing</p>
+          <h1 className="text-3xl sm:text-4xl font-bold mb-4">Currently free</h1>
+          <p className="text-zinc-400 text-base leading-relaxed max-w-lg mx-auto">
+            GetJobQuotes is free to use while we build it with real users.
+            No card required. No hidden limits. Everything included.
+          </p>
         </div>
 
-        <p className="text-center text-xs text-zinc-600 mt-8">
-          Secure payment via Stripe · Cancel anytime · No hidden fees
-        </p>
+        <div className="rounded-3xl border border-green-600/30 bg-green-600/5 p-8 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold">Free</h2>
+              <p className="text-zinc-400 text-sm">while we validate the product</p>
+            </div>
+            <div className="text-right">
+              <p className="text-4xl font-bold text-green-400">£0</p>
+              <p className="text-zinc-500 text-xs">no card needed</p>
+            </div>
+          </div>
+          <div className="space-y-2.5 mb-8">
+            {included.map(f => (
+              <div key={f} className="flex items-center gap-2.5 text-sm text-zinc-300">
+                <span className="text-green-400">✓</span>{f}
+              </div>
+            ))}
+          </div>
+          {isLoggedIn ? (
+            <Link href="/tool"
+              className="block w-full py-3.5 rounded-2xl bg-green-600 hover:bg-green-500 text-white text-sm font-bold transition text-center">
+              Create a Quote →
+            </Link>
+          ) : (
+            <Link href="/auth?mode=signup"
+              className="block w-full py-3.5 rounded-2xl bg-green-600 hover:bg-green-500 text-white text-sm font-bold transition text-center">
+              Start Free — No Card Needed
+            </Link>
+          )}
+        </div>
 
-        <div className="mt-6 text-center">
-          <Link href="/dashboard" className="text-xs text-zinc-600 hover:text-zinc-400 transition">
-            ← Back to Dashboard
-          </Link>
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 text-sm text-zinc-400 leading-relaxed">
+          <p className="font-semibold text-white mb-2">What about paid plans?</p>
+          <p>
+            Paid plans may be introduced later once the product is more mature.
+            If that happens, existing users will be notified well in advance
+            and given a fair transition period. Early users will always be looked after.
+          </p>
+        </div>
+
+        <div className="mt-8 text-center">
+          <p className="text-xs text-zinc-600 mb-3">Have feedback or a feature request?</p>
+          <a href="mailto:hello@getjobquotes.uk"
+            className="text-sm text-green-400 hover:text-green-300 transition">
+            hello@getjobquotes.uk
+          </a>
         </div>
       </div>
+
+      {isLoggedIn ? <AppFooter /> : <PublicFooter />}
     </div>
   );
 }
