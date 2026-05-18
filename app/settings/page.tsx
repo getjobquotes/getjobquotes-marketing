@@ -37,6 +37,14 @@ export default function SettingsPage() {
 
   const inp = "w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition";
 
+
+  const replayTour = async () => {
+    if (auth.status !== "authenticated") return;
+    const supabase = createClient();
+    await supabase.from("profiles").update({ tour_completed: false }).eq("user_id", auth.user.id);
+    window.location.href = "/dashboard";
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
       <TopNav />

@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import TopNav from "@/components/TopNav";
+import TourMode from "@/components/TourMode";
 import OnboardingChecklist from "@/components/onboarding/OnboardingChecklist";
 import AppFooter from "@/components/AppFooter";
 import { usePlan } from "@/lib/usePlan";
@@ -143,6 +144,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
       <TopNav />
+      {auth.status === "authenticated" && <TourMode userId={auth.user.id} />}
 
       <div className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8">
 
