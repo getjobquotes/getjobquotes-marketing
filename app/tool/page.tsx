@@ -160,6 +160,8 @@ function ToolInner() {
   const customerId = params.get("customer");
   const plan = usePlan(auth.status === "authenticated" ? auth.user.id : null);
 
+  const isWelcome = params.get("welcome") === "1";
+
   const sigRef = useRef<HTMLCanvasElement>(null);
   const isDrawing = useRef(false);
   const lastPos = useRef<{ x: number; y: number } | null>(null);
@@ -167,6 +169,7 @@ function ToolInner() {
   const [profile, setProfile] = useState<any>(null);
   const [customers, setCustomers] = useState<any[]>([]);
   const [saving, setSaving] = useState(false);
+  const [showWelcomeBanner, setShowWelcomeBanner] = useState(false);
   const [saved, setSaved] = useState(false);
   const [sigData, setSigData] = useState("");
   const [hasSig, setHasSig] = useState(false);
@@ -188,6 +191,21 @@ function ToolInner() {
 
   useEffect(() => {
     if (auth.status !== "authenticated") return;
+    if (isWelcome) {
+      setShowWelcomeBanner(true);
+      // Pre-fill with a realistic example so they see it working immediately
+      setForm(p => ({
+        ...p,
+        clientName: "Example Client",
+        description: "Boiler service and repair",
+        vat: true,
+      }));
+      setLineItems([
+        { description: "Labour — boiler service (2 hrs)", quantity: 2, unitPrice: 65 },
+        { description: "Parts — thermostat replacement", quantity: 1, unitPrice: 45 },
+        { description: "Call-out charge", quantity: 1, unitPrice: 30 },
+      ]);
+    }
     const user = auth.user;
 
     Promise.all([
@@ -317,6 +335,37 @@ function ToolInner() {
     <div className="min-h-screen bg-black text-white">
       <TopNav />
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6">
+
+        {/* Welcome banner — only on first signup */}
+        {showWelcomeBanner && (
+          <div className="mb-5 rounded-2xl border border-green-600/30 bg-green-600/5 px-4 py-4">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-sm font-bold text-white mb-1">👋 Welcome to GetJobQuotes!</p>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  We have pre-filled an example quote so you can see how it works.
+                  Edit the details, download the PDF, then save it.
+                </p>
+              </div>
+              <button onClick={() => setShowWelcomeBanner(false)}
+                className="text-zinc-600 hover:text-zinc-400 text-lg shrink-0 transition">×</button>
+            </div>
+            <div className="flex gap-2 mt-3 flex-wrap">
+              <a href="/profile"
+                className="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition">
+                1. Add your logo →
+              </a>
+              <a href="/customers"
+                className="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition">
+                2. Save a client →
+              </a>
+              <a href="/help"
+                className="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition">
+                3. Help centre →
+              </a>
+            </div>
+          </div>
+        )}
 
         <div className="flex items-center justify-between mb-5">
           <h1 className="text-xl font-bold">

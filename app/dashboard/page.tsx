@@ -8,7 +8,6 @@ import OnboardingChecklist from "@/components/onboarding/OnboardingChecklist";
 import AppFooter from "@/components/AppFooter";
 import { usePlan } from "@/lib/usePlan";
 import { useOnboarding } from "@/lib/useOnboarding";
-import OnboardingTour from "@/components/OnboardingTour";
 
 type Doc = {
   id: string; type: string; number: string; client_name: string;
@@ -144,7 +143,6 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
       <TopNav />
-      {auth.status === "authenticated" && <OnboardingTour userId={auth.user.id} />}
 
       <div className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8">
 

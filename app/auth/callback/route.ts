@@ -1,74 +1,58 @@
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
-import { NextResponse, type NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
-const ALLOWED_REDIRECTS = ["/dashboard", "/tool", "/pricing", "/profile", "/customers", "/settings"];
+const ALLOWED_NEXT = ["/dashboard", "/tool", "/pricing", "/profile", "/customers", "/settings"];
+const APP_URL = (process.env.NEXT_PUBLIC_APP_URL || "https://getjobquotes.uk").replace(/\/$/, "");
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
-  const code = searchParams.get("code");
-  const type = searchParams.get("type");
-  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || origin).replace(/\/$/, "");
-  const nextParam = searchParams.get("next") || "/dashboard";
-  const safeNext = ALLOWED_REDIRECTS.includes(nextParam) ? nextParam : "/dashboard";
-
-  // Password reset — go to dedicated reset page
-  if (type === "recovery") {
-    return NextResponse.redirect(`${appUrl}/auth/reset`);
-  }
+  const code  = searchParams.get("code");
+  const next  = searchParams.get("next") || "/dashboard";
+  const safeNext = ALLOWED_NEXT.includes(next) ? next : "/dashboard";
 
   if (!code) {
-    return NextResponse.redirect(`${appUrl}/auth?error=no_code`);
+    return NextResponse.redirect(`${APP_URL}/auth?error=no_code`);
   }
 
-  const cookieStore = await cookies();
-  const response = NextResponse.redirect(`${appUrl}/dashboard`);
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() { return cookieStore.getAll(); },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, {
-              ...options,
-              httpOnly: false,
-              sameSite: "lax",
-              secure: process.env.NODE_ENV === "production",
-              path: "/",
-            })
-          );
-        },
-      },
-    }
-  );
-
+  const supabase = await createClient();
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-  if (error || !data.user) {
-    return NextResponse.redirect(`${appUrl}/auth?error=callback_failed`);
+
+  if (error || !data.session) {
+    return NextResponse.redirect(`${APP_URL}/auth?error=exchange_failed`);
   }
 
-  // Create profile + send welcome email for new users
-  const user = data.user;
-  const { data: existing } = await supabase
-    .from("profiles").select("id").eq("user_id", user.id).maybeSingle();
+  const user = data.session.user;
 
-  if (!existing) {
+  // Check if this is a brand new user (no profile yet)
+  const { data: existingProfile } = await supabase
+    .from("profiles")
+    .select("user_id, onboarding_complete")
+    .eq("user_id", user.id)
+    .single();
+
+  const isNewUser = !existingProfile;
+
+  if (isNewUser) {
+    // Create profile
     await supabase.from("profiles").insert({
       user_id: user.id,
-      business_email: user.email,
-    });
-    const name = user.user_metadata?.full_name ||
-      user.user_metadata?.name ||
-      user.email?.split("@")[0] || "";
-    fetch(`${appUrl}/api/email/welcome`, {
+      business_name: user.user_metadata?.full_name || user.user_metadata?.name || "",
+      business_email: user.email || "",
+      onboarding_complete: false,
+    }).single();
+
+    // Fire welcome email (non-blocking)
+    fetch(`${APP_URL}/api/email/welcome`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: user.email, name }),
+      body: JSON.stringify({ userId: user.id, email: user.email }),
     }).catch(() => {});
+
+    // New users → go straight to the tool to see it immediately
+    const response = NextResponse.redirect(`${APP_URL}/tool?welcome=1`);
+    return response;
   }
 
-  return response;
+  // Returning users → go to dashboard or their intended page
+  return NextResponse.redirect(`${APP_URL}${safeNext}`);
 }
