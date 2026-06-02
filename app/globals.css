@@ -1,18 +1,18 @@
 /* === THEME TOKENS === */
 :root {
-  /* LIGHT theme — refined for depth and contrast */
-  --bg: 247 247 248;          /* soft off-white page bg (not pure white) */
-  --surface: 255 255 255;     /* cards pop white above the bg */
-  --surface2: 244 244 245;    /* secondary surfaces */
-  --border: 228 228 231;      /* zinc-200 */
-  --border-strong: 212 212 216;
-  --text: 24 24 27;           /* near-black */
-  --text-muted: 82 82 91;     /* zinc-600 */
-  --text-faint: 138 138 147;  /* readable faint */
+  /* LIGHT — layered whites for hierarchy & depth */
+  --bg: 244 244 246;          /* page: soft grey-white base */
+  --surface: 255 255 255;     /* primary cards: pure white, lifts off page */
+  --surface2: 249 249 251;    /* secondary panels: barely-grey */
+  --border: 226 226 231;      /* visible but soft */
+  --border-strong: 203 203 210;
+  --text: 17 17 20;           /* almost black — max legibility */
+  --text-muted: 90 90 99;     /* readable secondary text */
+  --text-faint: 130 130 140;  /* hints, still legible (not too light) */
 }
 
 .dark {
-  /* DARK theme */
+  /* DARK — unchanged */
   --bg: 0 0 0;
   --surface: 24 24 27;
   --surface2: 39 39 42;
@@ -20,25 +20,43 @@
   --border-strong: 63 63 70;
   --text: 255 255 255;
   --text-muted: 161 161 170;
-  --text-faint: 82 82 91;
+  --text-faint: 110 110 120;  /* slightly brighter for legibility */
 }
 
 html, body {
   background-color: rgb(var(--bg));
   color: rgb(var(--text));
   transition: background-color 0.2s ease, color 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Subtle card depth in LIGHT mode — gives separation from the bg.
-   Targets the token-based surface cards with a border. */
+/* LIGHT MODE depth — layered shadows so white cards separate cleanly */
 :root:not(.dark) [class*="bg-[rgb(var(--surface))]"] {
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 2px rgba(16,24,40,0.04), 0 1px 3px rgba(16,24,40,0.08);
 }
-/* No shadow in dark — borders do the work there */
-.dark [class*="bg-[rgb(var(--surface))]"] {
+:root:not(.dark) [class*="bg-[rgb(var(--surface2))]"] {
+  box-shadow: inset 0 0 0 1px rgba(16,24,40,0.03);
+}
+/* Sticky nav gets a soft bottom shadow in light mode */
+:root:not(.dark) nav.sticky {
+  box-shadow: 0 1px 0 rgba(16,24,40,0.06);
+}
+
+/* DARK — no shadows, borders handle separation */
+.dark [class*="bg-[rgb(var(--surface))]"],
+.dark [class*="bg-[rgb(var(--surface2))]"] {
   box-shadow: none;
 }
+
+/* Inputs: ensure clear contrast in both themes */
+:root:not(.dark) input,
+:root:not(.dark) textarea,
+:root:not(.dark) select {
+  background-color: #ffffff;
+}
 /* === END THEME TOKENS === */
+
 
 
 
@@ -86,3 +104,20 @@ body {
 .guide-content a { color: #4ade80; text-decoration: underline; text-underline-offset: 2px; }
 .guide-content a:hover { color: #86efac; }
 .guide-content .not-prose { all: unset; display: block; }
+
+
+/* Lift faint green-tint banners in light mode so they're visible */
+:root:not(.dark) [class*="bg-green-600/5"] {
+  background-color: rgba(34,197,94,0.07) !important;
+}
+:root:not(.dark) [class*="bg-green-500/10"],
+:root:not(.dark) [class*="bg-green-600/10"] {
+  background-color: rgba(34,197,94,0.10) !important;
+}
+/* Red/yellow status tints — keep legible in light */
+:root:not(.dark) [class*="bg-red-500/10"] {
+  background-color: rgba(239,68,68,0.08) !important;
+}
+:root:not(.dark) [class*="bg-yellow-500/10"] {
+  background-color: rgba(234,179,8,0.10) !important;
+}
