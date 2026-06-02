@@ -177,12 +177,12 @@ function AuthInner() {
 
   const reason = params.get("reason");
   const errorParam = params.get("error");
-  const inp = "w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition";
-  const primaryBtn = "w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition disabled:opacity-50";
-  const secondaryBtn = "w-full py-3 rounded-xl border border-zinc-700 hover:border-zinc-500 text-zinc-300 hover:text-white text-sm font-medium transition disabled:opacity-50";
+  const inp = "w-full rounded-xl border border-[rgb(var(--border-strong))] bg-[rgb(var(--surface))] px-4 py-3 text-[rgb(var(--text))] text-sm placeholder:text-[rgb(var(--text-faint))] outline-none focus:border-green-500 transition";
+  const primaryBtn = "w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-[rgb(var(--text))] text-sm font-semibold transition disabled:opacity-50";
+  const secondaryBtn = "w-full py-3 rounded-xl border border-[rgb(var(--border-strong))] hover:border-[rgb(var(--border-strong))] text-[rgb(var(--text))] hover:text-[rgb(var(--text))] text-sm font-medium transition disabled:opacity-50";
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[rgb(var(--bg))] text-[rgb(var(--text))] flex flex-col items-center justify-center px-4 py-12">
 
       <Link href="/" className="text-xl font-bold mb-8">
         <span className="text-green-400">Get</span>JobQuotes
@@ -204,11 +204,11 @@ function AuthInner() {
 
         {/* ── EMAIL SENT STATE ──────────────────────────────── */}
         {mode === "sent" && (
-          <div className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-8 text-center">
+          <div className="rounded-3xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] p-8 text-center">
             <div className="text-5xl mb-4">📧</div>
             <h1 className="text-xl font-bold mb-3">Check your email</h1>
-            <p className="text-zinc-400 text-sm leading-relaxed mb-2">{sentMsg}</p>
-            <p className="text-zinc-600 text-xs mb-6">
+            <p className="text-[rgb(var(--text-muted))] text-sm leading-relaxed mb-2">{sentMsg}</p>
+            <p className="text-[rgb(var(--text-faint))] text-xs mb-6">
               Can't find it? Check your spam / junk folder.
             </p>
             <button onClick={() => { setMode("login"); clear(); }}
@@ -220,18 +220,18 @@ function AuthInner() {
 
         {/* ── RESET PASSWORD STATE ──────────────────────────── */}
         {mode === "reset" && (
-          <div className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-8">
+          <div className="rounded-3xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] p-8">
             <h1 className="text-xl font-bold mb-1 text-center">Set new password</h1>
-            <p className="text-zinc-500 text-xs text-center mb-6">Choose a strong password.</p>
+            <p className="text-[rgb(var(--text-muted))] text-xs text-center mb-6">Choose a strong password.</p>
             <div className="space-y-3">
               <div>
-                <label className="text-xs text-zinc-500 mb-1 block">New password</label>
+                <label className="text-xs text-[rgb(var(--text-muted))] mb-1 block">New password</label>
                 <input type="password" value={newPassword}
                   onChange={e => setNewPassword(e.target.value)}
                   placeholder="At least 8 characters" className={inp} />
               </div>
               <div>
-                <label className="text-xs text-zinc-500 mb-1 block">Confirm password</label>
+                <label className="text-xs text-[rgb(var(--text-muted))] mb-1 block">Confirm password</label>
                 <input type="password" value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}
                   placeholder="Repeat your password" className={inp}
@@ -248,14 +248,14 @@ function AuthInner() {
 
         {/* ── FORGOT PASSWORD ───────────────────────────────── */}
         {mode === "forgot" && (
-          <div className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-8">
+          <div className="rounded-3xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] p-8">
             <h1 className="text-xl font-bold mb-1 text-center">Reset password</h1>
-            <p className="text-zinc-500 text-xs text-center mb-6">
+            <p className="text-[rgb(var(--text-muted))] text-xs text-center mb-6">
               Enter your email and we'll send a reset link.
             </p>
             <div className="space-y-3">
               <div>
-                <label className="text-xs text-zinc-500 mb-1 block">Email address</label>
+                <label className="text-xs text-[rgb(var(--text-muted))] mb-1 block">Email address</label>
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)}
                   placeholder="you@example.com" className={inp}
                   onKeyDown={e => e.key === "Enter" && handleForgotPassword()} />
@@ -273,14 +273,14 @@ function AuthInner() {
 
         {/* ── LOGIN / SIGNUP ────────────────────────────────── */}
         {(mode === "login" || mode === "signup") && (
-          <div className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-8">
+          <div className="rounded-3xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] p-8">
 
             {/* Tab toggle */}
-            <div className="flex gap-1 p-1 bg-zinc-900 border border-zinc-800 rounded-full mb-6">
+            <div className="flex gap-1 p-1 bg-[rgb(var(--surface))] border border-[rgb(var(--border))] rounded-full mb-6">
               {(["login", "signup"] as const).map(m => (
                 <button key={m} onClick={() => { setMode(m); clear(); }}
                   className={`flex-1 py-2 rounded-full text-sm font-semibold capitalize transition ${
-                    mode === m ? "bg-green-600 text-white" : "text-zinc-400 hover:text-white"
+                    mode === m ? "bg-green-600 text-[rgb(var(--text))]" : "text-[rgb(var(--text-muted))] hover:text-[rgb(var(--text))]"
                   }`}>
                   {m === "login" ? "Log In" : "Sign Up"}
                 </button>
@@ -291,7 +291,7 @@ function AuthInner() {
 
               {/* Google */}
               <button onClick={handleGoogle}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-zinc-700 hover:border-zinc-500 text-sm font-medium text-zinc-300 hover:text-white transition">
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-[rgb(var(--border-strong))] hover:border-[rgb(var(--border-strong))] text-sm font-medium text-[rgb(var(--text))] hover:text-[rgb(var(--text))] transition">
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                   <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -301,15 +301,15 @@ function AuthInner() {
                 Continue with Google
               </button>
 
-              <div className="flex items-center gap-3 text-zinc-700 text-xs">
-                <div className="flex-1 h-px bg-zinc-800" />
+              <div className="flex items-center gap-3 text-[rgb(var(--text-faint))] text-xs">
+                <div className="flex-1 h-px bg-[rgb(var(--surface2))]" />
                 <span>or with email</span>
-                <div className="flex-1 h-px bg-zinc-800" />
+                <div className="flex-1 h-px bg-[rgb(var(--surface2))]" />
               </div>
 
               {/* Email */}
               <div>
-                <label className="text-xs text-zinc-500 mb-1 block">Email address</label>
+                <label className="text-xs text-[rgb(var(--text-muted))] mb-1 block">Email address</label>
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)}
                   placeholder="you@example.com" className={inp} />
               </div>
@@ -317,7 +317,7 @@ function AuthInner() {
               {/* Password */}
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs text-zinc-500">Password</label>
+                  <label className="text-xs text-[rgb(var(--text-muted))]">Password</label>
                   {mode === "login" && (
                     <button
                       type="button"
@@ -327,7 +327,7 @@ function AuthInner() {
                     </button>
                   )}
                   {mode === "signup" && (
-                    <span className="text-xs text-zinc-600">Min. 8 characters</span>
+                    <span className="text-xs text-[rgb(var(--text-faint))]">Min. 8 characters</span>
                   )}
                 </div>
                 <input type="password" value={password} onChange={e => setPassword(e.target.value)}
@@ -355,10 +355,10 @@ function AuthInner() {
                   : (mode === "login" ? "Log In" : "Create Account")}
               </button>
 
-              <div className="flex items-center gap-3 text-zinc-700 text-xs">
-                <div className="flex-1 h-px bg-zinc-800" />
+              <div className="flex items-center gap-3 text-[rgb(var(--text-faint))] text-xs">
+                <div className="flex-1 h-px bg-[rgb(var(--surface2))]" />
                 <span>or</span>
-                <div className="flex-1 h-px bg-zinc-800" />
+                <div className="flex-1 h-px bg-[rgb(var(--surface2))]" />
               </div>
 
               {/* Magic link */}
@@ -368,7 +368,7 @@ function AuthInner() {
 
             </div>
 
-            <p className="text-center text-xs text-zinc-600 mt-5">
+            <p className="text-center text-xs text-[rgb(var(--text-faint))] mt-5">
               {mode === "login" ? "No account? " : "Already have one? "}
               <button onClick={() => { setMode(mode === "login" ? "signup" : "login"); clear(); }}
                 className="text-green-400 hover:text-green-300 transition font-medium">
@@ -378,11 +378,11 @@ function AuthInner() {
           </div>
         )}
 
-        <p className="text-center text-xs text-zinc-700">
+        <p className="text-center text-xs text-[rgb(var(--text-faint))]">
           By continuing you agree to our{" "}
-          <Link href="/terms" className="hover:text-zinc-500">Terms</Link>
+          <Link href="/terms" className="hover:text-[rgb(var(--text-muted))]">Terms</Link>
           {" & "}
-          <Link href="/privacy" className="hover:text-zinc-500">Privacy Policy</Link>
+          <Link href="/privacy" className="hover:text-[rgb(var(--text-muted))]">Privacy Policy</Link>
         </p>
 
       </div>
@@ -393,8 +393,8 @@ function AuthInner() {
 export default function AuthPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <p className="text-zinc-600 text-sm animate-pulse">Loading...</p>
+      <div className="min-h-screen bg-[rgb(var(--bg))] flex items-center justify-center">
+        <p className="text-[rgb(var(--text-faint))] text-sm animate-pulse">Loading...</p>
       </div>
     }>
       <AuthInner />

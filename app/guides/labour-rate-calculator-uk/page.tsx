@@ -28,7 +28,7 @@ export default function GuideLabourRateCalculator() {
 
       <div className="not-prose bg-green-50 border border-green-200 rounded-xl p-5 my-6">
         <p className="text-sm font-semibold text-green-800 mb-2">Example Calculation</p>
-        <ul className="text-sm text-zinc-700 space-y-1">
+        <ul className="text-sm text-[rgb(var(--text-faint))] space-y-1">
           <li>Target take-home: £40,000</li>
           <li>Business costs: £8,000</li>
           <li>Tax and NI (approx 28%): £13,440</li>
@@ -50,13 +50,13 @@ export default function GuideLabourRateCalculator() {
         <li><strong>Gas Engineer</strong> — £200–£400/day</li>
         <li><strong>Tiler</strong> — £130–£250/day</li>
       </ul>
-      <p className="text-sm text-zinc-500">Note: London and South East rates are typically 20–40% higher than the national average.</p>
+      <p className="text-sm text-[rgb(var(--text-muted))]">Note: London and South East rates are typically 20–40% higher than the national average.</p>
 
       <h2>Use the Built-in Calculator</h2>
       <p>GetJobQuotes has a built-in Day Rate calculator. Enter your day rate and number of days to get the total including VAT — available on every page of the app.</p>
       <div className="not-prose flex gap-3 my-4">
-        <Link href="/auth?mode=signup" className="inline-block px-5 py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl text-sm transition">Open Free Quote Tool</Link>
-        <Link href="/demo" className="inline-block px-5 py-3 border border-zinc-300 text-zinc-700 font-semibold rounded-xl text-sm transition text-center hover:border-zinc-400">Try Demo</Link>
+        <Link href="/auth?mode=signup" className="inline-block px-5 py-3 bg-green-600 hover:bg-green-500 text-[rgb(var(--text))] font-bold rounded-xl text-sm transition">Open Free Quote Tool</Link>
+        <Link href="/demo" className="inline-block px-5 py-3 border border-zinc-300 text-[rgb(var(--text-faint))] font-semibold rounded-xl text-sm transition text-center hover:border-zinc-400">Try Demo</Link>
       </div>
 
       <h2>FAQs</h2>

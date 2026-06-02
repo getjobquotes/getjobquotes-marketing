@@ -63,7 +63,7 @@ export default function TopNav() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-zinc-900 bg-black/95 backdrop-blur-sm">
+    <nav className="sticky top-0 z-50 w-full border-b border-[rgb(var(--border))] bg-black/95 backdrop-blur-sm">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
         <Link href="/" className="text-base font-bold shrink-0">
           <span className="text-green-400">Get</span>JobQuotes
@@ -76,7 +76,7 @@ export default function TopNav() {
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
                 pathname === l.href
                   ? "bg-green-600/20 text-green-400"
-                  : "text-zinc-400 hover:text-white hover:bg-zinc-900"
+                  : "text-[rgb(var(--text-muted))] hover:text-[rgb(var(--text))] hover:bg-[rgb(var(--surface))]"
               }`}>
               {l.label}
             </Link>
@@ -87,43 +87,43 @@ export default function TopNav() {
           {/* Theme toggle */}
           <button onClick={toggle}
             title="Toggle theme"
-            className="w-9 h-9 rounded-xl border border-zinc-800 hover:border-zinc-600 flex items-center justify-center text-zinc-400 hover:text-white transition">
+            className="w-9 h-9 rounded-xl border border-[rgb(var(--border))] hover:border-[rgb(var(--border-strong))] flex items-center justify-center text-[rgb(var(--text-muted))] hover:text-[rgb(var(--text))] transition">
             {theme === "dark" ? "☀️" : "🌙"}
           </button>
 
           {/* Avatar */}
           <div className="relative" ref={dropRef}>
             <button onClick={() => setOpen(v => !v)}
-              className="w-9 h-9 rounded-full bg-green-600 hover:bg-green-500 text-white text-sm font-bold flex items-center justify-center transition">
+              className="w-9 h-9 rounded-full bg-green-600 hover:bg-green-500 text-[rgb(var(--text))] text-sm font-bold flex items-center justify-center transition">
               {initials}
             </button>
             {open && (
-              <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-zinc-800 bg-zinc-950 shadow-2xl overflow-hidden z-50">
-                <div className="px-4 py-3 border-b border-zinc-800">
-                  <p className="text-sm font-semibold text-white truncate">{displayName || "Your account"}</p>
-                  <p className="text-xs text-zinc-500 truncate">{email}</p>
+              <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--bg))] shadow-2xl overflow-hidden z-50">
+                <div className="px-4 py-3 border-b border-[rgb(var(--border))]">
+                  <p className="text-sm font-semibold text-[rgb(var(--text))] truncate">{displayName || "Your account"}</p>
+                  <p className="text-xs text-[rgb(var(--text-muted))] truncate">{email}</p>
                 </div>
-                <div className="py-1 border-b border-zinc-800">
+                <div className="py-1 border-b border-[rgb(var(--border))]">
                   {navLinks.map(l => (
                     <Link key={l.href} href={l.href} onClick={() => setOpen(false)}
                       className={`block px-4 py-2.5 text-sm transition ${
                         pathname === l.href
                           ? "text-green-400 font-semibold bg-green-600/10"
-                          : "text-zinc-300 hover:text-white hover:bg-zinc-900"
+                          : "text-[rgb(var(--text))] hover:text-[rgb(var(--text))] hover:bg-[rgb(var(--surface))]"
                       }`}>
                       {l.label}
                     </Link>
                   ))}
                 </div>
-                <div className="py-1 border-b border-zinc-800">
+                <div className="py-1 border-b border-[rgb(var(--border))]">
                   <button onClick={() => { toggle(); setOpen(false); }}
-                    className="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:text-white hover:bg-zinc-900 transition">
+                    className="w-full text-left px-4 py-2.5 text-sm text-[rgb(var(--text))] hover:text-[rgb(var(--text))] hover:bg-[rgb(var(--surface))] transition">
                     {theme === "dark" ? "☀️ Light mode" : "🌙 Dark mode"}
                   </button>
                 </div>
                 <div className="py-1">
                   <button onClick={logout}
-                    className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:text-red-300 hover:bg-zinc-900 transition">
+                    className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:text-red-300 hover:bg-[rgb(var(--surface))] transition">
                     Log out
                   </button>
                 </div>

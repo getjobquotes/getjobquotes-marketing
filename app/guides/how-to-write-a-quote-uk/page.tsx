@@ -28,8 +28,8 @@ export default function GuideHowToWriteAQuote() {
       </p>
 
       <div className="not-prose bg-zinc-50 border border-zinc-200 rounded-xl p-5 my-6">
-        <p className="text-sm font-semibold text-zinc-700 mb-3">📋 Table of Contents</p>
-        <ol className="space-y-1.5 text-sm text-zinc-600">
+        <p className="text-sm font-semibold text-[rgb(var(--text-faint))] mb-3">📋 Table of Contents</p>
+        <ol className="space-y-1.5 text-sm text-[rgb(var(--text-faint))]">
           {[
             ["What is a quote?", "#what-is-a-quote"],
             ["What to include in a quote", "#what-to-include"],
@@ -186,11 +186,11 @@ export default function GuideHowToWriteAQuote() {
       </p>
       <div className="not-prose flex flex-col sm:flex-row gap-3 my-4">
         <Link href="/auth?mode=signup"
-          className="inline-block px-5 py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl text-sm transition text-center">
+          className="inline-block px-5 py-3 bg-green-600 hover:bg-green-500 text-[rgb(var(--text))] font-bold rounded-xl text-sm transition text-center">
           Create Free Quote Now
         </Link>
         <Link href="/demo"
-          className="inline-block px-5 py-3 border border-zinc-300 hover:border-zinc-400 text-zinc-700 font-semibold rounded-xl text-sm transition text-center">
+          className="inline-block px-5 py-3 border border-zinc-300 hover:border-zinc-400 text-[rgb(var(--text-faint))] font-semibold rounded-xl text-sm transition text-center">
           Try the Demo First
         </Link>
       </div>

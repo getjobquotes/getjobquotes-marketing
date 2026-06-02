@@ -33,9 +33,9 @@ export default function EmailCapture({ source = "landing_page" }: { source?: str
         <input type="email" value={email} onChange={e => setEmail(e.target.value)}
           placeholder="your@email.com"
           onKeyDown={e => e.key === "Enter" && handleSubmit()}
-          className="flex-1 rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition" />
+          className="flex-1 rounded-xl border border-[rgb(var(--border-strong))] bg-[rgb(var(--bg))] px-4 py-3 text-[rgb(var(--text))] text-sm placeholder:text-[rgb(var(--text-faint))] outline-none focus:border-green-500 transition" />
         <button onClick={handleSubmit} disabled={loading}
-          className="px-5 py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition disabled:opacity-50 whitespace-nowrap">
+          className="px-5 py-3 rounded-xl bg-green-600 hover:bg-green-500 text-[rgb(var(--text))] text-sm font-semibold transition disabled:opacity-50 whitespace-nowrap">
           {loading ? "Joining..." : "Notify Me"}
         </button>
       </div>

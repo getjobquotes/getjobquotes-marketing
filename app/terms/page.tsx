@@ -13,14 +13,14 @@ const APP_URL = "https://getjobquotes.uk";
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[rgb(var(--bg))] text-[rgb(var(--text))]">
 
       {/* Nav */}
-      <nav className="border-b border-zinc-900 px-6 py-4 flex items-center justify-between">
+      <nav className="border-b border-[rgb(var(--border))] px-6 py-4 flex items-center justify-between">
         <Link href="/" className="text-base font-bold">
           <span className="text-green-400">Get</span>JobQuotes
         </Link>
-        <Link href="/dashboard" className="text-sm text-zinc-400 hover:text-white transition">Dashboard →</Link>
+        <Link href="/dashboard" className="text-sm text-[rgb(var(--text-muted))] hover:text-[rgb(var(--text))] transition">Dashboard →</Link>
       </nav>
 
       <div className="max-w-3xl mx-auto px-6 py-14">
@@ -29,10 +29,10 @@ export default function TermsPage() {
         <div className="mb-12">
           <p className="text-green-400 text-xs font-semibold uppercase tracking-widest mb-3">Legal</p>
           <h1 className="text-4xl font-bold mb-3">Terms & Conditions</h1>
-          <p className="text-zinc-500 text-sm">Last updated: {LAST_UPDATED}</p>
+          <p className="text-[rgb(var(--text-muted))] text-sm">Last updated: {LAST_UPDATED}</p>
         </div>
 
-        <div className="prose prose-invert max-w-none space-y-10 text-sm leading-relaxed text-zinc-300">
+        <div className="prose prose-invert max-w-none space-y-10 text-sm leading-relaxed text-[rgb(var(--text))]">
 
           {/* Intro */}
           <section>
@@ -111,7 +111,7 @@ export default function TermsPage() {
               You are solely responsible for the accuracy and legality of all quotes and invoices you create.
             </p>
             <p className="mt-3">
-              <strong className="text-white">Important:</strong> GetJobQuotes is a tool that helps you create
+              <strong className="text-[rgb(var(--text))]">Important:</strong> GetJobQuotes is a tool that helps you create
               documents — we are not a party to any contract between you and your clients. We accept no
               responsibility for disputes arising from quotes or invoices you create using the service.
             </p>
@@ -212,7 +212,7 @@ export default function TermsPage() {
 
           {/* Contact */}
           <section>
-            <h2 className="text-lg font-bold text-white mb-3">Contact</h2>
+            <h2 className="text-lg font-bold text-[rgb(var(--text))] mb-3">Contact</h2>
             <p>
               Questions about these Terms? Email us at{" "}
               <a href={`mailto:${CONTACT_EMAIL}`} className="text-green-400 hover:underline">{CONTACT_EMAIL}</a>.
@@ -231,23 +231,23 @@ export default function TermsPage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="text-lg font-bold text-white mb-3">{title}</h2>
+      <h2 className="text-lg font-bold text-[rgb(var(--text))] mb-3">{title}</h2>
       {children}
     </section>
   );
 }
 
 function Divider() {
-  return <hr className="border-zinc-800" />;
+  return <hr className="border-[rgb(var(--border))]" />;
 }
 
 function Footer() {
   return (
-    <footer className="border-t border-zinc-900 px-6 py-6 flex flex-wrap gap-4 text-xs text-zinc-700 justify-center">
-      <Link href="/" className="hover:text-zinc-400 transition">Home</Link>
-      <Link href="/privacy" className="hover:text-zinc-400 transition">Privacy Policy</Link>
-      <Link href="/status" className="hover:text-zinc-400 transition">Status</Link>
-      <a href="mailto:support@getjobquotes.uk" className="hover:text-zinc-400 transition">Contact</a>
+    <footer className="border-t border-[rgb(var(--border))] px-6 py-6 flex flex-wrap gap-4 text-xs text-[rgb(var(--text-faint))] justify-center">
+      <Link href="/" className="hover:text-[rgb(var(--text-muted))] transition">Home</Link>
+      <Link href="/privacy" className="hover:text-[rgb(var(--text-muted))] transition">Privacy Policy</Link>
+      <Link href="/status" className="hover:text-[rgb(var(--text-muted))] transition">Status</Link>
+      <a href="mailto:support@getjobquotes.uk" className="hover:text-[rgb(var(--text-muted))] transition">Contact</a>
     </footer>
   );
 }

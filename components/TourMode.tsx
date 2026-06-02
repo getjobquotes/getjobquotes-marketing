@@ -89,15 +89,15 @@ const STEPS = [
 
 // ── Mini visuals for each step ────────────────────────────
 function StepVisual({ type }: { type: string }) {
-  const base = "w-full rounded-2xl border border-zinc-700/50 bg-zinc-900 overflow-hidden";
+  const base = "w-full rounded-2xl border border-zinc-700/50 bg-[rgb(var(--surface))] overflow-hidden";
 
   if (type === "welcome") return (
     <div className={`${base} p-6 flex flex-col items-center justify-center gap-3`} style={{ minHeight: 140 }}>
-      <div className="text-4xl font-bold"><span className="text-green-400">Get</span><span className="text-white">JobQuotes</span></div>
-      <p className="text-xs text-zinc-500 text-center">Professional quotes and invoices for UK tradespeople</p>
+      <div className="text-4xl font-bold"><span className="text-green-400">Get</span><span className="text-[rgb(var(--text))]">JobQuotes</span></div>
+      <p className="text-xs text-[rgb(var(--text-muted))] text-center">Professional quotes and invoices for UK tradespeople</p>
       <div className="flex gap-2 mt-1">
         {["Quotes","Invoices","PDF","VAT","Calculator"].map(t => (
-          <span key={t} className="text-xs px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700">{t}</span>
+          <span key={t} className="text-xs px-2 py-0.5 rounded-full bg-[rgb(var(--surface2))] text-[rgb(var(--text-muted))] border border-[rgb(var(--border-strong))]">{t}</span>
         ))}
       </div>
     </div>
@@ -107,13 +107,13 @@ function StepVisual({ type }: { type: string }) {
     <div className={`${base} p-4`} style={{ minHeight: 140 }}>
       <div className="flex items-center gap-2 mb-3">
         <div className="w-2 h-2 rounded-full bg-green-400" />
-        <span className="text-xs text-zinc-400 font-medium">Dashboard</span>
+        <span className="text-xs text-[rgb(var(--text-muted))] font-medium">Dashboard</span>
       </div>
       <div className="grid grid-cols-2 gap-2 mb-2">
         {[["QUOTES","3"],["INVOICES","5"],["TOTAL INVOICED","£3,240"],["PENDING","2 invoices"]].map(([l,v]) => (
-          <div key={l} className="rounded-xl border border-zinc-700 bg-zinc-800/50 px-3 py-2">
-            <p className="text-xs text-zinc-600">{l}</p>
-            <p className="text-sm font-bold text-white">{v}</p>
+          <div key={l} className="rounded-xl border border-[rgb(var(--border-strong))] bg-[rgb(var(--surface2)/0.5)] px-3 py-2">
+            <p className="text-xs text-[rgb(var(--text-faint))]">{l}</p>
+            <p className="text-sm font-bold text-[rgb(var(--text))]">{v}</p>
           </div>
         ))}
       </div>
@@ -124,8 +124,8 @@ function StepVisual({ type }: { type: string }) {
     <div className={`${base} p-4`} style={{ minHeight: 140 }}>
       <div className="space-y-2">
         {[["Quotes sent this month","8","text-blue-400"],["Invoices raised","12","text-green-400"],["Total invoiced","£14,200","text-green-400"],["Outstanding","£2,400","text-yellow-400"]].map(([l,v,c]) => (
-          <div key={l} className="flex items-center justify-between border-b border-zinc-800 pb-1.5">
-            <span className="text-xs text-zinc-500">{l}</span>
+          <div key={l} className="flex items-center justify-between border-b border-[rgb(var(--border))] pb-1.5">
+            <span className="text-xs text-[rgb(var(--text-muted))]">{l}</span>
             <span className={`text-sm font-bold ${c}`}>{v}</span>
           </div>
         ))}
@@ -136,35 +136,35 @@ function StepVisual({ type }: { type: string }) {
   if (type === "newquote") return (
     <div className={`${base} p-4 flex flex-col items-center justify-center gap-4`} style={{ minHeight: 140 }}>
       <div className="flex items-center gap-3">
-        <div className="h-9 px-4 rounded-xl bg-green-600 text-white text-sm font-bold flex items-center gap-1.5">
+        <div className="h-9 px-4 rounded-xl bg-green-600 text-[rgb(var(--text))] text-sm font-bold flex items-center gap-1.5">
           <span>+</span><span>New Quote</span>
         </div>
-        <div className="h-9 px-4 rounded-xl border border-zinc-700 text-zinc-400 text-sm flex items-center gap-1.5">
+        <div className="h-9 px-4 rounded-xl border border-[rgb(var(--border-strong))] text-[rgb(var(--text-muted))] text-sm flex items-center gap-1.5">
           <span>👥</span><span>Customers</span>
         </div>
-        <div className="h-9 px-4 rounded-xl border border-zinc-700 text-zinc-400 text-sm flex items-center gap-1.5">
+        <div className="h-9 px-4 rounded-xl border border-[rgb(var(--border-strong))] text-[rgb(var(--text-muted))] text-sm flex items-center gap-1.5">
           <span>🏢</span><span>Profile</span>
         </div>
       </div>
-      <p className="text-xs text-zinc-600">Navigation bar — available on every page</p>
+      <p className="text-xs text-[rgb(var(--text-faint))]">Navigation bar — available on every page</p>
     </div>
   );
 
   if (type === "builder") return (
     <div className={`${base} p-4`} style={{ minHeight: 140 }}>
-      <p className="text-xs text-zinc-600 mb-2 font-medium uppercase tracking-wider">Line Items</p>
+      <p className="text-xs text-[rgb(var(--text-faint))] mb-2 font-medium uppercase tracking-wider">Line Items</p>
       <div className="space-y-1.5">
         {[["Labour — boiler service (2hrs)","2","£65.00","£130.00"],["Parts — thermostat","1","£45.00","£45.00"],["Call-out charge","1","£30.00","£30.00"]].map(([d,q,u,t]) => (
           <div key={d} className="grid grid-cols-12 gap-1 text-xs">
-            <span className="col-span-6 text-zinc-400 truncate">{d}</span>
-            <span className="col-span-1 text-zinc-500 text-center">{q}</span>
-            <span className="col-span-2 text-zinc-500 text-right">{u}</span>
+            <span className="col-span-6 text-[rgb(var(--text-muted))] truncate">{d}</span>
+            <span className="col-span-1 text-[rgb(var(--text-muted))] text-center">{q}</span>
+            <span className="col-span-2 text-[rgb(var(--text-muted))] text-right">{u}</span>
             <span className="col-span-3 text-green-400 text-right font-medium">{t}</span>
           </div>
         ))}
       </div>
-      <div className="border-t border-zinc-700 mt-2 pt-2 flex justify-between">
-        <span className="text-xs text-zinc-500">Total</span>
+      <div className="border-t border-[rgb(var(--border-strong))] mt-2 pt-2 flex justify-between">
+        <span className="text-xs text-[rgb(var(--text-muted))]">Total</span>
         <span className="text-sm font-bold text-green-400">£205.00</span>
       </div>
     </div>
@@ -173,36 +173,36 @@ function StepVisual({ type }: { type: string }) {
   if (type === "vat") return (
     <div className={`${base} p-4 flex flex-col gap-3`} style={{ minHeight: 140 }}>
       <div className="flex items-center justify-between">
-        <span className="text-xs text-zinc-400">Include VAT (20%)</span>
+        <span className="text-xs text-[rgb(var(--text-muted))]">Include VAT (20%)</span>
         <div className="w-10 h-5 rounded-full bg-green-600 relative">
           <div className="absolute top-0.5 left-5 w-4 h-4 rounded-full bg-white" />
         </div>
       </div>
       <div className="rounded-xl border border-green-600/20 bg-green-600/5 p-3 space-y-1">
-        <div className="flex justify-between text-xs text-zinc-500"><span>Subtotal</span><span>£205.00</span></div>
-        <div className="flex justify-between text-xs text-zinc-500"><span>VAT (20%)</span><span>£41.00</span></div>
-        <div className="flex justify-between text-sm font-bold"><span className="text-white">Total</span><span className="text-green-400">£246.00</span></div>
+        <div className="flex justify-between text-xs text-[rgb(var(--text-muted))]"><span>Subtotal</span><span>£205.00</span></div>
+        <div className="flex justify-between text-xs text-[rgb(var(--text-muted))]"><span>VAT (20%)</span><span>£41.00</span></div>
+        <div className="flex justify-between text-sm font-bold"><span className="text-[rgb(var(--text))]">Total</span><span className="text-green-400">£246.00</span></div>
       </div>
     </div>
   );
 
   if (type === "pdf") return (
     <div className={`${base} p-3`} style={{ minHeight: 140 }}>
-      <div className="rounded-xl bg-zinc-800 p-3">
+      <div className="rounded-xl bg-[rgb(var(--surface2))] p-3">
         <div className="h-6 bg-zinc-700 rounded mb-2 flex items-center px-2">
           <span className="text-green-400 text-xs font-bold mr-2">QUOTE</span>
-          <span className="text-zinc-500 text-xs">QUO-123456 · 18 May 2026</span>
+          <span className="text-[rgb(var(--text-muted))] text-xs">QUO-123456 · 18 May 2026</span>
         </div>
         <div className="space-y-1">
           {["Labour — boiler service","Parts — thermostat","Call-out charge"].map(l => (
             <div key={l} className="h-4 bg-zinc-700/50 rounded text-xs flex items-center px-2">
-              <span className="text-zinc-500">{l}</span>
+              <span className="text-[rgb(var(--text-muted))]">{l}</span>
             </div>
           ))}
         </div>
         <div className="mt-2 h-5 bg-green-600 rounded flex items-center justify-between px-2">
-          <span className="text-white text-xs font-bold">TOTAL</span>
-          <span className="text-white text-xs font-bold">£246.00</span>
+          <span className="text-[rgb(var(--text))] text-xs font-bold">TOTAL</span>
+          <span className="text-[rgb(var(--text))] text-xs font-bold">£246.00</span>
         </div>
       </div>
     </div>
@@ -210,19 +210,19 @@ function StepVisual({ type }: { type: string }) {
 
   if (type === "share") return (
     <div className={`${base} p-4 flex flex-col gap-3`} style={{ minHeight: 140 }}>
-      <div className="flex items-center gap-2 bg-zinc-800 rounded-xl px-3 py-2">
+      <div className="flex items-center gap-2 bg-[rgb(var(--surface2))] rounded-xl px-3 py-2">
         <span className="text-green-400 text-xs">🔗</span>
-        <span className="text-xs text-zinc-400 flex-1 truncate">getjobquotes.uk/q/a3f9k2p...</span>
-        <span className="text-xs text-zinc-600 border border-zinc-700 px-2 py-0.5 rounded-lg">Copy</span>
+        <span className="text-xs text-[rgb(var(--text-muted))] flex-1 truncate">getjobquotes.uk/q/a3f9k2p...</span>
+        <span className="text-xs text-[rgb(var(--text-faint))] border border-[rgb(var(--border-strong))] px-2 py-0.5 rounded-lg">Copy</span>
       </div>
       <div className="flex gap-2">
-        <div className="flex-1 rounded-xl border border-zinc-700 px-3 py-2 text-center">
+        <div className="flex-1 rounded-xl border border-[rgb(var(--border-strong))] px-3 py-2 text-center">
           <span className="text-sm">📱</span>
-          <p className="text-xs text-zinc-500 mt-0.5">WhatsApp</p>
+          <p className="text-xs text-[rgb(var(--text-muted))] mt-0.5">WhatsApp</p>
         </div>
-        <div className="flex-1 rounded-xl border border-zinc-700 px-3 py-2 text-center">
+        <div className="flex-1 rounded-xl border border-[rgb(var(--border-strong))] px-3 py-2 text-center">
           <span className="text-sm">📧</span>
-          <p className="text-xs text-zinc-500 mt-0.5">Email</p>
+          <p className="text-xs text-[rgb(var(--text-muted))] mt-0.5">Email</p>
         </div>
         <div className="flex-1 rounded-xl border border-green-600/30 bg-green-600/10 px-3 py-2 text-center">
           <span className="text-sm">✅</span>
@@ -235,19 +235,19 @@ function StepVisual({ type }: { type: string }) {
   if (type === "convert") return (
     <div className={`${base} p-4`} style={{ minHeight: 140 }}>
       <div className="flex items-center gap-3">
-        <div className="flex-1 rounded-xl border border-zinc-700 bg-zinc-800 p-3">
-          <p className="text-xs text-zinc-500 mb-1">QUOTE</p>
-          <p className="text-sm font-bold text-white">QUO-123456</p>
-          <p className="text-xs text-zinc-500">Smith Plumbing · £246.00</p>
+        <div className="flex-1 rounded-xl border border-[rgb(var(--border-strong))] bg-[rgb(var(--surface2))] p-3">
+          <p className="text-xs text-[rgb(var(--text-muted))] mb-1">QUOTE</p>
+          <p className="text-sm font-bold text-[rgb(var(--text))]">QUO-123456</p>
+          <p className="text-xs text-[rgb(var(--text-muted))]">Smith Plumbing · £246.00</p>
         </div>
         <div className="text-2xl text-green-400">→</div>
         <div className="flex-1 rounded-xl border border-green-600/30 bg-green-600/5 p-3">
           <p className="text-xs text-green-400 mb-1">INVOICE</p>
-          <p className="text-sm font-bold text-white">INV-123456</p>
-          <p className="text-xs text-zinc-500">Same details · £246.00</p>
+          <p className="text-sm font-bold text-[rgb(var(--text))]">INV-123456</p>
+          <p className="text-xs text-[rgb(var(--text-muted))]">Same details · £246.00</p>
         </div>
       </div>
-      <p className="text-xs text-zinc-600 text-center mt-3">One click — no retyping</p>
+      <p className="text-xs text-[rgb(var(--text-faint))] text-center mt-3">One click — no retyping</p>
     </div>
   );
 
@@ -255,11 +255,11 @@ function StepVisual({ type }: { type: string }) {
     <div className={`${base} p-4`} style={{ minHeight: 140 }}>
       <div className="space-y-2">
         {[["JT","James Taylor","07700 900123","Manchester"],["SK","Sarah Khan","07700 900456","London"],["MR","Mike Roberts","07700 900789","Birmingham"]].map(([i,n,p,l]) => (
-          <div key={n} className="flex items-center gap-3 border-b border-zinc-800 pb-2">
+          <div key={n} className="flex items-center gap-3 border-b border-[rgb(var(--border))] pb-2">
             <div className="w-7 h-7 rounded-full bg-green-600/20 text-green-400 text-xs font-bold flex items-center justify-center shrink-0">{i}</div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-white font-medium">{n}</p>
-              <p className="text-xs text-zinc-600">{l}</p>
+              <p className="text-sm text-[rgb(var(--text))] font-medium">{n}</p>
+              <p className="text-xs text-[rgb(var(--text-faint))]">{l}</p>
             </div>
             <span className="text-xs text-green-400 border border-green-600/30 px-2 py-0.5 rounded-lg">+ Quote</span>
           </div>
@@ -274,8 +274,8 @@ function StepVisual({ type }: { type: string }) {
       <div className="flex-1 space-y-2">
         {[["Business name","Smith Plumbing Ltd"],["Email","smith@email.co.uk"],["Phone","07700 900000"]].map(([l,v]) => (
           <div key={l}>
-            <p className="text-xs text-zinc-600">{l}</p>
-            <p className="text-sm text-white">{v}</p>
+            <p className="text-xs text-[rgb(var(--text-faint))]">{l}</p>
+            <p className="text-sm text-[rgb(var(--text))]">{v}</p>
           </div>
         ))}
       </div>
@@ -286,20 +286,20 @@ function StepVisual({ type }: { type: string }) {
     <div className={`${base} p-4`} style={{ minHeight: 140 }}>
       <div className="flex gap-1 mb-3">
         {["🔢 Calc","📈 Markup","🧾 VAT","📅 Day Rate"].map((t,i) => (
-          <span key={t} className={`text-xs px-2 py-1 rounded-lg ${i === 2 ? "bg-green-600 text-white" : "bg-zinc-800 text-zinc-500"}`}>{t}</span>
+          <span key={t} className={`text-xs px-2 py-1 rounded-lg ${i === 2 ? "bg-green-600 text-[rgb(var(--text))]" : "bg-[rgb(var(--surface2))] text-[rgb(var(--text-muted))]"}`}>{t}</span>
         ))}
       </div>
-      <div className="rounded-xl border border-zinc-700 p-3">
+      <div className="rounded-xl border border-[rgb(var(--border-strong))] p-3">
         <div className="flex justify-between text-xs mb-1">
-          <span className="text-zinc-500">Amount (ex VAT)</span>
-          <span className="text-white font-medium">£205.00</span>
+          <span className="text-[rgb(var(--text-muted))]">Amount (ex VAT)</span>
+          <span className="text-[rgb(var(--text))] font-medium">£205.00</span>
         </div>
         <div className="flex justify-between text-xs mb-1">
-          <span className="text-zinc-500">VAT (20%)</span>
+          <span className="text-[rgb(var(--text-muted))]">VAT (20%)</span>
           <span className="text-yellow-400">£41.00</span>
         </div>
-        <div className="flex justify-between text-sm font-bold border-t border-zinc-700 pt-1 mt-1">
-          <span className="text-zinc-400">Total inc VAT</span>
+        <div className="flex justify-between text-sm font-bold border-t border-[rgb(var(--border-strong))] pt-1 mt-1">
+          <span className="text-[rgb(var(--text-muted))]">Total inc VAT</span>
           <span className="text-green-400">£246.00</span>
         </div>
       </div>
@@ -309,7 +309,7 @@ function StepVisual({ type }: { type: string }) {
   if (type === "done") return (
     <div className={`${base} p-6 flex flex-col items-center justify-center gap-3`} style={{ minHeight: 140 }}>
       <div className="w-16 h-16 rounded-full bg-green-600/20 border border-green-600/30 flex items-center justify-center text-3xl">✅</div>
-      <p className="text-sm font-semibold text-white">Tour complete</p>
+      <p className="text-sm font-semibold text-[rgb(var(--text))]">Tour complete</p>
       <div className="flex gap-2 flex-wrap justify-center">
         {["Quotes ✓","Invoices ✓","PDF ✓","Customers ✓","Calculator ✓"].map(t => (
           <span key={t} className="text-xs px-2 py-0.5 rounded-full bg-green-600/20 text-green-400 border border-green-600/30">{t}</span>
@@ -392,10 +392,10 @@ export default function TourMode({ userId, onClose }: TourModeProps) {
         style={{ transform: animating ? "scale(0.97)" : "scale(1)", opacity: animating ? 0 : 1 }}
       >
         {/* Card */}
-        <div className="rounded-3xl border border-zinc-800 bg-zinc-950 overflow-hidden shadow-2xl">
+        <div className="rounded-3xl border border-[rgb(var(--border))] bg-[rgb(var(--bg))] overflow-hidden shadow-2xl">
 
           {/* Progress bar */}
-          <div className="h-1 bg-zinc-800">
+          <div className="h-1 bg-[rgb(var(--surface2))]">
             <div
               className="h-full bg-green-500 transition-all duration-300"
               style={{ width: `${progress}%` }}
@@ -405,12 +405,12 @@ export default function TourMode({ userId, onClose }: TourModeProps) {
           <div className="p-7">
             {/* Step counter */}
             <div className="flex items-center justify-between mb-5">
-              <span className="text-xs text-zinc-600 tabular-nums">
+              <span className="text-xs text-[rgb(var(--text-faint))] tabular-nums">
                 {step + 1} of {STEPS.length}
               </span>
               <button
                 onClick={handleSkip}
-                className="text-xs text-zinc-600 hover:text-zinc-400 transition">
+                className="text-xs text-[rgb(var(--text-faint))] hover:text-[rgb(var(--text-muted))] transition">
                 Skip tour
               </button>
             </div>
@@ -418,8 +418,8 @@ export default function TourMode({ userId, onClose }: TourModeProps) {
             {/* Icon + title */}
             <div className="text-center mb-5">
               <div className="text-5xl mb-3">{current.icon}</div>
-              <h2 className="text-xl font-bold text-white mb-2">{current.title}</h2>
-              <p className="text-zinc-400 text-sm leading-relaxed">{current.desc}</p>
+              <h2 className="text-xl font-bold text-[rgb(var(--text))] mb-2">{current.title}</h2>
+              <p className="text-[rgb(var(--text-muted))] text-sm leading-relaxed">{current.desc}</p>
             </div>
 
             {/* Visual */}
@@ -449,13 +449,13 @@ export default function TourMode({ userId, onClose }: TourModeProps) {
               {step > 0 && (
                 <button
                   onClick={handleBack}
-                  className="px-4 py-3 rounded-xl border border-zinc-700 hover:border-zinc-500 text-sm text-zinc-400 hover:text-white transition">
+                  className="px-4 py-3 rounded-xl border border-[rgb(var(--border-strong))] hover:border-[rgb(var(--border-strong))] text-sm text-[rgb(var(--text-muted))] hover:text-[rgb(var(--text))] transition">
                   ← Back
                 </button>
               )}
               <button
                 onClick={handleNext}
-                className="flex-1 py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-bold transition">
+                className="flex-1 py-3 rounded-xl bg-green-600 hover:bg-green-500 text-[rgb(var(--text))] text-sm font-bold transition">
                 {isFinal ? "Create my first quote →" : "Next →"}
               </button>
             </div>

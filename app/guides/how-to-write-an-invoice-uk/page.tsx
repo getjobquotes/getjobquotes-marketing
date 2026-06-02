@@ -17,8 +17,8 @@ export default function GuideHowToWriteAnInvoice() {
       </p>
 
       <div className="not-prose bg-zinc-50 border border-zinc-200 rounded-xl p-5 my-6">
-        <p className="text-sm font-semibold text-zinc-700 mb-3">📋 Table of Contents</p>
-        <ol className="space-y-1.5 text-sm text-zinc-600">
+        <p className="text-sm font-semibold text-[rgb(var(--text-faint))] mb-3">📋 Table of Contents</p>
+        <ol className="space-y-1.5 text-sm text-[rgb(var(--text-faint))]">
           {[["What is an invoice?","#what"],["What HMRC requires","#hmrc"],["Invoice vs quote","#vs"],["How to get paid faster","#faster"],["Free invoice template","#template"],["FAQs","#faqs"]].map(([l,h])=>(
             <li key={h}><a href={h} className="hover:text-green-600">{l}</a></li>
           ))}
@@ -61,8 +61,8 @@ export default function GuideHowToWriteAnInvoice() {
       <h2 id="template">Free Invoice Template</h2>
       <p>Use <Link href="/demo">GetJobQuotes</Link> to create a professional invoice instantly. Convert your quote to an invoice in one click, download the PDF and send it to your client by email or WhatsApp.</p>
       <div className="not-prose flex flex-col sm:flex-row gap-3 my-4">
-        <Link href="/auth?mode=signup" className="inline-block px-5 py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl text-sm transition text-center">Create Free Invoice</Link>
-        <Link href="/guides/invoice-template-uk" className="inline-block px-5 py-3 border border-zinc-300 text-zinc-700 font-semibold rounded-xl text-sm transition text-center hover:border-zinc-400">Download Template</Link>
+        <Link href="/auth?mode=signup" className="inline-block px-5 py-3 bg-green-600 hover:bg-green-500 text-[rgb(var(--text))] font-bold rounded-xl text-sm transition text-center">Create Free Invoice</Link>
+        <Link href="/guides/invoice-template-uk" className="inline-block px-5 py-3 border border-zinc-300 text-[rgb(var(--text-faint))] font-semibold rounded-xl text-sm transition text-center hover:border-zinc-400">Download Template</Link>
       </div>
 
       <h2 id="faqs">Frequently Asked Questions</h2>

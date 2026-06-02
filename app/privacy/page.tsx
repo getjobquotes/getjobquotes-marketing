@@ -12,14 +12,14 @@ const CONTACT_EMAIL = "support@getjobquotes.uk";
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[rgb(var(--bg))] text-[rgb(var(--text))]">
 
       {/* Nav */}
-      <nav className="border-b border-zinc-900 px-6 py-4 flex items-center justify-between">
+      <nav className="border-b border-[rgb(var(--border))] px-6 py-4 flex items-center justify-between">
         <Link href="/" className="text-base font-bold">
           <span className="text-green-400">Get</span>JobQuotes
         </Link>
-        <Link href="/dashboard" className="text-sm text-zinc-400 hover:text-white transition">Dashboard →</Link>
+        <Link href="/dashboard" className="text-sm text-[rgb(var(--text-muted))] hover:text-[rgb(var(--text))] transition">Dashboard →</Link>
       </nav>
 
       <div className="max-w-3xl mx-auto px-6 py-14">
@@ -28,14 +28,14 @@ export default function PrivacyPage() {
         <div className="mb-12">
           <p className="text-green-400 text-xs font-semibold uppercase tracking-widest mb-3">Legal</p>
           <h1 className="text-4xl font-bold mb-3">Privacy Policy</h1>
-          <p className="text-zinc-500 text-sm">Last updated: {LAST_UPDATED}</p>
-          <div className="mt-6 rounded-xl border border-green-600/20 bg-green-600/5 px-5 py-4 text-sm text-zinc-300">
-            <strong className="text-white">Short version:</strong> We collect only what we need to run
+          <p className="text-[rgb(var(--text-muted))] text-sm">Last updated: {LAST_UPDATED}</p>
+          <div className="mt-6 rounded-xl border border-green-600/20 bg-green-600/5 px-5 py-4 text-sm text-[rgb(var(--text))]">
+            <strong className="text-[rgb(var(--text))]">Short version:</strong> We collect only what we need to run
             the service. We don't sell your data. You can delete everything at any time.
           </div>
         </div>
 
-        <div className="space-y-10 text-sm leading-relaxed text-zinc-300">
+        <div className="space-y-10 text-sm leading-relaxed text-[rgb(var(--text))]">
 
           {/* Intro */}
           <section>
@@ -45,7 +45,7 @@ export default function PrivacyPage() {
               GetJobQuotes (https://getjobquotes.uk).
             </p>
             <p className="mt-3">
-              We act as the <strong className="text-white">data controller</strong> for your personal data.
+              We act as the <strong className="text-[rgb(var(--text))]">data controller</strong> for your personal data.
               This policy complies with the UK General Data Protection Regulation (UK GDPR) and the
               Data Protection Act 2018.
             </p>
@@ -79,7 +79,7 @@ export default function PrivacyPage() {
             <SubSection title="Quote and invoice data">
               <p>
                 Documents you create — including client names, email addresses, line items, amounts and
-                notes — are stored in our database and associated with your account. <strong className="text-white">
+                notes — are stored in our database and associated with your account. <strong className="text-[rgb(var(--text))]">
                 Your clients' data is your responsibility</strong> under UK GDPR. By saving client data,
                 you confirm you have a lawful basis to do so.
               </p>
@@ -102,14 +102,14 @@ export default function PrivacyPage() {
           {/* 2 */}
           <Section title="2. How We Use Your Data">
             <ul className="list-disc pl-5 space-y-2">
-              <li><strong className="text-white">Providing the service:</strong> Creating, storing and displaying your quotes and invoices.</li>
-              <li><strong className="text-white">Sending emails:</strong> Welcome email on signup, transactional emails (quote links, invoice reminders) that you initiate.</li>
-              <li><strong className="text-white">Account security:</strong> Authentication, detecting suspicious activity, rate limiting.</li>
-              <li><strong className="text-white">Service improvements:</strong> Aggregated, anonymised analytics to understand how the product is used.</li>
-              <li><strong className="text-white">Legal compliance:</strong> Retaining records where required by UK law.</li>
+              <li><strong className="text-[rgb(var(--text))]">Providing the service:</strong> Creating, storing and displaying your quotes and invoices.</li>
+              <li><strong className="text-[rgb(var(--text))]">Sending emails:</strong> Welcome email on signup, transactional emails (quote links, invoice reminders) that you initiate.</li>
+              <li><strong className="text-[rgb(var(--text))]">Account security:</strong> Authentication, detecting suspicious activity, rate limiting.</li>
+              <li><strong className="text-[rgb(var(--text))]">Service improvements:</strong> Aggregated, anonymised analytics to understand how the product is used.</li>
+              <li><strong className="text-[rgb(var(--text))]">Legal compliance:</strong> Retaining records where required by UK law.</li>
             </ul>
             <p className="mt-4">
-              We will <strong className="text-white">never</strong> sell your data, share it with advertisers
+              We will <strong className="text-[rgb(var(--text))]">never</strong> sell your data, share it with advertisers
               for targeting purposes, or use it for any purpose not listed above.
             </p>
           </Section>
@@ -119,24 +119,24 @@ export default function PrivacyPage() {
           {/* 3 */}
           <Section title="3. Cookies">
             <p>We use the following cookies:</p>
-            <div className="mt-4 rounded-xl border border-zinc-800 overflow-hidden">
+            <div className="mt-4 rounded-xl border border-[rgb(var(--border))] overflow-hidden">
               {[
                 { name: "Authentication cookies", purpose: "Keep you logged in. Set by Supabase.", type: "Essential", canOpt: false },
                 { name: "gjq_cookie_consent", purpose: "Remembers your cookie preference.", type: "Essential", canOpt: false },
                 { name: "Google Analytics (_ga, _gid)", purpose: "Anonymous usage analytics. Helps us improve the product.", type: "Analytics", canOpt: true },
                 { name: "Google AdSense", purpose: "Displays relevant adverts to support the free service.", type: "Advertising", canOpt: true },
               ].map((c, i, arr) => (
-                <div key={c.name} className={`px-5 py-4 ${i < arr.length - 1 ? "border-b border-zinc-800" : ""}`}>
+                <div key={c.name} className={`px-5 py-4 ${i < arr.length - 1 ? "border-b border-[rgb(var(--border))]" : ""}`}>
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="text-white font-medium text-sm">{c.name}</p>
-                      <p className="text-zinc-500 text-xs mt-1">{c.purpose}</p>
+                      <p className="text-[rgb(var(--text))] font-medium text-sm">{c.name}</p>
+                      <p className="text-[rgb(var(--text-muted))] text-xs mt-1">{c.purpose}</p>
                     </div>
                     <div className="flex flex-col items-end gap-1 shrink-0">
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${c.type === "Essential" ? "bg-green-500/10 text-green-400" : c.type === "Analytics" ? "bg-blue-500/10 text-blue-400" : "bg-yellow-500/10 text-yellow-400"}`}>
                         {c.type}
                       </span>
-                      <span className="text-xs text-zinc-600">{c.canOpt ? "Can opt out" : "Required"}</span>
+                      <span className="text-xs text-[rgb(var(--text-faint))]">{c.canOpt ? "Can opt out" : "Required"}</span>
                     </div>
                   </div>
                 </div>
@@ -162,10 +162,10 @@ export default function PrivacyPage() {
                 { name: "Google AdSense", role: "Advertising (consent-gated)", location: "USA", link: "https://policies.google.com/privacy" },
                 { name: "Sentry", role: "Error monitoring and debugging", location: "USA", link: "https://sentry.io/privacy/" },
               ].map((s) => (
-                <div key={s.name} className="rounded-xl border border-zinc-800 px-4 py-3 flex items-center justify-between gap-4">
+                <div key={s.name} className="rounded-xl border border-[rgb(var(--border))] px-4 py-3 flex items-center justify-between gap-4">
                   <div>
-                    <p className="text-white text-sm font-medium">{s.name}</p>
-                    <p className="text-zinc-500 text-xs">{s.role} · {s.location}</p>
+                    <p className="text-[rgb(var(--text))] text-sm font-medium">{s.name}</p>
+                    <p className="text-[rgb(var(--text-muted))] text-xs">{s.role} · {s.location}</p>
                   </div>
                   <a href={s.link} target="_blank" rel="noopener noreferrer" className="text-xs text-green-400 hover:underline shrink-0">Privacy policy ↗</a>
                 </div>
@@ -208,8 +208,8 @@ export default function PrivacyPage() {
                 <div key={r.right} className="flex gap-3">
                   <span className="text-green-400 mt-0.5 shrink-0">✓</span>
                   <div>
-                    <span className="text-white font-medium">{r.right}:</span>{" "}
-                    <span className="text-zinc-400">{r.desc}</span>
+                    <span className="text-[rgb(var(--text))] font-medium">{r.right}:</span>{" "}
+                    <span className="text-[rgb(var(--text-muted))]">{r.desc}</span>
                   </div>
                 </div>
               ))}
@@ -261,9 +261,9 @@ export default function PrivacyPage() {
             <p className="mt-3">
               You also have the right to lodge a complaint with the UK Information Commissioner's Office (ICO):
             </p>
-            <div className="mt-3 rounded-xl border border-zinc-800 px-4 py-3">
-              <p className="text-white text-sm font-medium">Information Commissioner's Office</p>
-              <p className="text-zinc-500 text-xs mt-1">
+            <div className="mt-3 rounded-xl border border-[rgb(var(--border))] px-4 py-3">
+              <p className="text-[rgb(var(--text))] text-sm font-medium">Information Commissioner's Office</p>
+              <p className="text-[rgb(var(--text-muted))] text-xs mt-1">
                 Website: <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:underline">ico.org.uk</a>
                 {" "}· Helpline: 0303 123 1113
               </p>
@@ -285,12 +285,12 @@ export default function PrivacyPage() {
           <Divider />
 
           <section>
-            <h2 className="text-lg font-bold text-white mb-3">Contact Us</h2>
+            <h2 className="text-lg font-bold text-[rgb(var(--text))] mb-3">Contact Us</h2>
             <p>
               For any privacy-related questions or to exercise your rights, email:{" "}
               <a href={`mailto:${CONTACT_EMAIL}`} className="text-green-400 hover:underline">{CONTACT_EMAIL}</a>
             </p>
-            <p className="mt-2 text-zinc-500">We aim to respond to all privacy requests within 5 business days.</p>
+            <p className="mt-2 text-[rgb(var(--text-muted))]">We aim to respond to all privacy requests within 5 business days.</p>
           </section>
 
         </div>
@@ -304,7 +304,7 @@ export default function PrivacyPage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="text-lg font-bold text-white mb-4">{title}</h2>
+      <h2 className="text-lg font-bold text-[rgb(var(--text))] mb-4">{title}</h2>
       <div className="space-y-4">{children}</div>
     </section>
   );
@@ -313,7 +313,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function SubSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="space-y-2">
-      <h3 className="text-sm font-semibold text-white">{title}</h3>
+      <h3 className="text-sm font-semibold text-[rgb(var(--text))]">{title}</h3>
       {children}
     </div>
   );
@@ -321,12 +321,12 @@ function SubSection({ title, children }: { title: string; children: React.ReactN
 
 function DataTable({ rows, twoCol }: { rows: string[][]; twoCol?: boolean }) {
   return (
-    <div className="mt-3 rounded-xl border border-zinc-800 overflow-hidden">
+    <div className="mt-3 rounded-xl border border-[rgb(var(--border))] overflow-hidden">
       {rows.map((row, i) => (
-        <div key={i} className={`grid px-4 py-3 gap-4 text-xs ${twoCol ? "grid-cols-2" : "grid-cols-3"} ${i < rows.length - 1 ? "border-b border-zinc-800" : ""}`}>
-          <span className="text-white font-medium">{row[0]}</span>
-          <span className="text-zinc-400">{row[1]}</span>
-          {!twoCol && <span className="text-zinc-500">{row[2]}</span>}
+        <div key={i} className={`grid px-4 py-3 gap-4 text-xs ${twoCol ? "grid-cols-2" : "grid-cols-3"} ${i < rows.length - 1 ? "border-b border-[rgb(var(--border))]" : ""}`}>
+          <span className="text-[rgb(var(--text))] font-medium">{row[0]}</span>
+          <span className="text-[rgb(var(--text-muted))]">{row[1]}</span>
+          {!twoCol && <span className="text-[rgb(var(--text-muted))]">{row[2]}</span>}
         </div>
       ))}
     </div>
@@ -334,16 +334,16 @@ function DataTable({ rows, twoCol }: { rows: string[][]; twoCol?: boolean }) {
 }
 
 function Divider() {
-  return <hr className="border-zinc-800" />;
+  return <hr className="border-[rgb(var(--border))]" />;
 }
 
 function Footer() {
   return (
-    <footer className="border-t border-zinc-900 px-6 py-6 flex flex-wrap gap-4 text-xs text-zinc-700 justify-center">
-      <Link href="/" className="hover:text-zinc-400 transition">Home</Link>
-      <Link href="/terms" className="hover:text-zinc-400 transition">Terms & Conditions</Link>
-      <Link href="/status" className="hover:text-zinc-400 transition">Status</Link>
-      <a href="mailto:support@getjobquotes.uk" className="hover:text-zinc-400 transition">Contact</a>
+    <footer className="border-t border-[rgb(var(--border))] px-6 py-6 flex flex-wrap gap-4 text-xs text-[rgb(var(--text-faint))] justify-center">
+      <Link href="/" className="hover:text-[rgb(var(--text-muted))] transition">Home</Link>
+      <Link href="/terms" className="hover:text-[rgb(var(--text-muted))] transition">Terms & Conditions</Link>
+      <Link href="/status" className="hover:text-[rgb(var(--text-muted))] transition">Status</Link>
+      <a href="mailto:support@getjobquotes.uk" className="hover:text-[rgb(var(--text-muted))] transition">Contact</a>
     </footer>
   );
 }

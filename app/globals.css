@@ -1,3 +1,39 @@
+
+/* === THEME TOKENS === */
+/* Channel values (space separated) so Tailwind alpha modifiers work:
+   bg-[rgb(var(--surface)/0.5)] etc */
+
+:root {
+  /* LIGHT theme (default when .dark is absent) */
+  --bg: 255 255 255;
+  --surface: 250 250 250;
+  --surface2: 244 244 245;
+  --border: 228 228 231;
+  --border-strong: 212 212 216;
+  --text: 24 24 27;
+  --text-muted: 82 82 91;
+  --text-faint: 161 161 170;
+}
+
+.dark {
+  /* DARK theme */
+  --bg: 0 0 0;
+  --surface: 24 24 27;
+  --surface2: 39 39 42;
+  --border: 39 39 42;
+  --border-strong: 63 63 70;
+  --text: 255 255 255;
+  --text-muted: 161 161 170;
+  --text-faint: 82 82 91;
+}
+
+html, body {
+  background-color: rgb(var(--bg));
+  color: rgb(var(--text));
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+/* === END THEME TOKENS === */
+
 @import "tailwindcss";
 
 :root {

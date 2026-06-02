@@ -24,7 +24,7 @@ export default async function StatusPage() {
   const allOk = services.every((s) => s.status);
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-6 py-16">
+    <div className="min-h-screen bg-[rgb(var(--bg))] text-[rgb(var(--text))] flex flex-col items-center justify-center px-6 py-16">
       <div className="w-full max-w-md">
         <div className="text-center mb-10">
           <a href="/" className="text-xl font-bold"><span className="text-green-400">Get</span>JobQuotes</a>
@@ -34,19 +34,19 @@ export default async function StatusPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
+        <div className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] overflow-hidden">
           {services.map((s, i) => (
-            <div key={s.name} className={`flex items-center justify-between px-6 py-4 ${i < services.length - 1 ? "border-b border-zinc-800" : ""}`}>
-              <span className="text-sm text-white font-medium">{s.name}</span>
+            <div key={s.name} className={`flex items-center justify-between px-6 py-4 ${i < services.length - 1 ? "border-b border-[rgb(var(--border))]" : ""}`}>
+              <span className="text-sm text-[rgb(var(--text))] font-medium">{s.name}</span>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-zinc-500">{s.note}</span>
+                <span className="text-xs text-[rgb(var(--text-muted))]">{s.note}</span>
                 <span className={`w-2.5 h-2.5 rounded-full ${s.status ? "bg-green-400" : "bg-red-400"}`} />
               </div>
             </div>
           ))}
         </div>
 
-        <p className="text-center text-xs text-zinc-700 mt-6">
+        <p className="text-center text-xs text-[rgb(var(--text-faint))] mt-6">
           Last checked: {new Date().toUTCString()}
         </p>
       </div>

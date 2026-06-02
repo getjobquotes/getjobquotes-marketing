@@ -42,7 +42,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-GB"  suppressHydrationWarning>
+    <html lang="en-GB"  suppressHydrationWarning className="dark">
       <head>
         <link rel="apple-touch-icon" href="/icon-192.png" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -54,7 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`} crossOrigin="anonymous" />
         )}
       </head>
-      <body className={`${inter.className} bg-black text-white antialiased`}>
+      <body className={`${inter.className} bg-[rgb(var(--bg))] text-[rgb(var(--text))] antialiased`}>
         <ThemeProvider>
           <PreferencesProvider>{children}</PreferencesProvider>
           <GlobalCalculator />

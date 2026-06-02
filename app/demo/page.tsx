@@ -165,9 +165,9 @@ export default function DemoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[rgb(var(--bg))] text-[rgb(var(--text))]">
       {/* Nav */}
-      <nav className="border-b border-zinc-900 px-6 py-4 flex items-center justify-between">
+      <nav className="border-b border-[rgb(var(--border))] px-6 py-4 flex items-center justify-between">
         <Link href="/" className="text-base font-bold"><span className="text-green-400">Get</span>JobQuotes</Link>
         <div className="flex items-center gap-3">
           <span className="text-xs bg-green-500/10 border border-green-500/30 text-green-400 px-3 py-1 rounded-full">🎯 Free Demo</span>
@@ -178,37 +178,37 @@ export default function DemoPage() {
       <div className="bg-green-600/10 border-b border-green-600/20 px-6 py-2.5 text-center">
         <p className="text-sm text-green-300">
           👋 Demo mode — <strong>no account needed</strong>. Build a real quote and see the PDF live.{" "}
-          <Link href="/auth?mode=signup" className="underline hover:text-white">Sign up free</Link> to save & send.
+          <Link href="/auth?mode=signup" className="underline hover:text-[rgb(var(--text))]">Sign up free</Link> to save & send.
         </p>
       </div>
 
       {/* Split layout */}
       <div className="flex h-[calc(100vh-108px)]">
         {/* Form */}
-        <div className="w-full lg:w-[480px] shrink-0 overflow-y-auto border-r border-zinc-900">
+        <div className="w-full lg:w-[480px] shrink-0 overflow-y-auto border-r border-[rgb(var(--border))]">
           <div className="px-5 py-5 space-y-4">
             <div>
               <h1 className="text-xl font-bold mb-0.5">Try it free</h1>
-              <p className="text-zinc-500 text-xs">Build a real quote — download the PDF. No account needed.</p>
+              <p className="text-[rgb(var(--text-muted))] text-xs">Build a real quote — download the PDF. No account needed.</p>
             </div>
 
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 space-y-3">
-              <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Client</p>
+            <div className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] p-4 space-y-3">
+              <p className="text-xs font-semibold text-[rgb(var(--text-muted))] uppercase tracking-widest">Client</p>
               <div>
-                <label className="text-xs text-zinc-600 mb-1 block">Client Name</label>
+                <label className="text-xs text-[rgb(var(--text-faint))] mb-1 block">Client Name</label>
                 <input value={form.clientName} onChange={e => set("clientName", e.target.value)} placeholder="e.g. John Smith"
-                  className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition" />
+                  className="w-full rounded-xl border border-[rgb(var(--border-strong))] bg-[rgb(var(--bg))] px-3 py-2.5 text-[rgb(var(--text))] text-sm placeholder:text-[rgb(var(--text-faint))] outline-none focus:border-green-500 transition" />
               </div>
               <div>
-                <label className="text-xs text-zinc-600 mb-1 block">Job Description</label>
+                <label className="text-xs text-[rgb(var(--text-faint))] mb-1 block">Job Description</label>
                 <input value={form.description} onChange={e => set("description", e.target.value)} placeholder="e.g. Boiler installation"
-                  className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition" />
+                  className="w-full rounded-xl border border-[rgb(var(--border-strong))] bg-[rgb(var(--bg))] px-3 py-2.5 text-[rgb(var(--text))] text-sm placeholder:text-[rgb(var(--text-faint))] outline-none focus:border-green-500 transition" />
               </div>
             </div>
 
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 space-y-2">
-              <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Line Items</p>
-              <div className="grid grid-cols-12 gap-1 text-xs text-zinc-600 px-1">
+            <div className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] p-4 space-y-2">
+              <p className="text-xs font-semibold text-[rgb(var(--text-muted))] uppercase tracking-widest">Line Items</p>
+              <div className="grid grid-cols-12 gap-1 text-xs text-[rgb(var(--text-faint))] px-1">
                 <span className="col-span-6">Description</span>
                 <span className="col-span-2 text-center">Qty</span>
                 <span className="col-span-4 text-right">Unit £</span>
@@ -216,13 +216,13 @@ export default function DemoPage() {
               {lineItems.map((item, i) => (
                 <div key={i} className="grid grid-cols-12 gap-1 items-center">
                   <input value={item.description} onChange={e => updateItem(i, "description", e.target.value)} placeholder="Labour / parts"
-                    className="col-span-6 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-2 text-white text-xs placeholder:text-zinc-600 outline-none focus:border-green-500 transition" />
+                    className="col-span-6 rounded-lg border border-[rgb(var(--border-strong))] bg-[rgb(var(--bg))] px-2 py-2 text-[rgb(var(--text))] text-xs placeholder:text-[rgb(var(--text-faint))] outline-none focus:border-green-500 transition" />
                   <input value={item.quantity} onChange={e => updateItem(i, "quantity", e.target.value)} type="number" min="0"
-                    className="col-span-2 rounded-lg border border-zinc-700 bg-zinc-950 px-1 py-2 text-white text-xs outline-none focus:border-green-500 transition text-center" />
+                    className="col-span-2 rounded-lg border border-[rgb(var(--border-strong))] bg-[rgb(var(--bg))] px-1 py-2 text-[rgb(var(--text))] text-xs outline-none focus:border-green-500 transition text-center" />
                   <input value={item.unitPrice} onChange={e => updateItem(i, "unitPrice", e.target.value)} type="number" min="0" step="0.01"
-                    className="col-span-3 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-2 text-white text-xs outline-none focus:border-green-500 transition text-right" />
+                    className="col-span-3 rounded-lg border border-[rgb(var(--border-strong))] bg-[rgb(var(--bg))] px-2 py-2 text-[rgb(var(--text))] text-xs outline-none focus:border-green-500 transition text-right" />
                   {lineItems.length > 1 && (
-                    <button onClick={() => setLineItems(p => p.filter((_, idx) => idx !== i))} className="col-span-1 text-zinc-700 hover:text-red-400 text-lg transition text-center">×</button>
+                    <button onClick={() => setLineItems(p => p.filter((_, idx) => idx !== i))} className="col-span-1 text-[rgb(var(--text-faint))] hover:text-red-400 text-lg transition text-center">×</button>
                   )}
                 </div>
               ))}
@@ -233,31 +233,31 @@ export default function DemoPage() {
                   className={`w-9 h-5 rounded-full relative transition-colors shrink-0 ${form.vat ? "bg-green-600" : "bg-zinc-700"}`}>
                   <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${form.vat ? "left-4" : "left-0.5"}`} />
                 </div>
-                <span className="text-xs text-zinc-400">Include VAT (20%)</span>
+                <span className="text-xs text-[rgb(var(--text-muted))]">Include VAT (20%)</span>
               </label>
             </div>
 
             <div className="rounded-xl border border-green-600/20 bg-green-600/5 px-4 py-3">
-              {form.vat && <div className="flex justify-between text-xs text-zinc-500 mb-1"><span>Subtotal</span><span>{fmt(subtotal)}</span></div>}
-              {form.vat && <div className="flex justify-between text-xs text-zinc-500 mb-2"><span>VAT (20%)</span><span>{fmt(vatAmount)}</span></div>}
+              {form.vat && <div className="flex justify-between text-xs text-[rgb(var(--text-muted))] mb-1"><span>Subtotal</span><span>{fmt(subtotal)}</span></div>}
+              {form.vat && <div className="flex justify-between text-xs text-[rgb(var(--text-muted))] mb-2"><span>VAT (20%)</span><span>{fmt(vatAmount)}</span></div>}
               <div className="flex justify-between text-base font-bold"><span>Total</span><span className="text-green-400">{fmt(total)}</span></div>
             </div>
 
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4">
-              <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-2">Signature (Optional)</p>
+            <div className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] p-4">
+              <p className="text-xs font-semibold text-[rgb(var(--text-muted))] uppercase tracking-widest mb-2">Signature (Optional)</p>
               <canvas ref={sigRef} width={600} height={100}
-                className="w-full rounded-xl bg-zinc-950 border border-zinc-700 cursor-crosshair touch-none"
+                className="w-full rounded-xl bg-[rgb(var(--bg))] border border-[rgb(var(--border-strong))] cursor-crosshair touch-none"
                 style={{ touchAction: "none" }}
                 onMouseDown={startDraw} onMouseMove={drawSig} onMouseUp={endDraw} onMouseLeave={endDraw}
                 onTouchStart={startDraw} onTouchMove={drawSig} onTouchEnd={endDraw} />
-              {hasSig && <button onClick={() => { sigRef.current?.getContext("2d")?.clearRect(0,0,600,100); setHasSig(false); }} className="text-xs text-zinc-600 hover:text-red-400 transition mt-1">Clear</button>}
+              {hasSig && <button onClick={() => { sigRef.current?.getContext("2d")?.clearRect(0,0,600,100); setHasSig(false); }} className="text-xs text-[rgb(var(--text-faint))] hover:text-red-400 transition mt-1">Clear</button>}
             </div>
 
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4">
-              <label className="text-xs text-zinc-600 mb-1 block">Notes (Optional)</label>
+            <div className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] p-4">
+              <label className="text-xs text-[rgb(var(--text-faint))] mb-1 block">Notes (Optional)</label>
               <textarea value={form.notes} onChange={e => set("notes", e.target.value)} rows={2}
                 placeholder="Payment terms, guarantees..."
-                className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition resize-none" />
+                className="w-full rounded-xl border border-[rgb(var(--border-strong))] bg-[rgb(var(--bg))] px-3 py-2.5 text-[rgb(var(--text))] text-sm placeholder:text-[rgb(var(--text-faint))] outline-none focus:border-green-500 transition resize-none" />
             </div>
 
             {pdfError && (
@@ -266,14 +266,14 @@ export default function DemoPage() {
               </div>
             )}
             <button onClick={handleDownload}
-              className="w-full py-4 rounded-xl bg-green-600 hover:bg-green-500 text-base font-bold text-white transition">
+              className="w-full py-4 rounded-xl bg-green-600 hover:bg-green-500 text-base font-bold text-[rgb(var(--text))] transition">
               ↓ Download PDF Quote
             </button>
 
             {downloaded && (
               <div className="rounded-2xl border border-green-600/30 bg-green-600/5 p-5 text-center">
                 <p className="text-green-400 font-semibold mb-1">✅ Quote downloaded!</p>
-                <p className="text-zinc-400 text-sm mb-4">Sign up free to save quotes, convert to invoices, send by email and more.</p>
+                <p className="text-[rgb(var(--text-muted))] text-sm mb-4">Sign up free to save quotes, convert to invoices, send by email and more.</p>
                 <Link href="/auth?mode=signup" className="inline-block px-6 py-3 bg-green-600 hover:bg-green-500 rounded-xl font-bold text-sm transition">Create Free Account →</Link>
               </div>
             )}
@@ -281,13 +281,13 @@ export default function DemoPage() {
         </div>
 
         {/* Desktop live preview */}
-        <div className="hidden lg:flex flex-col flex-1 bg-zinc-950">
-          <div className="border-b border-zinc-900 px-5 py-3 flex items-center justify-between">
+        <div className="hidden lg:flex flex-col flex-1 bg-[rgb(var(--bg))]">
+          <div className="border-b border-[rgb(var(--border))] px-5 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className={`w-2 h-2 rounded-full ${previewLoading ? "bg-yellow-400 animate-pulse" : "bg-green-400"}`} />
-              <span className="text-xs text-zinc-500">{previewLoading ? "Updating..." : "Live PDF preview"}</span>
+              <span className="text-xs text-[rgb(var(--text-muted))]">{previewLoading ? "Updating..." : "Live PDF preview"}</span>
             </div>
-            <button onClick={() => setShowPreview(v => !v)} className="text-xs text-zinc-600 hover:text-zinc-400 transition">
+            <button onClick={() => setShowPreview(v => !v)} className="text-xs text-[rgb(var(--text-faint))] hover:text-[rgb(var(--text-muted))] transition">
               {showPreview ? "Hide" : "Show preview"}
             </button>
           </div>
@@ -296,10 +296,10 @@ export default function DemoPage() {
               <iframe ref={previewRef} className="w-full h-full border-0" title="PDF Preview" />
             </div>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-zinc-700 gap-3">
+            <div className="flex-1 flex flex-col items-center justify-center text-[rgb(var(--text-faint))] gap-3">
               <span className="text-4xl">📄</span>
               <p className="text-sm">See your PDF update in real-time as you type</p>
-              <button onClick={() => setShowPreview(true)} className="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-sm transition">Show Live Preview</button>
+              <button onClick={() => setShowPreview(true)} className="px-4 py-2 rounded-xl bg-[rgb(var(--surface2))] hover:bg-[rgb(var(--surface2))] text-[rgb(var(--text))] text-sm transition">Show Live Preview</button>
             </div>
           )}
         </div>
@@ -314,9 +314,9 @@ export default function DemoPage() {
       {/* Mobile preview modal */}
       {showPreview && (
         <div className="lg:hidden fixed inset-0 z-50 bg-black/95 flex flex-col">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-900">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[rgb(var(--border))]">
             <span className="text-sm font-semibold">Live PDF Preview</span>
-            <button onClick={() => setShowPreview(false)} className="text-zinc-400 hover:text-white text-2xl leading-none">×</button>
+            <button onClick={() => setShowPreview(false)} className="text-[rgb(var(--text-muted))] hover:text-[rgb(var(--text))] text-2xl leading-none">×</button>
           </div>
           <iframe ref={previewRef} className="flex-1 w-full border-0" title="PDF Preview Mobile" />
         </div>
@@ -325,29 +325,29 @@ export default function DemoPage() {
       {/* Signup wall modal */}
       {showSignup && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
-          <div className="w-full max-w-sm rounded-3xl border border-zinc-800 bg-zinc-950 p-6 shadow-2xl">
+          <div className="w-full max-w-sm rounded-3xl border border-[rgb(var(--border))] bg-[rgb(var(--bg))] p-6 shadow-2xl">
             <div className="text-3xl mb-3 text-center">🎉</div>
             <h2 className="text-xl font-bold text-center mb-1">Your quote is ready!</h2>
-            <p className="text-zinc-400 text-sm text-center mb-5">
+            <p className="text-[rgb(var(--text-muted))] text-sm text-center mb-5">
               Create a free account to download, save, and send this quote to your client. Takes 30 seconds.
             </p>
             <Link href="/auth?mode=signup" onClick={() => localStorage.setItem("gjq_demo_import", JSON.stringify({ form, lineItems, total }))}
-              className="block w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold text-sm text-center transition mb-2">
+              className="block w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-[rgb(var(--text))] font-bold text-sm text-center transition mb-2">
               Sign Up Free & Download →
             </Link>
             <button onClick={doDownload}
-              className="block w-full py-3 rounded-xl border border-zinc-700 text-zinc-400 hover:text-white text-sm text-center transition">
+              className="block w-full py-3 rounded-xl border border-[rgb(var(--border-strong))] text-[rgb(var(--text-muted))] hover:text-[rgb(var(--text))] text-sm text-center transition">
               No thanks, just download
             </button>
-            <button onClick={() => setShowSignup(false)} className="w-full text-center text-xs text-zinc-600 hover:text-zinc-400 mt-3 transition">← Back to editing</button>
+            <button onClick={() => setShowSignup(false)} className="w-full text-center text-xs text-[rgb(var(--text-faint))] hover:text-[rgb(var(--text-muted))] mt-3 transition">← Back to editing</button>
           </div>
         </div>
       )}
 
-      <footer className="border-t border-zinc-900 px-6 py-4 flex flex-wrap gap-4 text-xs text-zinc-700 justify-center">
-        <Link href="/terms" className="hover:text-zinc-400 transition">Terms</Link>
-        <Link href="/privacy" className="hover:text-zinc-400 transition">Privacy</Link>
-        <Link href="/auth?mode=signup" className="hover:text-zinc-400 transition">Sign Up Free</Link>
+      <footer className="border-t border-[rgb(var(--border))] px-6 py-4 flex flex-wrap gap-4 text-xs text-[rgb(var(--text-faint))] justify-center">
+        <Link href="/terms" className="hover:text-[rgb(var(--text-muted))] transition">Terms</Link>
+        <Link href="/privacy" className="hover:text-[rgb(var(--text-muted))] transition">Privacy</Link>
+        <Link href="/auth?mode=signup" className="hover:text-[rgb(var(--text-muted))] transition">Sign Up Free</Link>
       </footer>
     </div>
   );

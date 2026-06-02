@@ -14,19 +14,19 @@ export default function GuideVatCalculator() {
       <p className="lead">A free VAT calculator for UK tradespeople. Add or remove 20% VAT from any amount — plus a complete guide to VAT for sole traders and tradespeople.</p>
 
       <div className="not-prose bg-zinc-50 border border-zinc-200 rounded-xl p-6 my-6">
-        <p className="text-sm font-semibold text-zinc-700 mb-4">🧮 Quick VAT Formulas</p>
+        <p className="text-sm font-semibold text-[rgb(var(--text-faint))] mb-4">🧮 Quick VAT Formulas</p>
         <div className="space-y-3 text-sm">
           <div className="flex items-start gap-3">
             <span className="font-mono bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs">Add VAT</span>
-            <span className="text-zinc-600">Price × 1.20 = Price including VAT</span>
+            <span className="text-[rgb(var(--text-faint))]">Price × 1.20 = Price including VAT</span>
           </div>
           <div className="flex items-start gap-3">
             <span className="font-mono bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs">Remove VAT</span>
-            <span className="text-zinc-600">Price ÷ 1.20 = Price excluding VAT</span>
+            <span className="text-[rgb(var(--text-faint))]">Price ÷ 1.20 = Price excluding VAT</span>
           </div>
           <div className="flex items-start gap-3">
             <span className="font-mono bg-zinc-100 text-zinc-800 px-2 py-0.5 rounded text-xs">VAT amount</span>
-            <span className="text-zinc-600">Price × 0.20 = VAT amount (from ex-VAT price)</span>
+            <span className="text-[rgb(var(--text-faint))]">Price × 0.20 = VAT amount (from ex-VAT price)</span>
           </div>
         </div>
         <div className="mt-4 pt-4 border-t border-zinc-200">
@@ -73,8 +73,8 @@ export default function GuideVatCalculator() {
       <h2>Use the Free VAT Calculator in GetJobQuotes</h2>
       <p>GetJobQuotes has a built-in VAT calculator available on every page. Add or remove VAT from any amount instantly, and it automatically applies to your quotes and invoices.</p>
       <div className="not-prose flex flex-col sm:flex-row gap-3 my-4">
-        <Link href="/auth?mode=signup" className="inline-block px-5 py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl text-sm transition text-center">Try Free Quote Tool</Link>
-        <Link href="/demo" className="inline-block px-5 py-3 border border-zinc-300 text-zinc-700 font-semibold rounded-xl text-sm transition text-center hover:border-zinc-400">Open Demo</Link>
+        <Link href="/auth?mode=signup" className="inline-block px-5 py-3 bg-green-600 hover:bg-green-500 text-[rgb(var(--text))] font-bold rounded-xl text-sm transition text-center">Try Free Quote Tool</Link>
+        <Link href="/demo" className="inline-block px-5 py-3 border border-zinc-300 text-[rgb(var(--text-faint))] font-semibold rounded-xl text-sm transition text-center hover:border-zinc-400">Open Demo</Link>
       </div>
 
       <h2>FAQs</h2>

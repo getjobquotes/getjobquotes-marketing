@@ -28,8 +28,8 @@ export default function GuideInvoiceTemplate() {
       <h2>Create a Free Invoice Online</h2>
       <p>Use GetJobQuotes to create a professional invoice in minutes. If you already have a quote, convert it to an invoice in one click — no retyping needed.</p>
       <div className="not-prose flex flex-col sm:flex-row gap-3 my-6">
-        <Link href="/auth?mode=signup" className="inline-block px-5 py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl text-sm transition text-center">Create Free Invoice</Link>
-        <Link href="/demo" className="inline-block px-5 py-3 border border-zinc-300 text-zinc-700 font-semibold rounded-xl text-sm transition text-center hover:border-zinc-400">Try Demo First</Link>
+        <Link href="/auth?mode=signup" className="inline-block px-5 py-3 bg-green-600 hover:bg-green-500 text-[rgb(var(--text))] font-bold rounded-xl text-sm transition text-center">Create Free Invoice</Link>
+        <Link href="/demo" className="inline-block px-5 py-3 border border-zinc-300 text-[rgb(var(--text-faint))] font-semibold rounded-xl text-sm transition text-center hover:border-zinc-400">Try Demo First</Link>
       </div>
 
       <h2>Tips for Getting Paid on Time</h2>

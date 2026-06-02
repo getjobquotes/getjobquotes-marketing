@@ -15,7 +15,7 @@ export default function GuideHowToPriceAJob() {
 
       <div className="not-prose bg-zinc-50 border border-zinc-200 rounded-xl p-5 my-6">
         <p className="text-sm font-semibold mb-3">📋 Contents</p>
-        <ol className="space-y-1.5 text-sm text-zinc-600">
+        <ol className="space-y-1.5 text-sm text-[rgb(var(--text-faint))]">
           {[["Calculate your minimum day rate","#dayrate"],["Price materials and add markup","#materials"],["Account for overheads","#overheads"],["Add profit margin","#profit"],["VAT","#vat"],["Use a calculator","#calculator"],["FAQs","#faqs"]].map(([l,h])=>(
             <li key={h}><a href={h} className="hover:text-green-600">{l}</a></li>
           ))}
@@ -62,7 +62,7 @@ export default function GuideHowToPriceAJob() {
       <h2 id="calculator">Use the Built-in Calculator</h2>
       <p>GetJobQuotes has a built-in trade calculator with markup, VAT, day rate and materials tabs — available on every page of the app. Use it to check your figures before sending a quote.</p>
       <div className="not-prose flex gap-3 my-4">
-        <Link href="/auth?mode=signup" className="inline-block px-5 py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl text-sm transition">Try Free Quote Tool</Link>
+        <Link href="/auth?mode=signup" className="inline-block px-5 py-3 bg-green-600 hover:bg-green-500 text-[rgb(var(--text))] font-bold rounded-xl text-sm transition">Try Free Quote Tool</Link>
       </div>
 
       <h2 id="faqs">FAQs</h2>

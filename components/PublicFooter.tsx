@@ -32,11 +32,11 @@ interface PublicFooterProps {
 }
 
 export default function PublicFooter({ dark = true }: PublicFooterProps) {
-  const bg    = dark ? "border-zinc-900 bg-black"        : "border-zinc-200 bg-zinc-50";
-  const title = dark ? "text-white"                       : "text-zinc-900";
-  const head  = dark ? "text-zinc-500"                    : "text-zinc-500";
-  const link  = dark ? "text-zinc-600 hover:text-zinc-400": "text-zinc-500 hover:text-zinc-900";
-  const sub   = dark ? "border-zinc-900 text-zinc-700"    : "border-zinc-200 text-zinc-400";
+  const bg    = dark ? "border-[rgb(var(--border))] bg-[rgb(var(--bg))]"        : "border-zinc-200 bg-zinc-50";
+  const title = dark ? "text-[rgb(var(--text))]"                       : "text-zinc-900";
+  const head  = dark ? "text-[rgb(var(--text-muted))]"                    : "text-[rgb(var(--text-muted))]";
+  const link  = dark ? "text-[rgb(var(--text-faint))] hover:text-[rgb(var(--text-muted))]": "text-[rgb(var(--text-muted))] hover:text-zinc-900";
+  const sub   = dark ? "border-[rgb(var(--border))] text-[rgb(var(--text-faint))]"    : "border-zinc-200 text-[rgb(var(--text-muted))]";
 
   return (
     <footer className={`border-t ${bg} px-5 py-12 mt-8`}>

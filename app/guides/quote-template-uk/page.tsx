@@ -27,8 +27,8 @@ export default function GuideQuoteTemplate() {
       <h2>Use Our Free Online Quote Builder</h2>
       <p>Instead of a static Word document, GetJobQuotes lets you create a fully branded quote PDF in under 2 minutes. Add your logo, line items, VAT and notes — then download or share it directly with your client.</p>
       <div className="not-prose flex flex-col sm:flex-row gap-3 my-6">
-        <Link href="/demo" className="inline-block px-5 py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl text-sm transition text-center">Try Free Quote Builder</Link>
-        <Link href="/auth?mode=signup" className="inline-block px-5 py-3 border border-zinc-300 text-zinc-700 font-semibold rounded-xl text-sm transition text-center hover:border-zinc-400">Create Free Account</Link>
+        <Link href="/demo" className="inline-block px-5 py-3 bg-green-600 hover:bg-green-500 text-[rgb(var(--text))] font-bold rounded-xl text-sm transition text-center">Try Free Quote Builder</Link>
+        <Link href="/auth?mode=signup" className="inline-block px-5 py-3 border border-zinc-300 text-[rgb(var(--text-faint))] font-semibold rounded-xl text-sm transition text-center hover:border-zinc-400">Create Free Account</Link>
       </div>
 
       <h2>What to Include in Your Quote</h2>

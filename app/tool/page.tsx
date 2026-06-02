@@ -315,14 +315,14 @@ function ToolInner() {
     setLineItems(p => p.map((item, idx) => idx === i ? { ...item, [k]: v } : item));
 
   if (auth.status === "loading") return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
-      <p className="text-zinc-600 text-sm animate-pulse">Loading...</p>
+    <div className="min-h-screen bg-[rgb(var(--bg))] flex items-center justify-center">
+      <p className="text-[rgb(var(--text-faint))] text-sm animate-pulse">Loading...</p>
     </div>
   );
   if (auth.status === "unauthenticated") return null;
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[rgb(var(--bg))] text-[rgb(var(--text))]">
       <TopNav />
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6">
 
@@ -331,26 +331,26 @@ function ToolInner() {
           <div className="mb-5 rounded-2xl border border-green-600/30 bg-green-600/5 px-4 py-4">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-sm font-bold text-white mb-1">👋 Welcome to GetJobQuotes!</p>
-                <p className="text-xs text-zinc-400 leading-relaxed">
+                <p className="text-sm font-bold text-[rgb(var(--text))] mb-1">👋 Welcome to GetJobQuotes!</p>
+                <p className="text-xs text-[rgb(var(--text-muted))] leading-relaxed">
                   We have pre-filled an example quote so you can see how it works.
                   Edit the details, download the PDF, then save it.
                 </p>
               </div>
               <button onClick={() => setShowWelcomeBanner(false)}
-                className="text-zinc-600 hover:text-zinc-400 text-lg shrink-0 transition">×</button>
+                className="text-[rgb(var(--text-faint))] hover:text-[rgb(var(--text-muted))] text-lg shrink-0 transition">×</button>
             </div>
             <div className="flex gap-2 mt-3 flex-wrap">
               <a href="/profile"
-                className="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition">
+                className="text-xs px-3 py-1.5 rounded-lg bg-[rgb(var(--surface2))] hover:bg-[rgb(var(--surface2))] text-[rgb(var(--text))] transition">
                 1. Add your logo →
               </a>
               <a href="/customers"
-                className="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition">
+                className="text-xs px-3 py-1.5 rounded-lg bg-[rgb(var(--surface2))] hover:bg-[rgb(var(--surface2))] text-[rgb(var(--text))] transition">
                 2. Save a client →
               </a>
               <a href="/help"
-                className="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition">
+                className="text-xs px-3 py-1.5 rounded-lg bg-[rgb(var(--surface2))] hover:bg-[rgb(var(--surface2))] text-[rgb(var(--text))] transition">
                 3. Help centre →
               </a>
             </div>
@@ -361,11 +361,11 @@ function ToolInner() {
           <h1 className="text-xl font-bold">
             {editId ? "Edit" : "New"} {form.type === "invoice" ? "Invoice" : "Quote"}
           </h1>
-          <div className="flex gap-1 p-1 bg-zinc-900 border border-zinc-800 rounded-full text-xs">
+          <div className="flex gap-1 p-1 bg-[rgb(var(--surface))] border border-[rgb(var(--border))] rounded-full text-xs">
             {(["quote", "invoice"] as const).map(t => (
               <button key={t} onClick={() => setF("type", t)}
                 className={`px-3 py-1.5 rounded-full font-medium capitalize transition ${
-                  form.type === t ? "bg-green-600 text-white" : "text-zinc-400 hover:text-white"
+                  form.type === t ? "bg-green-600 text-[rgb(var(--text))]" : "text-[rgb(var(--text-muted))] hover:text-[rgb(var(--text))]"
                 }`}>
                 {t}
               </button>
@@ -380,39 +380,39 @@ function ToolInner() {
             <select onChange={e => {
               const c = customers.find(c => c.id === e.target.value);
               if (c) setForm(p => ({ ...p, clientName: c.name, clientEmail: c.email || "", clientPhone: c.phone || "" }));
-            }} className="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2.5 text-white text-sm outline-none focus:border-green-500 transition">
+            }} className="w-full rounded-xl border border-[rgb(var(--border-strong))] bg-[rgb(var(--surface))] px-3 py-2.5 text-[rgb(var(--text))] text-sm outline-none focus:border-green-500 transition">
               <option value="">— Fill from saved customer —</option>
               {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           )}
 
           {/* Client */}
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 space-y-3">
-            <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Client</p>
+          <div className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] p-4 space-y-3">
+            <p className="text-xs font-semibold text-[rgb(var(--text-muted))] uppercase tracking-widest">Client</p>
             {[
               { k: "clientName", label: "Name *", ph: "John Smith", type: "text" },
               { k: "clientEmail", label: "Email", ph: "john@email.com", type: "email" },
               { k: "clientPhone", label: "Phone", ph: "07700 900000", type: "tel" },
             ].map(f => (
               <div key={f.k}>
-                <label className="text-xs text-zinc-600 mb-1 block">{f.label}</label>
+                <label className="text-xs text-[rgb(var(--text-faint))] mb-1 block">{f.label}</label>
                 <input type={f.type} value={(form as any)[f.k]}
                   onChange={e => setF(f.k, e.target.value)} placeholder={f.ph}
-                  className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition" />
+                  className="w-full rounded-xl border border-[rgb(var(--border-strong))] bg-[rgb(var(--bg))] px-3 py-2.5 text-[rgb(var(--text))] text-sm placeholder:text-[rgb(var(--text-faint))] outline-none focus:border-green-500 transition" />
               </div>
             ))}
             <div>
-              <label className="text-xs text-zinc-600 mb-1 block">Job Description</label>
+              <label className="text-xs text-[rgb(var(--text-faint))] mb-1 block">Job Description</label>
               <textarea value={form.description} onChange={e => setF("description", e.target.value)}
                 placeholder="e.g. New boiler installation..." rows={2}
-                className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition resize-none" />
+                className="w-full rounded-xl border border-[rgb(var(--border-strong))] bg-[rgb(var(--bg))] px-3 py-2.5 text-[rgb(var(--text))] text-sm placeholder:text-[rgb(var(--text-faint))] outline-none focus:border-green-500 transition resize-none" />
             </div>
           </div>
 
           {/* Line items */}
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 space-y-2">
-            <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Line Items</p>
-            <div className="grid grid-cols-12 gap-1 text-xs text-zinc-600 px-1">
+          <div className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] p-4 space-y-2">
+            <p className="text-xs font-semibold text-[rgb(var(--text-muted))] uppercase tracking-widest">Line Items</p>
+            <div className="grid grid-cols-12 gap-1 text-xs text-[rgb(var(--text-faint))] px-1">
               <span className="col-span-6">Description</span>
               <span className="col-span-2 text-center">Qty</span>
               <span className="col-span-4 text-right">Unit £</span>
@@ -421,16 +421,16 @@ function ToolInner() {
               <div key={i} className="grid grid-cols-12 gap-1 items-center">
                 <input value={item.description} onChange={e => updateItem(i, "description", e.target.value)}
                   placeholder="Labour / parts"
-                  className="col-span-6 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-2 text-white text-xs placeholder:text-zinc-600 outline-none focus:border-green-500 transition" />
+                  className="col-span-6 rounded-lg border border-[rgb(var(--border-strong))] bg-[rgb(var(--bg))] px-2 py-2 text-[rgb(var(--text))] text-xs placeholder:text-[rgb(var(--text-faint))] outline-none focus:border-green-500 transition" />
                 <input value={item.quantity} onChange={e => updateItem(i, "quantity", e.target.value)}
                   type="number" min="0"
-                  className="col-span-2 rounded-lg border border-zinc-700 bg-zinc-950 px-1 py-2 text-white text-xs outline-none focus:border-green-500 transition text-center" />
+                  className="col-span-2 rounded-lg border border-[rgb(var(--border-strong))] bg-[rgb(var(--bg))] px-1 py-2 text-[rgb(var(--text))] text-xs outline-none focus:border-green-500 transition text-center" />
                 <input value={item.unitPrice} onChange={e => updateItem(i, "unitPrice", e.target.value)}
                   type="number" min="0" step="0.01"
-                  className="col-span-3 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-2 text-white text-xs outline-none focus:border-green-500 transition text-right" />
+                  className="col-span-3 rounded-lg border border-[rgb(var(--border-strong))] bg-[rgb(var(--bg))] px-2 py-2 text-[rgb(var(--text))] text-xs outline-none focus:border-green-500 transition text-right" />
                 {lineItems.length > 1 && (
                   <button onClick={() => setLineItems(p => p.filter((_, idx) => idx !== i))}
-                    className="col-span-1 text-zinc-700 hover:text-red-400 text-lg transition text-center">×</button>
+                    className="col-span-1 text-[rgb(var(--text-faint))] hover:text-red-400 text-lg transition text-center">×</button>
                 )}
               </div>
             ))}
@@ -441,15 +441,15 @@ function ToolInner() {
                 className={`w-9 h-5 rounded-full relative transition-colors shrink-0 ${form.vat ? "bg-green-600" : "bg-zinc-700"}`}>
                 <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${form.vat ? "left-4" : "left-0.5"}`} />
               </div>
-              <span className="text-xs text-zinc-400">Include VAT (20%)</span>
+              <span className="text-xs text-[rgb(var(--text-muted))]">Include VAT (20%)</span>
             </label>
           </div>
 
           {/* Total */}
           <div className="rounded-xl border border-green-600/20 bg-green-600/5 px-4 py-3">
             {form.vat && <>
-              <div className="flex justify-between text-xs text-zinc-500 mb-1"><span>Subtotal</span><span>{fmtMoney(subtotal)}</span></div>
-              <div className="flex justify-between text-xs text-zinc-500 mb-2"><span>VAT (20%)</span><span>{fmtMoney(vatAmount)}</span></div>
+              <div className="flex justify-between text-xs text-[rgb(var(--text-muted))] mb-1"><span>Subtotal</span><span>{fmtMoney(subtotal)}</span></div>
+              <div className="flex justify-between text-xs text-[rgb(var(--text-muted))] mb-2"><span>VAT (20%)</span><span>{fmtMoney(vatAmount)}</span></div>
             </>}
             <div className="flex justify-between text-base font-bold">
               <span>Total</span><span className="text-green-400">{fmtMoney(total)}</span>
@@ -457,61 +457,61 @@ function ToolInner() {
           </div>
 
           {/* Options */}
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 space-y-3">
+          <div className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] p-4 space-y-3">
             <div>
-              <label className="text-xs text-zinc-500 mb-1 block">Valid for</label>
+              <label className="text-xs text-[rgb(var(--text-muted))] mb-1 block">Valid for</label>
               <select value={form.expiryDays} onChange={e => setF("expiryDays", e.target.value)}
-                className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-white text-sm outline-none focus:border-green-500 transition">
+                className="w-full rounded-xl border border-[rgb(var(--border-strong))] bg-[rgb(var(--bg))] px-3 py-2.5 text-[rgb(var(--text))] text-sm outline-none focus:border-green-500 transition">
                 {[["7","7 days"],["14","14 days"],["30","30 days"],["60","60 days"],["none","No expiry"]].map(([v,l]) => (
                   <option key={v} value={v}>{l}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="text-xs text-zinc-500 mb-1 block">Notes / payment terms</label>
+              <label className="text-xs text-[rgb(var(--text-muted))] mb-1 block">Notes / payment terms</label>
               <textarea value={form.notes} onChange={e => setF("notes", e.target.value)}
                 placeholder="Payment due within 30 days..." rows={2}
-                className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition resize-none" />
+                className="w-full rounded-xl border border-[rgb(var(--border-strong))] bg-[rgb(var(--bg))] px-3 py-2.5 text-[rgb(var(--text))] text-sm placeholder:text-[rgb(var(--text-faint))] outline-none focus:border-green-500 transition resize-none" />
             </div>
           </div>
 
           {/* Signature */}
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4">
+          <div className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] p-4">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Signature</p>
+              <p className="text-xs font-semibold text-[rgb(var(--text-muted))] uppercase tracking-widest">Signature</p>
               {hasSig && (
                 <button onClick={() => {
                   sigRef.current?.getContext("2d")?.clearRect(0, 0, 600, 100);
                   setSigData(""); setHasSig(false);
-                }} className="text-xs text-zinc-600 hover:text-red-400 transition">Clear</button>
+                }} className="text-xs text-[rgb(var(--text-faint))] hover:text-red-400 transition">Clear</button>
               )}
             </div>
             {profile?.signature_data && !hasSig && (
               <div className="flex items-center gap-3 mb-2">
-                <img src={profile.signature_data} className="h-10 rounded border border-zinc-700 bg-zinc-900 p-1" alt="sig" />
+                <img src={profile.signature_data} className="h-10 rounded border border-[rgb(var(--border-strong))] bg-[rgb(var(--surface))] p-1" alt="sig" />
                 <button onClick={() => { setSigData(profile.signature_data); setHasSig(true); }}
                   className="text-xs text-green-400 hover:text-green-300 transition">Use saved</button>
               </div>
             )}
             <canvas ref={sigRef} width={600} height={100}
-              className="w-full rounded-xl bg-zinc-950 border border-zinc-700 cursor-crosshair touch-none"
+              className="w-full rounded-xl bg-[rgb(var(--bg))] border border-[rgb(var(--border-strong))] cursor-crosshair touch-none"
               style={{ touchAction: "none" }}
               onMouseDown={startDraw} onMouseMove={drawSig} onMouseUp={endDraw} onMouseLeave={endDraw}
               onTouchStart={startDraw} onTouchMove={drawSig} onTouchEnd={endDraw} />
           </div>
 
           {/* T&C */}
-          <div className={`rounded-2xl border p-4 transition ${showTermsError ? "border-red-500/50 bg-red-500/5" : "border-zinc-800 bg-zinc-900/50"}`}>
+          <div className={`rounded-2xl border p-4 transition ${showTermsError ? "border-red-500/50 bg-red-500/5" : "border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)]"}`}>
             <label className="flex items-start gap-3 cursor-pointer">
               <div onClick={() => { setTermsAccepted(v => !v); setShowTermsError(false); }}
                 className={`mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition ${termsAccepted ? "bg-green-600 border-green-600" : "border-zinc-600 hover:border-green-500"}`}>
                 {termsAccepted && (
-                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
+                  <svg className="w-3 h-3 text-[rgb(var(--text))]" fill="none" viewBox="0 0 12 12">
                     <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 )}
               </div>
-              <span className="text-xs text-zinc-400 leading-relaxed">
+              <span className="text-xs text-[rgb(var(--text-muted))] leading-relaxed">
                 I confirm this {form.type} is accurate and I accept the{" "}
                 <a href="/terms" target="_blank" className="text-green-400 hover:underline">Terms & Conditions</a>.
               </span>
@@ -526,11 +526,11 @@ function ToolInner() {
                 buildPDF({ form, lineItems, subtotal, vatAmount, total, sigData, profile, docId: editId })
                   .save(`${form.type}-${form.clientName || "quote"}.pdf`);
               } catch (e) { console.error("PDF error:", e); }
-            }} className="py-3 rounded-xl border border-zinc-700 hover:border-zinc-500 text-sm font-semibold text-zinc-300 hover:text-white transition">
+            }} className="py-3 rounded-xl border border-[rgb(var(--border-strong))] hover:border-[rgb(var(--border-strong))] text-sm font-semibold text-[rgb(var(--text))] hover:text-[rgb(var(--text))] transition">
               ↓ Download PDF
             </button>
             <button onClick={handleSave} disabled={saving || saved || !form.clientName}
-              className="py-3 rounded-xl bg-green-600 hover:bg-green-500 text-sm font-bold text-white transition disabled:opacity-50">
+              className="py-3 rounded-xl bg-green-600 hover:bg-green-500 text-sm font-bold text-[rgb(var(--text))] transition disabled:opacity-50">
               {saved ? "✓ Saved!" : saving ? "Saving..." : `Save ${form.type === "invoice" ? "Invoice" : "Quote"}`}
             </button>
           </div>
@@ -542,7 +542,7 @@ function ToolInner() {
 
 export default function ToolPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[rgb(var(--bg))]" />}>
       <ToolInner />
     </Suspense>
   );

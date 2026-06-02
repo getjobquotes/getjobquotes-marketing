@@ -10,14 +10,14 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-black text-white">
-      <nav className="sticky top-0 z-50 border-b border-zinc-900 bg-black/95 backdrop-blur-sm">
+    <div className="min-h-screen bg-[rgb(var(--bg))] text-[rgb(var(--text))]">
+      <nav className="sticky top-0 z-50 border-b border-[rgb(var(--border))] bg-black/95 backdrop-blur-sm">
         <div className="max-w-5xl mx-auto px-5 h-14 flex items-center justify-between">
           <Link href="/" className="text-base font-bold">
             <span className="text-green-400">Get</span>JobQuotes
           </Link>
           <Link href="/auth?mode=signup"
-            className="px-4 py-2 text-sm font-semibold bg-green-600 hover:bg-green-500 text-white rounded-xl transition">
+            className="px-4 py-2 text-sm font-semibold bg-green-600 hover:bg-green-500 text-[rgb(var(--text))] rounded-xl transition">
             Try Free
           </Link>
         </div>
@@ -27,10 +27,10 @@ export default function AboutPage() {
         <p className="text-xs text-green-400 font-semibold uppercase tracking-widest mb-3">About</p>
         <h1 className="text-3xl sm:text-4xl font-bold mb-8">What GetJobQuotes is</h1>
 
-        <div className="space-y-8 text-zinc-400 text-sm leading-relaxed">
+        <div className="space-y-8 text-[rgb(var(--text-muted))] text-sm leading-relaxed">
 
           <div>
-            <h2 className="text-base font-bold text-white mb-2">Why this exists</h2>
+            <h2 className="text-base font-bold text-[rgb(var(--text))] mb-2">Why this exists</h2>
             <p>
               A lot of tradespeople still send quotes by WhatsApp message, scribbled on paper,
               or copied from an old Word document. It works — but it does not look great,
@@ -43,7 +43,7 @@ export default function AboutPage() {
           </div>
 
           <div>
-            <h2 className="text-base font-bold text-white mb-2">Who it is for</h2>
+            <h2 className="text-base font-bold text-[rgb(var(--text))] mb-2">Who it is for</h2>
             <ul className="space-y-1.5">
               {["Sole traders and small trade businesses","Plumbers, electricians, builders, decorators, joiners","Anyone who currently quotes by message, note or spreadsheet","UK-based — VAT and GBP built in"].map(i => (
                 <li key={i} className="flex gap-2"><span className="text-green-400 shrink-0">→</span>{i}</li>
@@ -52,7 +52,7 @@ export default function AboutPage() {
           </div>
 
           <div>
-            <h2 className="text-base font-bold text-white mb-2">What it does well</h2>
+            <h2 className="text-base font-bold text-[rgb(var(--text))] mb-2">What it does well</h2>
             <ul className="space-y-1.5">
               {[
                 "Creates a professional-looking PDF quote quickly",
@@ -67,7 +67,7 @@ export default function AboutPage() {
           </div>
 
           <div>
-            <h2 className="text-base font-bold text-white mb-2">What is still being improved</h2>
+            <h2 className="text-base font-bold text-[rgb(var(--text))] mb-2">What is still being improved</h2>
             <ul className="space-y-1.5">
               {[
                 "Email sending — currently you share a link, not send directly from the app",
@@ -76,13 +76,13 @@ export default function AboutPage() {
                 "The design in some areas is still rough",
                 "Mobile experience needs more polish",
               ].map(i => (
-                <li key={i} className="flex gap-2"><span className="text-zinc-600 shrink-0">–</span>{i}</li>
+                <li key={i} className="flex gap-2"><span className="text-[rgb(var(--text-faint))] shrink-0">–</span>{i}</li>
               ))}
             </ul>
           </div>
 
           <div>
-            <h2 className="text-base font-bold text-white mb-2">Is it free?</h2>
+            <h2 className="text-base font-bold text-[rgb(var(--text))] mb-2">Is it free?</h2>
             <p>
               Yes, completely free right now. We are in an early stage and want real
               tradespeople using it before we think about charging anything.
@@ -91,7 +91,7 @@ export default function AboutPage() {
           </div>
 
           <div>
-            <h2 className="text-base font-bold text-white mb-2">Feedback welcome</h2>
+            <h2 className="text-base font-bold text-[rgb(var(--text))] mb-2">Feedback welcome</h2>
             <p>
               If something is broken, confusing, or missing — we want to know.
               Email <a href="mailto:hello@getjobquotes.uk" className="text-green-400 hover:text-green-300">
@@ -103,11 +103,11 @@ export default function AboutPage() {
 
         <div className="mt-12 flex flex-col sm:flex-row gap-3">
           <Link href="/auth?mode=signup"
-            className="px-6 py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl text-sm transition text-center">
+            className="px-6 py-3 bg-green-600 hover:bg-green-500 text-[rgb(var(--text))] font-bold rounded-xl text-sm transition text-center">
             Try it free
           </Link>
           <Link href="/demo"
-            className="px-6 py-3 border border-zinc-700 hover:border-zinc-500 text-zinc-300 font-semibold rounded-xl text-sm transition text-center">
+            className="px-6 py-3 border border-[rgb(var(--border-strong))] hover:border-[rgb(var(--border-strong))] text-[rgb(var(--text))] font-semibold rounded-xl text-sm transition text-center">
             See the demo first
           </Link>
         </div>

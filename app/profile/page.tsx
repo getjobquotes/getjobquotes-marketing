@@ -127,12 +127,12 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[rgb(var(--bg))] text-[rgb(var(--text))]">
       <TopNav />
       <div className="max-w-2xl mx-auto px-6 py-10">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-1">Business Profile</h1>
-          <p className="text-zinc-400 text-sm">
+          <p className="text-[rgb(var(--text-muted))] text-sm">
             This information appears on your quotes and invoices.
           </p>
         </div>
@@ -140,8 +140,8 @@ export default function ProfilePage() {
         <div className="space-y-5">
 
           {/* Logo */}
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6">
-            <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-widest mb-4">
+          <div className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] p-6">
+            <h2 className="text-sm font-semibold text-[rgb(var(--text))] uppercase tracking-widest mb-4">
               Logo
             </h2>
             <div className="flex items-center gap-5">
@@ -149,10 +149,10 @@ export default function ProfilePage() {
                 <img
                   src={form.logo_url}
                   alt="Logo"
-                  className="w-20 h-20 object-contain rounded-xl border border-zinc-700 bg-white p-2"
+                  className="w-20 h-20 object-contain rounded-xl border border-[rgb(var(--border-strong))] bg-white p-2"
                 />
               ) : (
-                <div className="w-20 h-20 rounded-xl border border-dashed border-zinc-700 flex items-center justify-center text-zinc-600 text-xs text-center leading-tight p-2">
+                <div className="w-20 h-20 rounded-xl border border-dashed border-[rgb(var(--border-strong))] flex items-center justify-center text-[rgb(var(--text-faint))] text-xs text-center leading-tight p-2">
                   No logo yet
                 </div>
               )}
@@ -160,11 +160,11 @@ export default function ProfilePage() {
                 <button
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading}
-                  className="px-4 py-2 rounded-xl border border-zinc-700 text-sm text-zinc-300 hover:text-white hover:border-zinc-500 transition disabled:opacity-50"
+                  className="px-4 py-2 rounded-xl border border-[rgb(var(--border-strong))] text-sm text-[rgb(var(--text))] hover:text-[rgb(var(--text))] hover:border-[rgb(var(--border-strong))] transition disabled:opacity-50"
                 >
                   {uploading ? "Uploading..." : form.logo_url ? "Change Logo" : "Upload Logo"}
                 </button>
-                <p className="text-xs text-zinc-600 mt-1.5">PNG or JPG, max 2MB</p>
+                <p className="text-xs text-[rgb(var(--text-faint))] mt-1.5">PNG or JPG, max 2MB</p>
                 {uploadMsg && (
                   <p className={`text-xs mt-1 ${uploadMsg.startsWith("✓") ? "text-green-400" : "text-red-400"}`}>
                     {uploadMsg}
@@ -182,8 +182,8 @@ export default function ProfilePage() {
           </div>
 
           {/* Business details */}
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 space-y-4">
-            <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-widest">
+          <div className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] p-6 space-y-4">
+            <h2 className="text-sm font-semibold text-[rgb(var(--text))] uppercase tracking-widest">
               Business Details
             </h2>
             {[
@@ -192,23 +192,23 @@ export default function ProfilePage() {
               { key: "business_phone", label: "Phone Number", placeholder: "07700 900000" },
             ].map((f) => (
               <div key={f.key}>
-                <label className="text-xs text-zinc-500 mb-1 block">{f.label}</label>
+                <label className="text-xs text-[rgb(var(--text-muted))] mb-1 block">{f.label}</label>
                 <input
                   value={(form as any)[f.key]}
                   onChange={(e) => set(f.key, e.target.value)}
                   placeholder={f.placeholder}
-                  className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition"
+                  className="w-full rounded-xl border border-[rgb(var(--border-strong))] bg-[rgb(var(--bg))] px-4 py-3 text-[rgb(var(--text))] text-sm placeholder:text-[rgb(var(--text-faint))] outline-none focus:border-green-500 transition"
                 />
               </div>
             ))}
             <div>
-              <label className="text-xs text-zinc-500 mb-1 block">Business Address</label>
+              <label className="text-xs text-[rgb(var(--text-muted))] mb-1 block">Business Address</label>
               <textarea
                 value={form.business_address}
                 onChange={(e) => set("business_address", e.target.value)}
                 placeholder={"123 Trade Street\nManchester\nM1 1AA"}
                 rows={3}
-                className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition resize-none"
+                className="w-full rounded-xl border border-[rgb(var(--border-strong))] bg-[rgb(var(--bg))] px-4 py-3 text-[rgb(var(--text))] text-sm placeholder:text-[rgb(var(--text-faint))] outline-none focus:border-green-500 transition resize-none"
               />
             </div>
           </div>
@@ -217,7 +217,7 @@ export default function ProfilePage() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full py-3.5 rounded-xl bg-green-600 hover:bg-green-500 text-sm font-bold text-white transition disabled:opacity-50"
+            className="w-full py-3.5 rounded-xl bg-green-600 hover:bg-green-500 text-sm font-bold text-[rgb(var(--text))] transition disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save Profile"}
           </button>

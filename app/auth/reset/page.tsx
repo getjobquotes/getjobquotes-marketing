@@ -45,42 +45,42 @@ export default function ResetPasswordPage() {
     setTimeout(() => router.replace("/dashboard"), 2000);
   };
 
-  const inp = "w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-green-500 transition";
+  const inp = "w-full rounded-xl border border-[rgb(var(--border-strong))] bg-[rgb(var(--surface))] px-4 py-3 text-[rgb(var(--text))] text-sm placeholder:text-[rgb(var(--text-faint))] outline-none focus:border-green-500 transition";
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[rgb(var(--bg))] text-[rgb(var(--text))] flex flex-col items-center justify-center px-4 py-12">
       <Link href="/" className="text-xl font-bold mb-8">
         <span className="text-green-400">Get</span>JobQuotes
       </Link>
       <div className="w-full max-w-sm">
         {success ? (
-          <div className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-8 text-center">
+          <div className="rounded-3xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] p-8 text-center">
             <div className="text-5xl mb-4">✅</div>
             <h1 className="text-xl font-bold mb-2">Password updated!</h1>
-            <p className="text-zinc-400 text-sm">Taking you to your dashboard...</p>
+            <p className="text-[rgb(var(--text-muted))] text-sm">Taking you to your dashboard...</p>
           </div>
         ) : !ready ? (
-          <div className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-8 text-center">
+          <div className="rounded-3xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] p-8 text-center">
             <div className="text-5xl mb-4">🔐</div>
             <h1 className="text-xl font-bold mb-2">Verifying reset link...</h1>
-            <p className="text-zinc-400 text-sm mb-4">If this takes too long, your link may have expired.</p>
+            <p className="text-[rgb(var(--text-muted))] text-sm mb-4">If this takes too long, your link may have expired.</p>
             <Link href="/auth" className="text-sm text-green-400 hover:text-green-300 transition">
               Request a new reset link
             </Link>
           </div>
         ) : (
-          <div className="rounded-3xl border border-zinc-800 bg-zinc-900/50 p-8">
+          <div className="rounded-3xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] p-8">
             <h1 className="text-xl font-bold mb-1 text-center">Set new password</h1>
-            <p className="text-zinc-500 text-xs text-center mb-6">Choose a strong password.</p>
+            <p className="text-[rgb(var(--text-muted))] text-xs text-center mb-6">Choose a strong password.</p>
             <div className="space-y-3">
               <div>
-                <label className="text-xs text-zinc-500 mb-1 block">New password</label>
+                <label className="text-xs text-[rgb(var(--text-muted))] mb-1 block">New password</label>
                 <input type="password" value={newPassword}
                   onChange={e => setNewPassword(e.target.value)}
                   placeholder="At least 8 characters" className={inp} />
               </div>
               <div>
-                <label className="text-xs text-zinc-500 mb-1 block">Confirm password</label>
+                <label className="text-xs text-[rgb(var(--text-muted))] mb-1 block">Confirm password</label>
                 <input type="password" value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}
                   placeholder="Repeat your password" className={inp}
@@ -88,7 +88,7 @@ export default function ResetPasswordPage() {
               </div>
               {error && <p className="text-red-400 text-xs">{error}</p>}
               <button onClick={handleReset} disabled={loading}
-                className="w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition disabled:opacity-50">
+                className="w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-[rgb(var(--text))] text-sm font-semibold transition disabled:opacity-50">
                 {loading ? "Updating..." : "Set New Password"}
               </button>
             </div>
