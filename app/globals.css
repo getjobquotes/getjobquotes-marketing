@@ -1,18 +1,14 @@
-
 /* === THEME TOKENS === */
-/* Channel values (space separated) so Tailwind alpha modifiers work:
-   bg-[rgb(var(--surface)/0.5)] etc */
-
 :root {
-  /* LIGHT theme (default when .dark is absent) */
-  --bg: 255 255 255;
-  --surface: 250 250 250;
-  --surface2: 244 244 245;
-  --border: 228 228 231;
+  /* LIGHT theme — refined for depth and contrast */
+  --bg: 247 247 248;          /* soft off-white page bg (not pure white) */
+  --surface: 255 255 255;     /* cards pop white above the bg */
+  --surface2: 244 244 245;    /* secondary surfaces */
+  --border: 228 228 231;      /* zinc-200 */
   --border-strong: 212 212 216;
-  --text: 24 24 27;
-  --text-muted: 82 82 91;
-  --text-faint: 161 161 170;
+  --text: 24 24 27;           /* near-black */
+  --text-muted: 82 82 91;     /* zinc-600 */
+  --text-faint: 138 138 147;  /* readable faint */
 }
 
 .dark {
@@ -32,7 +28,19 @@ html, body {
   color: rgb(var(--text));
   transition: background-color 0.2s ease, color 0.2s ease;
 }
+
+/* Subtle card depth in LIGHT mode — gives separation from the bg.
+   Targets the token-based surface cards with a border. */
+:root:not(.dark) [class*="bg-[rgb(var(--surface))]"] {
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
+}
+/* No shadow in dark — borders do the work there */
+.dark [class*="bg-[rgb(var(--surface))]"] {
+  box-shadow: none;
+}
 /* === END THEME TOKENS === */
+
+
 
 @import "tailwindcss";
 
