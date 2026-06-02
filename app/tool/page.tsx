@@ -160,12 +160,6 @@ function ToolInner() {
   const editId = params.get("id");
   const customerId = params.get("customer");
   const plan = usePlan(auth.status === "authenticated" ? auth.user.id : null);
-  const draftUserId = auth.status === "authenticated" ? auth.user.id : null;
-  const { loadDraft, clearDraft } = useDraftAutosave(
-    draftUserId,
-    { form, lineItems, sigData },
-    !editId  // only autosave new quotes, not edits
-  );
 
   const isWelcome = params.get("welcome") === "1";
 
@@ -179,6 +173,9 @@ function ToolInner() {
   const [showWelcomeBanner, setShowWelcomeBanner] = useState(false);
   const [saved, setSaved] = useState(false);
   const [sigData, setSigData] = useState("");
+
+  const draftUserId = auth.status === "authenticated" ? auth.user.id : null;
+  const { loadDraft, clearDraft } = useDraftAutosave(draftUserId, { form, lineItems, sigData }, !editId);
   const [hasSig, setHasSig] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showTermsError, setShowTermsError] = useState(false);
