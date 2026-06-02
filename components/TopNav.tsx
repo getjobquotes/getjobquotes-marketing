@@ -3,13 +3,15 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { useTheme } from "@/context/ThemeContext";
+import { usePreferences } from "@/context/PreferencesContext";
 
 export default function TopNav() {
   const supabase = createClient();
   const router = useRouter();
   const pathname = usePathname();
-  const { theme, toggle } = useTheme();
+  const { prefs, setPref } = usePreferences();
+  const theme = prefs.theme;
+  const toggle = () => setPref("theme", theme === "dark" ? "light" : "dark");
   const [initials, setInitials] = useState("?");
   const [displayName, setDisplayName] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);

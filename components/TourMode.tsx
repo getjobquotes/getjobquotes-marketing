@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { usePreferences } from "@/context/PreferencesContext";
 import { useRouter } from "next/navigation";
 
 // ── Tour step definitions ─────────────────────────────────
@@ -333,25 +334,18 @@ export default function TourMode({ userId, onClose }: TourModeProps) {
   const [visible, setVisible] = useState(false);
   const [animating, setAnimating] = useState(false);
 
+  const { prefs, setPref, ready } = usePreferences();
+
   useEffect(() => {
-    if (!userId) return;
-    supabase
-      .from("profiles")
-      .select("tour_completed")
-      .eq("user_id", userId)
-      .single()
-      .then(({ data }) => {
-        if (!data?.tour_completed) {
-          setVisible(true);
-        }
-      });
-  }, [userId]);
+    // Wait until prefs are loaded before deciding to show
+    if (!ready) return;
+    if (!prefs.tour_completed) {
+      setVisible(true);
+    }
+  }, [ready, prefs.tour_completed]);
 
   const markDone = async () => {
-    await supabase
-      .from("profiles")
-      .update({ tour_completed: true })
-      .eq("user_id", userId);
+    setPref("tour_completed", true);
   };
 
   const goTo = (next: number) => {

@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import TopNav from "@/components/TopNav";
+import { usePreferences } from "@/context/PreferencesContext";
 import TourMode from "@/components/TourMode";
 import OnboardingChecklist from "@/components/onboarding/OnboardingChecklist";
 import AppFooter from "@/components/AppFooter";
@@ -39,6 +40,7 @@ export default function DashboardPage() {
   const [docs, setDocs] = useState<Doc[]>([]);
   const [docsLoading, setDocsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { prefs, setPref } = usePreferences();
   const [tab, setTab] = useState<"quotes" | "invoices">("quotes");
   const [search, setSearch] = useState("");
   const [markingPaid, setMarkingPaid] = useState<string | null>(null);

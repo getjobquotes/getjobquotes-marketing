@@ -7,6 +7,7 @@ import { useEffect, useState, useRef, Suspense } from "react";
 import TopNav from "@/components/TopNav";
 import AppFooter from "@/components/AppFooter";
 import { usePlan } from "@/lib/usePlan";
+import { useDraftAutosave } from "@/lib/useDraftAutosave";
 import UpgradePrompt from "@/components/UpgradePrompt";
 import jsPDF from "jspdf";
 
@@ -159,6 +160,12 @@ function ToolInner() {
   const editId = params.get("id");
   const customerId = params.get("customer");
   const plan = usePlan(auth.status === "authenticated" ? auth.user.id : null);
+  const draftUserId = auth.status === "authenticated" ? auth.user.id : null;
+  const { loadDraft, clearDraft } = useDraftAutosave(
+    draftUserId,
+    { form, lineItems, sigData },
+    !editId  // only autosave new quotes, not edits
+  );
 
   const isWelcome = params.get("welcome") === "1";
 
@@ -238,36 +245,20 @@ function ToolInner() {
           if (c) setForm(p => ({ ...p, clientName: c.name, clientEmail: c.email || "", clientPhone: c.phone || "" }));
         });
     } else {
-      try {
-        const raw = localStorage.getItem("gjq_draft_quote");
-        if (raw) {
-          const d = JSON.parse(raw);
-          const age = (Date.now() - new Date(d.savedAt).getTime()) / 3600000;
-          if (age < 24 && d.form?.clientName &&
-            window.confirm(`Restore draft for "${d.form.clientName}"?`)) {
-            setForm(d.form);
-            if (d.lineItems?.length) setLineItems(d.lineItems);
-            if (d.sigData) { setSigData(d.sigData); setHasSig(true); }
+      // Load autosaved draft from DB
+      loadDraft().then(draft => {
+        if (draft && draft.form?.clientName) {
+          if (window.confirm(`Restore your saved draft for "${draft.form.clientName}"?`)) {
+            setForm(draft.form);
+            if (draft.lineItems?.length) setLineItems(draft.lineItems);
+            if (draft.sigData) { setSigData(draft.sigData); setHasSig(true); }
           } else {
-            if (!editId) markComplete("completed_first_quote");
-    localStorage.removeItem("gjq_draft_quote");
+            clearDraft();
           }
         }
-      } catch {}
+      });
     }
   }, [auth.status]);
-
-  useEffect(() => {
-    if (auth.status !== "authenticated" || editId) return;
-    const t = setInterval(() => {
-      try {
-        localStorage.setItem("gjq_draft_quote", JSON.stringify({
-          form, lineItems, sigData, savedAt: new Date().toISOString(),
-        }));
-      } catch {}
-    }, 30000);
-    return () => clearInterval(t);
-  }, [auth.status, form, lineItems, sigData, editId]);
 
   const getPos = (e: any, c: HTMLCanvasElement) => {
     const r = c.getBoundingClientRect();
@@ -315,7 +306,7 @@ function ToolInner() {
     };
     if (editId) await supabase.from("documents").update(payload).eq("id", editId);
     else await supabase.from("documents").insert(payload);
-    try { localStorage.removeItem("gjq_draft_quote"); } catch {}
+    clearDraft();
     setSaved(true); setSaving(false);
     setTimeout(() => router.push("/dashboard"), 1200);
   };

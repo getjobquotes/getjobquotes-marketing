@@ -1,3 +1,4 @@
+import { PreferencesProvider } from "@/context/PreferencesContext";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -55,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${inter.className} bg-black text-white antialiased`}>
         <ThemeProvider>
-          {children}
+          <PreferencesProvider>{children}</PreferencesProvider>
           <GlobalCalculator />
         <CookieBanner />
         </ThemeProvider>
