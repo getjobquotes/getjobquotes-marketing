@@ -174,8 +174,6 @@ function ToolInner() {
   const [saved, setSaved] = useState(false);
   const [sigData, setSigData] = useState("");
 
-  const draftUserId = auth.status === "authenticated" ? auth.user.id : null;
-  const { loadDraft, clearDraft } = useDraftAutosave(draftUserId, { form, lineItems, sigData }, !editId);
   const [hasSig, setHasSig] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showTermsError, setShowTermsError] = useState(false);
@@ -188,6 +186,14 @@ function ToolInner() {
   const [lineItems, setLineItems] = useState<LineItem[]>([
     { description: "", quantity: 1, unitPrice: 0 },
   ]);
+
+  // Draft autosave — after all referenced state is declared
+  const draftUserId = auth.status === "authenticated" ? auth.user.id : null;
+  const { loadDraft, clearDraft } = useDraftAutosave(
+    draftUserId,
+    { form, lineItems, sigData },
+    !editId
+  );
 
   const subtotal = lineItems.reduce((s, i) => s + Number(i.quantity) * Number(i.unitPrice), 0);
   const vatAmount = form.vat ? subtotal * 0.2 : 0;
