@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PublicFooter from "@/components/PublicFooter";
 import EmailCapture from "@/components/EmailCapture";
 import type { Metadata } from "next";
 
